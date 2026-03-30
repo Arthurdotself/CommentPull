@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CommentPull — Extract Social Comments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
+    --border: #2a2a2a; --border-active: #444;
+    --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
+    --accent-ig: #e1306c; --accent-fb: #1877f2;
+    --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
+    --radius: 10px; --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 999; opacity: 0.4; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: linear-gradient(to bottom, rgba(13,13,13,0.97) 0%, transparent 100%); backdrop-filter: blur(4px); }
+  .logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--text-dim); font-weight: 300; font-style: italic; }
+  .nav-badge { font-size: 11px; color: var(--text-dim); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; letter-spacing: 0.05em; }
+
+  .hero { padding: 160px 40px 70px; max-width: 900px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .hero-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--border-active); }
+  .hero h1 { font-family: var(--serif); font-size: clamp(42px, 6vw, 72px); font-weight: 300; line-height: 1.05; letter-spacing: -2px; color: var(--text); margin-bottom: 28px; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-desc { font-size: 14px; color: var(--text-dim); line-height: 1.8; max-width: 500px; }
+  .platforms { display: flex; gap: 8px; margin-top: 32px; flex-wrap: wrap; }
+  .pill { display: flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid; }
+  .pill.fb  { color: var(--accent-fb); border-color: rgba(24,119,242,0.3); background: rgba(24,119,242,0.05); }
+  .pill.ig  { color: var(--accent-ig); border-color: rgba(225,48,108,0.3); background: rgba(225,48,108,0.05); }
+  .pill.coming { color: var(--text-muted); border-color: var(--border); background: transparent; }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .main { max-width: 780px; margin: 0 auto; padding: 0 40px 120px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .card-header { padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-family: var(--serif); font-size: 18px; font-weight: 400; font-style: italic; color: var(--text); }
+  .step-badge { font-size: 11px; color: var(--text-dim); letter-spacing: 0.1em; }
+  .card-body { padding: 32px; display: flex; flex-direction: column; gap: 28px; }
+
+  /* Platform toggle */
+  .platform-select { display: flex; gap: 12px; }
+  .platform-btn { flex: 1; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; text-align: left; position: relative; overflow: hidden; }
+  .platform-btn:hover { border-color: var(--border-active); }
+  .platform-btn.active-fb { border-color: rgba(24,119,242,0.55); background: rgba(24,119,242,0.07); }
+  .platform-btn.active-ig { border-color: rgba(225,48,108,0.55); background: rgba(225,48,108,0.07); }
+  .platform-btn .check { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); display: none; align-items: center; justify-content: center; }
+  .platform-btn.active-fb .check, .platform-btn.active-ig .check { display: flex; }
+  .platform-btn .check svg { width: 10px; height: 10px; stroke: #000; stroke-width: 2.5; fill: none; }
+  .platform-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .platform-icon.fb { background: rgba(24,119,242,0.15); }
+  .platform-icon.ig { background: rgba(225,48,108,0.12); }
+  .platform-icon svg { width: 18px; height: 18px; }
+  .platform-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .platform-sub  { font-size: 11px; color: var(--text-dim); }
+
+  /* Dynamic context blocks */
+  .ctx-block { display: none; flex-direction: column; gap: 28px; }
+  .ctx-block.visible { display: flex; animation: fadeUp 0.25s ease; }
+
+  /* Fields */
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: flex; align-items: center; gap: 8px; }
+  .hint-link { font-size: 10px; color: var(--text-muted); text-transform: none; letter-spacing: 0; cursor: pointer; background: none; border: none; font-family: var(--mono); padding: 0; text-decoration: underline; text-underline-offset: 2px; transition: color 0.15s; }
+  .hint-link:hover { color: var(--accent); }
+  .input-wrap { position: relative; }
+  input[type="text"], input[type="password"], input[type="url"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; transition: all 0.2s; }
+  input:focus { border-color: var(--accent); background: rgba(240,192,96,0.03); box-shadow: 0 0 0 3px var(--accent-glow); }
+  input::placeholder { color: var(--text-muted); }
+  .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-dim); padding: 4px; display: flex; align-items: center; transition: color 0.15s; }
+  .eye-btn:hover { color: var(--text); }
+  .eye-btn svg { width: 16px; height: 16px; }
+  input.has-toggle { padding-right: 42px; }
+
+  .row2 { display: flex; gap: 10px; align-items: flex-start; }
+  .row2 .field-group { flex: 1; }
+  .btn-sm { padding: 13px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--mono); font-size: 12px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; white-space: nowrap; height: 46px; display: flex; align-items: center; margin-top: 22px; }
+  .btn-sm:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .btn-sm:disabled { opacity: 0.45; pointer-events: none; }
+
+  .field-hint { font-size: 11px; margin-top: 5px; display: none; }
+  .field-hint.ok  { color: #7de8a8; display: block; }
+  .field-hint.err { color: #f07090; display: block; }
+  .field-hint.info { color: var(--accent); display: block; }
+
+  /* Info callout */
+  .callout { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .callout strong { color: var(--text); }
+  .callout a { color: var(--accent); text-decoration: none; }
+  .callout a:hover { text-decoration: underline; }
+  .callout.ig-note { border-color: rgba(225,48,108,0.2); background: rgba(225,48,108,0.04); }
+
+  /* Toggle */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--surface2); border-radius: var(--radius); border: 1px solid var(--border); }
+  .toggle-label { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 2px; }
+  .toggle-sub   { font-size: 11px; color: var(--text-dim); }
+  .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-track { position: absolute; cursor: pointer; inset: 0; background: var(--border); border-radius: 11px; transition: all 0.2s; }
+  .toggle-track::after { content: ''; position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--text-dim); transition: all 0.2s; }
+  .toggle input:checked + .toggle-track { background: var(--accent); }
+  .toggle input:checked + .toggle-track::after { transform: translateX(18px); background: #000; }
+
+  /* URL list */
+  .url-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .url-entry { display: flex; gap: 8px; align-items: center; }
+  .url-entry input { flex: 1; }
+  .remove-url { width: 32px; height: 32px; border-radius: 8px; background: none; border: 1px solid var(--border); cursor: pointer; color: var(--text-dim); display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .remove-url:hover { border-color: var(--accent-ig); color: var(--accent-ig); background: rgba(225,48,108,0.05); }
+  .remove-url svg { width: 14px; height: 14px; }
+  .add-url { background: none; border: 1px dashed var(--border); border-radius: var(--radius); padding: 10px; color: var(--text-dim); cursor: pointer; font-family: var(--mono); font-size: 12px; transition: all 0.2s; display: none; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 4px; }
+  .add-url:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+  /* Options */
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .option-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; user-select: none; }
+  .option-card:hover { border-color: var(--border-active); }
+  .option-card.selected { border-color: var(--accent); background: var(--accent-glow); }
+  .option-card.disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .option-check { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border-active); background: none; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .option-card.selected .option-check { background: var(--accent); border-color: var(--accent); }
+  .option-check svg { width: 9px; height: 9px; stroke: #000; stroke-width: 2.5; fill: none; opacity: 0; }
+  .option-card.selected .option-check svg { opacity: 1; }
+  .option-text { font-size: 12px; color: var(--text); }
+  .option-sub  { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+
+  .divider { height: 1px; background: var(--border); }
+
+  /* CTA */
+  .cta-row { display: flex; align-items: center; gap: 16px; }
+  .btn-extract { flex: 1; padding: 16px 24px; background: var(--accent); color: #0d0d0d; border: none; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn-extract:hover { background: #f5d080; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,192,96,0.25); }
+  .btn-extract:active { transform: translateY(0); }
+  .btn-extract.loading { pointer-events: none; background: #c9a040; }
+  .btn-extract svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+  .btn-extract.loading .spinner { display: block; }
+  .btn-extract.loading .btn-icon { display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .format-select { position: relative; }
+  select { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 40px 16px 16px; font-family: var(--mono); font-size: 12px; color: var(--text); outline: none; cursor: pointer; -webkit-appearance: none; appearance: none; transition: all 0.2s; }
+  select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+  .select-arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-dim); }
+  .select-arrow svg { width: 12px; height: 12px; }
+
+  /* Status */
+  .status-panel { display: none; margin-top: 16px; padding: 16px 20px; border-radius: var(--radius); border: 1px solid; font-size: 12px; line-height: 1.7; }
+  .status-panel.success { background: rgba(80,200,120,0.05); border-color: rgba(80,200,120,0.25); color: #7de8a8; display: block; animation: fadeUp 0.3s ease; }
+  .status-panel.error   { background: rgba(225,48,108,0.05); border-color: rgba(225,48,108,0.25); color: #f07090; display: block; animation: fadeUp 0.3s ease; }
+  .status-panel.info    { background: rgba(240,192,96,0.05); border-color: rgba(240,192,96,0.2); color: var(--accent); display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .status-header { font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .progress-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .prog-item { font-size: 11px; padding: 2px 0; }
+  .prog-item.active { color: var(--accent); }
+  .prog-item.done   { color: #7de8a8; }
+  .prog-item.err    { color: #f07090; }
+
+  /* Tooltip */
+  .tooltip-wrap { position: relative; display: inline-flex; }
+  .info-icon { width: 14px; height: 14px; border: 1px solid var(--border-active); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--text-dim); cursor: help; font-size: 9px; font-style: normal; transition: all 0.15s; }
+  .info-icon:hover { border-color: var(--accent); color: var(--accent); }
+  .tooltip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #222; border: 1px solid var(--border-active); border-radius: 8px; padding: 10px 14px; font-size: 11px; color: var(--text); line-height: 1.6; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 50; min-width: 280px; white-space: normal; text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .tooltip-wrap:hover .tooltip { opacity: 1; }
+
+  /* How it works */
+  .how { max-width: 780px; margin: 0 auto; padding: 0 40px 100px; }
+  .section-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 40px; display: flex; align-items: center; gap: 16px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .step { padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s; }
+  .step:hover { border-color: var(--border-active); }
+  .step-platform { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; font-weight: 500; }
+  .step-platform.fb { color: var(--accent-fb); }
+  .step-platform.ig { color: var(--accent-ig); }
+  .step-platform.both { color: var(--text-muted); }
+  .step-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+  .step-desc { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  code { color: var(--accent); font-size: 11px; background: rgba(240,192,96,0.08); padding: 1px 5px; border-radius: 4px; }
+
+  footer { border-top: 1px solid var(--border); padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; max-width: 780px; margin: 0 auto; }
+  .footer-left { font-size: 12px; color: var(--text-muted); }
+  .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .free-badge { background: rgba(80,200,120,0.1); color: #7de8a8; border: 1px solid rgba(80,200,120,0.2); padding: 3px 10px; border-radius: 20px; font-size: 11px; }
+
+  @media (max-width: 640px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 120px 20px 60px; }
+    .main, .how { padding-left: 20px; padding-right: 20px; }
+    .steps-grid, .platform-select, .options-grid { grid-template-columns: 1fr; }
+    .cta-row, .row2 { flex-direction: column; }
+    .cta-row .btn-sm, .row2 .btn-sm { margin-top: 0; width: 100%; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    .card-body { padding: 20px; }
+    .card-header { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">Comment<span>Pull</span></a>
+  <span class="nav-badge">Free · Browser-only · No data stored</span>
+</nav>
+
+<section class="hero">
+  <p class="hero-eyebrow">Social Data Extraction</p>
+  <h1>Pull every<br><em>comment & like</em><br>in seconds.</h1>
+  <p class="hero-desc">Enter your access token and post URLs. All comments with usernames and timestamps are fetched directly from Facebook or Instagram and downloaded as a clean file. Runs entirely in your browser — nothing is stored or sent anywhere.</p>
+  <div class="platforms">
+    <span class="pill fb"><span class="dot"></span>Facebook — Live</span>
+    <span class="pill ig"><span class="dot"></span>Instagram — Live</span>
+    <span class="pill coming">TikTok — Soon</span>
+    <span class="pill coming">YouTube — Soon</span>
+  </div>
+</section>
+
+<section class="main">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Extract Comments</span>
+      <span class="step-badge" id="api-badge">Meta Graph API v19.0</span>
+    </div>
+    <div class="card-body">
+
+      <!-- 01 Platform -->
+      <div class="field-group">
+        <label>01 — Platform</label>
+        <div class="platform-select">
+          <button class="platform-btn active-fb" id="btn-fb" onclick="selectPlatform('fb')">
+            <div class="platform-icon fb">
+              <svg viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </div>
+            <div><div class="platform-name">Facebook</div><div class="platform-sub">Page posts, multi-post</div></div>
+            <div class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          </button>
+          <button class="platform-btn" id="btn-ig" onclick="selectPlatform('ig')">
+            <div class="platform-icon ig">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="1" fill="#e1306c" stroke="none"/>
+              </svg>
+            </div>
+            <div><div class="platform-name">Instagram</div><div class="platform-sub">Business / Creator</div></div>
+            <div class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 02 Token (shared) -->
+      <div class="field-group">
+        <label>
+          02 — Page Access Token
+          <span class="tooltip-wrap">
+            <i class="info-icon">?</i>
+            <span class="tooltip" id="token-tooltip">Go to developers.facebook.com → Graph API Explorer. Select your App, then your Page. For Facebook: add pages_read_engagement. For Instagram: also add instagram_basic + instagram_manage_comments. Click Generate Token. Your token never leaves your device.</span>
+          </span>
+          <button class="hint-link" onclick="window.open('https://developers.facebook.com/tools/explorer/','_blank')">Get token →</button>
+        </label>
+        <div class="input-wrap">
+          <input type="password" id="token-input" class="has-toggle" placeholder="EAABsbCS4IUA…" autocomplete="off" spellcheck="false">
+          <button class="eye-btn" id="eye-btn">
+            <svg id="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="eye-hide" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── FACEBOOK CONTEXT ── -->
+      <div class="ctx-block visible" id="ctx-fb">
+        <!-- FB Page ID -->
+        <div class="field-group">
+          <label>
+            03 — Facebook Page ID
+            <span class="tooltip-wrap">
+              <i class="info-icon">?</i>
+              <span class="tooltip">Your Page's numeric ID. Found on your Page → About → Page ID. Or click Auto-detect.</span>
+            </span>
+          </label>
+          <div class="row2">
+            <div class="field-group" style="gap:4px">
+              <input type="text" id="fb-page-id" placeholder="e.g. 968441023169325" spellcheck="false">
+              <div class="field-hint" id="fb-pageid-hint"></div>
+            </div>
+            <button class="btn-sm" id="btn-fb-auto" onclick="fbAutoDetect()">Auto-detect →</button>
+          </div>
+        </div>
+
+        <!-- FB Post URLs -->
+        <div class="field-group">
+          <label>04 — Post URL(s)</label>
+          <div class="toggle-row" style="margin-bottom:4px">
+            <div><div class="toggle-label">Multiple posts</div><div class="toggle-sub">Extract from several posts at once</div></div>
+            <label class="toggle"><input type="checkbox" id="fb-multi" onchange="onMultiToggle('fb')"><span class="toggle-track"></span></label>
+          </div>
+          <div class="url-list" id="fb-url-list">
+            <div class="url-entry">
+              <input type="url" class="fb-url" placeholder="https://www.facebook.com/icenter.iraq/posts/1358797512952452">
+            </div>
+          </div>
+          <button class="add-url" id="fb-add-url" onclick="addUrl('fb')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add another post
+          </button>
+        </div>
+      </div>
+
+      <!-- ── INSTAGRAM CONTEXT ── -->
+      <div class="ctx-block" id="ctx-ig">
+
+        <!-- IG info callout -->
+        <div class="callout ig-note">
+          <strong>Requirements:</strong> Your Instagram account must be a <strong>Business or Creator account</strong> linked to a Facebook Page. Your token needs <code>instagram_basic</code> and <code>instagram_manage_comments</code> permissions. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Get token →</a>
+        </div>
+
+        <!-- IG: FB Page ID to look up IG account -->
+        <div class="field-group">
+          <label>
+            03 — Facebook Page ID
+            <span class="tooltip-wrap">
+              <i class="info-icon">?</i>
+              <span class="tooltip">The Facebook Page linked to your Instagram account. Required to resolve your Instagram Business Account ID. Click Auto-detect or paste it from your Page → About.</span>
+            </span>
+          </label>
+          <div class="row2">
+            <div class="field-group" style="gap:4px">
+              <input type="text" id="ig-page-id" placeholder="e.g. 968441023169325" spellcheck="false">
+              <div class="field-hint" id="ig-pageid-hint"></div>
+            </div>
+            <button class="btn-sm" id="btn-ig-auto" onclick="igAutoDetect()">Auto-detect →</button>
+          </div>
+        </div>
+
+        <!-- IG Post URLs -->
+        <div class="field-group">
+          <label>04 — Instagram Post URL(s)</label>
+          <div class="toggle-row" style="margin-bottom:4px">
+            <div><div class="toggle-label">Multiple posts</div><div class="toggle-sub">Extract from several posts at once</div></div>
+            <label class="toggle"><input type="checkbox" id="ig-multi" onchange="onMultiToggle('ig')"><span class="toggle-track"></span></label>
+          </div>
+          <div class="url-list" id="ig-url-list">
+            <div class="url-entry">
+              <input type="url" class="ig-url" placeholder="https://www.instagram.com/p/ABC123def456/">
+            </div>
+          </div>
+          <button class="add-url" id="ig-add-url" onclick="addUrl('ig')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add another post
+          </button>
+        </div>
+      </div>
+
+      <!-- Options (shared) -->
+      <div class="field-group">
+        <label>Export options</label>
+        <div class="options-grid">
+          <div class="option-card selected" id="opt-comments" onclick="toggleOption(this)">
+            <div class="option-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            <div><div class="option-text">Comments</div><div class="option-sub">Text, username, time</div></div>
+          </div>
+          <div class="option-card selected" id="opt-ids" onclick="toggleOption(this)">
+            <div class="option-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            <div><div class="option-text">User IDs</div><div class="option-sub">Commenter profile IDs</div></div>
+          </div>
+          <div class="option-card" id="opt-replies" onclick="toggleOption(this)">
+            <div class="option-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            <div><div class="option-text">Replies</div><div class="option-sub">Nested comments</div></div>
+          </div>
+          <div class="option-card selected" id="opt-summary" onclick="toggleOption(this)">
+            <div class="option-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+            <div><div class="option-text">Summary sheet</div><div class="option-sub">Count per post (Excel)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- CTA -->
+      <div>
+        <div class="cta-row">
+          <div class="format-select">
+            <select id="fmt">
+              <option value="xlsx">Excel (.xlsx)</option>
+              <option value="csv">CSV (.csv)</option>
+              <option value="json">JSON (.json)</option>
+            </select>
+            <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </div>
+          <button class="btn-extract" id="extract-btn" onclick="handleExtract()">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <div class="spinner"></div>
+            Extract &amp; Download
+          </button>
+        </div>
+        <div class="status-panel" id="status"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <p class="section-label">How it works</p>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-platform fb">Facebook</div>
+      <div class="step-title">Get your Page Access Token</div>
+      <div class="step-desc">Go to <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:var(--accent);text-decoration:none">Meta Graph API Explorer</a>. Select your App → your Page. Add <code>pages_read_engagement</code> permission. Auto-detect fills in your Page ID.</div>
+    </div>
+    <div class="step">
+      <div class="step-platform ig">Instagram</div>
+      <div class="step-title">Link your Instagram account</div>
+      <div class="step-desc">Your Instagram must be a <strong style="color:var(--text)">Business or Creator</strong> account linked to a Facebook Page. Add <code>instagram_basic</code> + <code>instagram_manage_comments</code> permissions to your token.</div>
+    </div>
+    <div class="step">
+      <div class="step-platform both">Both platforms</div>
+      <div class="step-title">Paste your post URLs</div>
+      <div class="step-desc">Copy the full URL of any post. Add multiple URLs at once with the toggle. Facebook supports <code>pfbid</code> encoded URLs. Instagram supports <code>/p/</code>, <code>/reel/</code>, and <code>/tv/</code> links.</div>
+    </div>
+    <div class="step">
+      <div class="step-platform both">Both platforms</div>
+      <div class="step-title">Download instantly</div>
+      <div class="step-desc">All comments are fetched with full pagination — no comment limit. Download as Excel (with Summary sheet), CSV, or JSON. Your token and data never touch any server.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-left">CommentPull — Built for marketers, giveaways &amp; community managers.</span>
+  <div class="footer-right">
+    <span class="free-badge">100% Free</span>
+    <span>· No ads · No data stored · Client-side only</span>
+  </div>
+</footer>
+
+<script>
+// ────────────────────────────────────────────────────────────
+//  CONSTANTS
+// ────────────────────────────────────────────────────────────
+const GRAPH = "https://graph.facebook.com/v19.0";
+let platform = 'fb';
+
+// ────────────────────────────────────────────────────────────
+//  PLATFORM SWITCH
+// ────────────────────────────────────────────────────────────
+function selectPlatform(p) {
+  platform = p;
+  ['fb','ig'].forEach(x => {
+    document.getElementById(`btn-${x}`).classList.remove(`active-${x}`);
+    document.getElementById(`ctx-${x}`).classList.remove('visible');
+  });
+  document.getElementById(`btn-${p}`).classList.add(`active-${p}`);
+  document.getElementById(`ctx-${p}`).classList.add('visible');
+  document.getElementById('api-badge').textContent =
+    p === 'ig' ? 'Instagram Graph API v19.0' : 'Facebook Graph API v19.0';
+
+  // Replies option: Instagram doesn't support stream filter the same way
+  const repliesCard = document.getElementById('opt-replies');
+  if (p === 'ig') {
+    repliesCard.classList.remove('selected');
+    repliesCard.querySelector('.option-sub').textContent = 'Fetched separately (IG)';
+  } else {
+    repliesCard.querySelector('.option-sub').textContent = 'Nested comments';
+  }
+  repliesCard.classList.remove('disabled');
+}
+
+// ────────────────────────────────────────────────────────────
+//  EYE TOGGLE
+// ────────────────────────────────────────────────────────────
+document.getElementById('eye-btn').addEventListener('click', () => {
+  const inp = document.getElementById('token-input');
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  document.getElementById('eye-show').style.display = show ? 'none' : '';
+  document.getElementById('eye-hide').style.display = show ? '' : 'none';
+});
+
+// ────────────────────────────────────────────────────────────
+//  OPTION TOGGLE
+// ────────────────────────────────────────────────────────────
+function toggleOption(card) { card.classList.toggle('selected'); }
+
+// ────────────────────────────────────────────────────────────
+//  MULTI-URL TOGGLE
+// ────────────────────────────────────────────────────────────
+function onMultiToggle(pfx) {
+  const on = document.getElementById(`${pfx}-multi`).checked;
+  document.getElementById(`${pfx}-add-url`).style.display = on ? 'flex' : 'none';
+  document.querySelectorAll(`#${pfx}-url-list .remove-url`)
+    .forEach(b => b.style.display = on ? 'flex' : 'none');
+}
+
+function addUrl(pfx) {
+  const list = document.getElementById(`${pfx}-url-list`);
+  const div = document.createElement('div');
+  div.className = 'url-entry';
+  div.innerHTML = `
+    <input type="url" class="${pfx}-url" placeholder="${pfx === 'ig' ? 'https://www.instagram.com/p/…' : 'https://www.facebook.com/…/posts/…'}">
+    <button class="remove-url" onclick="removeUrl(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>`;
+  list.appendChild(div);
+  div.querySelector('input').focus();
+}
+
+function removeUrl(btn) {
+  const list = btn.closest('.url-list');
+  if (list.querySelectorAll('.url-entry').length > 1) btn.closest('.url-entry').remove();
+}
+
+// ────────────────────────────────────────────────────────────
+//  FACEBOOK — AUTO DETECT PAGE ID
+// ────────────────────────────────────────────────────────────
+async function fbAutoDetect() {
+  const token = document.getElementById('token-input').value.trim();
+  if (!token) { setHint('fb-pageid-hint', 'err', 'Enter your token first.'); return; }
+  const btn = document.getElementById('btn-fb-auto');
+  btn.textContent = 'Detecting…'; btn.disabled = true;
+  try {
+    const data = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+    document.getElementById('fb-page-id').value = data.id;
+    setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
+  } catch(e) { setHint('fb-pageid-hint', 'err', `✕ ${e.message}`); }
+  finally { btn.textContent = 'Auto-detect →'; btn.disabled = false; }
+}
+
+// ────────────────────────────────────────────────────────────
+//  INSTAGRAM — AUTO DETECT (Page ID → IG Business Account ID)
+// ────────────────────────────────────────────────────────────
+async function igAutoDetect() {
+  const token = document.getElementById('token-input').value.trim();
+  if (!token) { setHint('ig-pageid-hint', 'err', 'Enter your token first.'); return; }
+  const btn = document.getElementById('btn-ig-auto');
+  btn.textContent = 'Detecting…'; btn.disabled = true;
+  try {
+    // Step 1: get the FB Page ID
+    const meData = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+    const fbPageId = meData.id;
+    document.getElementById('ig-page-id').value = fbPageId;
+    setHint('ig-pageid-hint', 'info', `→ Facebook Page: ${meData.name} (${fbPageId}) — checking linked Instagram…`);
+    // Step 2: get IG Business Account from that page
+    const igData = await gql(`/${fbPageId}?fields=instagram_business_account&access_token=${enc(token)}`);
+    const igId = igData.instagram_business_account?.id;
+    if (!igId) throw new Error('No Instagram Business Account linked to this Facebook Page. Make sure your Instagram is a Business/Creator account connected to this Page.');
+    setHint('ig-pageid-hint', 'ok', `✓ Facebook Page: ${meData.name} · Instagram Business ID: ${igId}`);
+    // Store the IG user ID for later use
+    document.getElementById('ig-page-id').dataset.igUserId = igId;
+  } catch(e) { setHint('ig-pageid-hint', 'err', `✕ ${e.message}`); }
+  finally { btn.textContent = 'Auto-detect →'; btn.disabled = false; }
+}
+
+// ────────────────────────────────────────────────────────────
+//  FACEBOOK — POST ID PARSER (from your Python script)
+// ────────────────────────────────────────────────────────────
+function buildFullPostId(link, pageId) {
+  link = link.trim();
+  if (!link.startsWith('http') && link.includes('_')) return link; // already formatted
+  const pfbid = link.match(/(pfbid[A-Za-z0-9]+)/);
+  if (pfbid) return `${pageId}_${pfbid[1]}`;
+  const patterns = [/\/posts\/(\d+)/, /story_fbid=(\d+)/, /fbid=(\d+)/, /\/videos\/(\d+)/, /\/photos\/[^/]+\/(\d+)/, /\/(\d{10,})/];
+  for (const pat of patterns) {
+    const m = link.match(pat);
+    if (m) { const r = m[1]; return r.startsWith(pageId) ? r : `${pageId}_${r}`; }
+  }
+  if (/^\d+$/.test(link)) return `${pageId}_${link}`;
+  return link;
+}
+
+// ────────────────────────────────────────────────────────────
+//  INSTAGRAM — SHORTCODE EXTRACTOR + MEDIA ID LOOKUP
+// ────────────────────────────────────────────────────────────
+function extractIgShortcode(url) {
+  // handles /p/, /reel/, /tv/, /reels/
+  const m = url.match(/instagram\.com\/(?:p|reel|tv|reels)\/([A-Za-z0-9_-]+)/);
+  return m ? m[1] : null;
+}
+
+async function resolveIgMediaId(shortcode, igUserId, token) {
+  // Use the Graph API to find media by permalink using fields=permalink
+  // We paginate through the user's media to find the matching shortcode
+  let url = `${GRAPH}/${igUserId}/media?fields=id,shortcode,permalink&limit=50&access_token=${enc(token)}`;
+  while (url) {
+    const data = await gqlRaw(url);
+    for (const item of (data.data || [])) {
+      if (item.shortcode === shortcode || (item.permalink && item.permalink.includes(`/${shortcode}/`))) {
+        return item.id;
+      }
+    }
+    url = data.paging?.next || null;
+  }
+  throw new Error(`Could not find media with shortcode "${shortcode}" in your Instagram account's posts. Make sure the post belongs to the Business/Creator account linked to your token.`);
+}
+
+async function resolveIgUserId(fbPageId, token) {
+  const stored = document.getElementById('ig-page-id').dataset.igUserId;
+  if (stored) return stored;
+  const data = await gql(`/${fbPageId}?fields=instagram_business_account&access_token=${enc(token)}`);
+  const igId = data.instagram_business_account?.id;
+  if (!igId) throw new Error('No Instagram Business Account found linked to this Facebook Page.');
+  document.getElementById('ig-page-id').dataset.igUserId = igId;
+  return igId;
+}
+
+// ────────────────────────────────────────────────────────────
+//  FETCH ALL COMMENTS — Facebook
+// ────────────────────────────────────────────────────────────
+async function fetchFbComments(fullPostId, token, filter, onUpdate) {
+  const results = [];
+  let url = `${GRAPH}/${fullPostId}/comments?` + new URLSearchParams({
+    access_token: token, fields: 'id,from,message,created_time', filter, limit: '100',
+  });
+  while (url) {
+    const data = await gqlRaw(url);
+    if (data.error) throw new Error(data.error.message);
+    for (const c of (data.data || [])) {
+      results.push({
+        post_id: fullPostId,
+        commenter_name: c.from?.name ?? 'Unknown',
+        commenter_id:   c.from?.id   ?? '',
+        comment_text:   c.message    ?? '',
+        timestamp:      c.created_time ?? '',
+        comment_id:     c.id         ?? '',
+      });
+    }
+    if (onUpdate) onUpdate(results.length);
+    url = data.paging?.next ?? null;
+  }
+  return results;
+}
+
+// ────────────────────────────────────────────────────────────
+//  FETCH ALL COMMENTS — Instagram
+// ────────────────────────────────────────────────────────────
+async function fetchIgComments(mediaId, token, includeReplies, onUpdate) {
+  const results = [];
+  // Fetch top-level comments
+  let url = `${GRAPH}/${mediaId}/comments?` + new URLSearchParams({
+    access_token: token,
+    fields: 'id,username,text,timestamp,replies{id,username,text,timestamp}',
+    limit: '100',
+  });
+  while (url) {
+    const data = await gqlRaw(url);
+    if (data.error) throw new Error(data.error.message);
+    for (const c of (data.data || [])) {
+      results.push({
+        post_id:        mediaId,
+        commenter_name: c.username   ?? 'Unknown',
+        commenter_id:   c.id         ?? '',   // IG comments use id (not a separate user id)
+        comment_text:   c.text       ?? '',
+        timestamp:      c.timestamp  ?? '',
+        comment_id:     c.id         ?? '',
+        reply_to:       '',
+      });
+      // Include replies if toggled
+      if (includeReplies && c.replies?.data) {
+        for (const r of c.replies.data) {
+          results.push({
+            post_id:        mediaId,
+            commenter_name: r.username ?? 'Unknown',
+            commenter_id:   r.id       ?? '',
+            comment_text:   r.text     ?? '',
+            timestamp:      r.timestamp ?? '',
+            comment_id:     r.id        ?? '',
+            reply_to:       c.id,
+          });
+        }
+      }
+    }
+    if (onUpdate) onUpdate(results.length);
+    url = data.paging?.next ?? null;
+  }
+  return results;
+}
+
+// ────────────────────────────────────────────────────────────
+//  GRAPH API HELPERS
+// ────────────────────────────────────────────────────────────
+async function gql(path) { return gqlRaw(`${GRAPH}${path}`); }
+async function gqlRaw(url) {
+  const res = await fetch(url);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  return data;
+}
+function enc(s) { return encodeURIComponent(s); }
+
+// ────────────────────────────────────────────────────────────
+//  STATUS / PROGRESS HELPERS
+// ────────────────────────────────────────────────────────────
+function setStatus(type, title, body = '') {
+  const el = document.getElementById('status');
+  const icon = { success: '✓', error: '✕', info: '›' }[type] || '›';
+  el.className = `status-panel ${type}`;
+  el.innerHTML = `<div class="status-header">${icon} ${title}</div>${body}`;
+}
+function getProgList() {
+  const el = document.getElementById('status');
+  let list = el.querySelector('.progress-list');
+  if (!list) { list = document.createElement('div'); list.className = 'progress-list'; el.appendChild(list); }
+  return list;
+}
+function setProgItem(id, state, text) {
+  const list = getProgList();
+  let item = document.getElementById(id);
+  if (!item) { item = document.createElement('div'); item.id = id; list.appendChild(item); }
+  item.className = `prog-item ${state}`;
+  item.textContent = `${{ done:'✓', err:'✕', active:'›' }[state]||'›'} ${text}`;
+}
+function setHint(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = `field-hint ${type}`;
+  el.textContent = msg;
+}
+
+// ────────────────────────────────────────────────────────────
+//  EXPORT
+// ────────────────────────────────────────────────────────────
+function exportXLSX(rows, includeSummary) {
+  const wb = XLSX.utils.book_new();
+  const headers = ['Post ID','Commenter Name','Commenter ID','Comment','Timestamp','Comment ID'];
+  // Add Reply To column for Instagram replies
+  const hasReplies = rows.some(r => r.reply_to !== undefined);
+  if (hasReplies) headers.push('Reply To');
+  const data = [headers, ...rows.map(r => {
+    const row = [r.post_id, r.commenter_name, r.commenter_id, r.comment_text, r.timestamp, r.comment_id];
+    if (hasReplies) row.push(r.reply_to || '');
+    return row;
+  })];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [{wch:28},{wch:28},{wch:20},{wch:55},{wch:22},{wch:22},{wch:22}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Comments');
+  if (includeSummary) {
+    const counts = {};
+    rows.forEach(r => { counts[r.post_id] = (counts[r.post_id] || 0) + 1; });
+    const total = Object.values(counts).reduce((a,b)=>a+b,0);
+    const sd = [['Post ID','Comment Count'], ...Object.entries(counts), ['TOTAL', total]];
+    const ws2 = XLSX.utils.aoa_to_sheet(sd);
+    ws2['!cols'] = [{wch:30},{wch:16}];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+  }
+  const ts = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  XLSX.writeFile(wb, `commentpull_${platform}_${ts}.xlsx`);
+}
+
+function exportCSV(rows) {
+  const keys = ['post_id','commenter_name','commenter_id','comment_text','timestamp','comment_id'];
+  const hasReplies = rows.some(r => r.reply_to !== undefined);
+  if (hasReplies) keys.push('reply_to');
+  const lines = [keys.join(','), ...rows.map(r => keys.map(k => `"${String(r[k]||'').replace(/"/g,'""')}"`).join(','))];
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `commentpull_${platform}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+}
+
+function exportJSON(rows) {
+  const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `commentpull_${platform}_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+
+// ────────────────────────────────────────────────────────────
+//  MAIN HANDLER
+// ────────────────────────────────────────────────────────────
+async function handleExtract() {
+  const token = document.getElementById('token-input').value.trim();
+  const fmt   = document.getElementById('fmt').value;
+  const includeReplies = document.getElementById('opt-replies').classList.contains('selected');
+  const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
+
+  // ── Validate token ──
+  if (!token) { setStatus('error','Access token required','Please enter your Page Access Token (step 02).'); return; }
+
+  const btn = document.getElementById('extract-btn');
+  btn.classList.add('loading');
+  const all = [];
+  let anyError = false;
+
+  try {
+    if (platform === 'fb') {
+      // ── FACEBOOK PATH ──
+      const pageId = document.getElementById('fb-page-id').value.trim();
+      if (!pageId) { setStatus('error','Page ID required','Enter your Page ID or click Auto-detect (step 03).'); btn.classList.remove('loading'); return; }
+      const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL (step 04).'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', `Connecting to Facebook Graph API…`, '');
+      const filter = includeReplies ? 'stream' : 'toplevel';
+
+      for (let i = 0; i < urls.length; i++) {
+        const link = urls[i], fullId = buildFullPostId(link, pageId);
+        const label = link.length > 44 ? '…'+link.slice(-41) : link;
+        const pid = `p${i}`;
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — connecting…`);
+        try {
+          const comments = await fetchFbComments(fullId, token, filter, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          });
+          all.push(...comments);
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`); anyError = true; }
+      }
+
+    } else {
+      // ── INSTAGRAM PATH ──
+      const fbPageId = document.getElementById('ig-page-id').value.trim();
+      if (!fbPageId) { setStatus('error','Page ID required','Enter your Facebook Page ID or click Auto-detect (step 03).'); btn.classList.remove('loading'); return; }
+      const urls = [...document.querySelectorAll('.ig-url')].map(i=>i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No post URL','Paste at least one Instagram post URL (step 04).'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', 'Connecting to Instagram Graph API…', '');
+
+      // Resolve IG User ID once
+      let igUserId;
+      try {
+        setProgItem('ig-resolve', 'active', 'Resolving Instagram Business Account ID…');
+        igUserId = await resolveIgUserId(fbPageId, token);
+        setProgItem('ig-resolve', 'done', `Instagram Business Account: ${igUserId}`);
+      } catch(e) {
+        setProgItem('ig-resolve', 'err', `Could not resolve IG account: ${e.message}`);
+        btn.classList.remove('loading'); return;
+      }
+
+      for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        const shortcode = extractIgShortcode(url);
+        const label = url.length > 44 ? '…'+url.slice(-41) : url;
+        const pid = `p${i}`;
+
+        if (!shortcode) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Could not extract shortcode from URL`);
+          anyError = true; continue;
+        }
+
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — looking up media ID…`);
+        try {
+          const mediaId = await resolveIgMediaId(shortcode, igUserId, token);
+          setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
+          const comments = await fetchIgComments(mediaId, token, includeReplies, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          });
+          all.push(...comments);
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
+          anyError = true;
+        }
+      }
+    }
+  } catch(e) {
+    setStatus('error', 'Unexpected error', e.message);
+    btn.classList.remove('loading'); return;
+  }
+
+  btn.classList.remove('loading');
+
+  if (all.length === 0) {
+    const tip = anyError
+      ? `Check your token has the right permissions and your Page/Account IDs are correct.`
+      : `No comments found — the posts may be empty.`;
+    setStatus('error', 'No comments collected', tip);
+    return;
+  }
+
+  // Export
+  try {
+    if (fmt === 'xlsx')     exportXLSX(all, includeSummary);
+    else if (fmt === 'csv') exportCSV(all);
+    else                    exportJSON(all);
+
+    const panel = document.getElementById('status');
+    const list  = panel.querySelector('.progress-list');
+    panel.className = 'status-panel success';
+    panel.innerHTML = `<div class="status-header">✓ ${all.length} comment${all.length!==1?'s':''} downloaded as ${fmt.toUpperCase()}</div>`;
+    if (list) panel.appendChild(list);
+  } catch(e) { setStatus('error', 'Export failed', e.message); }
+}
+</script>
+</body>
+</html>

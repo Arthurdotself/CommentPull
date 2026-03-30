@@ -20,7 +20,7 @@
 
 ## 🚀 Live Demo
 
-👉 **[commentpull.yourdomain.com]([https://commentpull.yourdomain.com](https://olive-caribou-298635.hostingersite.com/))**
+👉 **[commentpull.yourdomain.com]([https://olive-caribou-298635.hostingersite.com/])**
 
 ---
 

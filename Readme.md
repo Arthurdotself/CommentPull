@@ -20,7 +20,7 @@
 
 ## 🚀 Live Demo
 
-👉 **[commentpull.yourdomain.com](https://commentpull.yourdomain.com)**
+👉 **[commentpull.yourdomain.com]([https://commentpull.yourdomain.com](https://olive-caribou-298635.hostingersite.com/))**
 
 ---
 
@@ -160,7 +160,7 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ```bash
 # Fork the repo, then:
-git clone https://github.com/YOUR_USERNAME/commentpull.git
+git clone https://github.com/Arthurdotself/commentpull.git
 cd commentpull
 # Make your changes to index.html
 git commit -m "feat: your change"

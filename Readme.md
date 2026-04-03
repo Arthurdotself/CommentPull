@@ -20,7 +20,7 @@
 
 ## 🚀 Live Demo
 
-👉 **[commentpull.com](commentpull.com)**
+👉 **[commentpull.com](https://commentpull.com)**
 
 ---
 

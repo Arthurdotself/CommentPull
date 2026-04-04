@@ -361,6 +361,7 @@
   .btn-reroll { flex-shrink: 0; align-self: center; padding: 7px 12px; background: none; border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
   .btn-reroll:hover { border-color: var(--accent-ig); color: var(--accent-ig); background: rgba(225,48,108,0.05); }
   .btn-reroll:disabled { opacity: 0.25; pointer-events: none; }
+  .rand-winners.drawing .btn-reroll { opacity: 0.25; pointer-events: none; cursor: not-allowed; }
   .btn-reroll svg { width: 12px; height: 12px; }
 
   .rand-footer { padding: 16px 32px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -1365,8 +1366,9 @@ function applyFilters(rows) {
     if (excludeOn && excludeList.length && (excludeList.includes(name) || excludeList.includes(id))) continue;
 
     // Dedup (runs last — after all other filters, so only unique qualifiers are counted)
+    // Instagram: commenter_id === comment_id (not a real user ID), so fall back to name
     if (dedupOn) {
-      const key = id || name;
+      const key = (id && id !== (row.comment_id || '').toLowerCase()) ? id : name;
       if (seen.has(key)) continue;
       seen.add(key);
     }
@@ -1687,7 +1689,7 @@ function buildRandPool() {
 
 // ── Stepper
 function adjustWinners(delta) {
-  const max = Math.min(_previewQualified.length || 20, 20);
+  const max = Math.min(Math.max(_previewQualified.length, 1), 20);
   _randWinnerCount = Math.max(1, Math.min(max, _randWinnerCount + delta));
   document.getElementById('rand-winner-count').textContent = _randWinnerCount;
   document.getElementById('btn-draw-text').textContent =
@@ -1745,9 +1747,13 @@ async function drawWinners() {
   const pickedIndices = indices.slice(0, n);
 
   // Show slot stage
-  const stage = document.getElementById('rand-stage');
+  const stage       = document.getElementById('rand-stage');
+  const winnersEl   = document.getElementById('rand-winners');
   stage.style.display = 'block';
   stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Lock re-roll buttons on any cards revealed mid-draw
+  winnersEl.classList.add('drawing');
 
   const allNames = pool.map(r => r.commenter_name);
 
@@ -1758,14 +1764,13 @@ async function drawWinners() {
     await runSlotMachine(winner.commenter_name, allNames, i + 1, n);
 
     _drawnWinners[i] = { row: winner, poolIdx };
-    document.getElementById('rand-winners').appendChild(
-      buildWinnerCardEl(winner, i, i === 0)
-    );
+    winnersEl.appendChild(buildWinnerCardEl(winner, i, i === 0));
 
     if (i < n - 1) await new Promise(r => setTimeout(r, 600));
   }
 
   stage.style.display = 'none';
+  winnersEl.classList.remove('drawing'); // unlock re-roll buttons
   btn.disabled = false;
   showRandFooter(seed, pool.length, n);
   startConfetti();

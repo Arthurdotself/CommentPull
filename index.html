@@ -1819,17 +1819,28 @@ function togglePresetsMenu() {
   _presetsOpen ? closePresetsMenu() : openPresetsMenu();
 }
 
+function positionPresetsMenu() {
+  const menu = document.getElementById('presets-menu');
+  const btn  = document.getElementById('btn-presets');
+  const rect = btn.getBoundingClientRect();
+  const menuH = menu.offsetHeight;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  if (spaceBelow < menuH + 10 && rect.top > menuH + 10) {
+    menu.style.top    = (rect.top - menuH - 6) + 'px';
+  } else {
+    menu.style.top    = (rect.bottom + 6) + 'px';
+  }
+  menu.style.right = (window.innerWidth - rect.right) + 'px';
+  menu.style.left  = 'auto';
+}
+
 function openPresetsMenu() {
   _presetsOpen = true;
   renderPresetsMenu();
   const menu = document.getElementById('presets-menu');
-  const btn  = document.getElementById('btn-presets');
-  const rect = btn.getBoundingClientRect();
-  menu.style.top   = (rect.bottom + 6) + 'px';
-  menu.style.right = (window.innerWidth - rect.right) + 'px';
-  menu.style.left  = 'auto';
   menu.style.display = 'block';
-  btn.classList.add('open');
+  positionPresetsMenu();
+  document.getElementById('btn-presets').classList.add('open');
 }
 
 function closePresetsMenu() {
@@ -1842,6 +1853,11 @@ document.addEventListener('click', function(e) {
   if (_presetsOpen && !e.target.closest('#presets-menu') && !e.target.closest('#btn-presets')) closePresetsMenu();
   if (_dlMenuOpen && !e.target.closest('#dl-menu') && !e.target.closest('#btn-dl-main')) closeDlMenu();
 });
+
+window.addEventListener('scroll', function() {
+  if (_presetsOpen) closePresetsMenu();
+  if (_dlMenuOpen) closeDlMenu();
+}, { passive: true });
 
 let _dlMenuOpen = false;
 function toggleDlMenu() { _dlMenuOpen ? closeDlMenu() : openDlMenu(); }
@@ -2604,7 +2620,7 @@ function toggleFaq(btn) {
   btn.closest('.faq-item').classList.toggle('open');
 }
 </script>
-<div id="presets-menu" style="display:none"></div>
+<div id="presets-menu" class="presets-menu" style="display:none"></div>
 <div id="report-sheet"></div>
 <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:block"></canvas>
 </body>

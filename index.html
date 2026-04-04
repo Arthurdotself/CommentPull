@@ -324,6 +324,50 @@
   .rule-date-col label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
   .rule-date-col input[type="date"] { padding: 10px 12px; }
 
+  /* ── Results Preview Panel ── */
+  .preview-panel { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: fadeUp 0.35s ease; }
+  .preview-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .preview-title { font-family: var(--serif); font-size: 15px; font-weight: 400; font-style: italic; color: var(--text); }
+  .preview-meta { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .preview-meta .q-count { color: #7de8a8; font-weight: 500; }
+  .preview-meta .x-count { color: #f07090; font-weight: 500; }
+  .preview-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .preview-search-wrap { position: relative; }
+  .preview-search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; color: var(--text-dim); pointer-events: none; }
+  .preview-search-wrap input { padding: 9px 12px 9px 30px; font-size: 12px; border-radius: 8px; width: 190px; }
+  .btn-dl { padding: 9px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .btn-dl:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .btn-dl.primary { border-color: rgba(80,200,120,0.4); color: #7de8a8; background: rgba(80,200,120,0.05); }
+  .btn-dl.primary:hover { border-color: #7de8a8; background: rgba(80,200,120,0.1); }
+  .btn-dl svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  .preview-table-wrap { overflow-x: auto; max-height: 400px; overflow-y: auto; }
+  .preview-table-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+  .preview-table-wrap::-webkit-scrollbar-track { background: transparent; }
+  .preview-table-wrap::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 3px; }
+  .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .preview-table thead th { position: sticky; top: 0; z-index: 2; background: var(--surface); padding: 10px 14px; text-align: left; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
+  .preview-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  .preview-table tbody tr:last-child { border-bottom: none; }
+  .preview-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+  .preview-table tbody tr.row-ok  { background: rgba(80,200,120,0.04); }
+  .preview-table tbody tr.row-ok:hover  { background: rgba(80,200,120,0.08); }
+  .preview-table tbody tr.row-out { background: rgba(225,48,108,0.04); }
+  .preview-table tbody tr.row-out:hover { background: rgba(225,48,108,0.07); }
+  .preview-table td { padding: 10px 14px; vertical-align: top; }
+  .td-num  { color: var(--text-muted); font-size: 11px; width: 32px; white-space: nowrap; }
+  .td-name { color: var(--text); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+  .td-comment { color: var(--text-dim); max-width: 320px; word-break: break-word; line-height: 1.55; }
+  .td-date { color: var(--text-muted); white-space: nowrap; font-size: 11px; }
+  .td-post { color: var(--text-muted); font-size: 11px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; flex-shrink: 0; vertical-align: middle; }
+  .row-ok  .status-dot { background: #7de8a8; }
+  .row-out .status-dot { background: #f07090; }
+
+  .preview-footer { padding: 12px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .preview-footer-text { font-size: 11px; color: var(--text-muted); }
+  .preview-empty { padding: 48px 24px; text-align: center; font-size: 12px; color: var(--text-muted); }
+
   @media (max-width: 640px) {
     nav { padding: 16px 20px; }
     .hero { padding: 120px 20px 60px; }
@@ -334,6 +378,10 @@
     footer { flex-direction: column; gap: 12px; text-align: center; }
     .card-body { padding: 20px; }
     .card-header { padding: 16px 20px; }
+    .preview-header { flex-direction: column; align-items: flex-start; }
+    .preview-controls { width: 100%; }
+    .preview-search-wrap input { width: 100%; }
+    .td-post { display: none; }
   }
 </style>
 </head>
@@ -642,6 +690,57 @@
 
     </div>
   </div>
+
+  <!-- ── Results Preview Panel ── -->
+  <div class="preview-panel" id="preview-panel" style="display:none">
+
+    <div class="preview-header">
+      <div>
+        <div class="preview-title">Results Preview</div>
+        <div class="preview-meta" id="preview-meta"></div>
+      </div>
+      <div class="preview-controls">
+        <div class="preview-search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="preview-search" placeholder="Search name or comment…" oninput="searchPreview()">
+        </div>
+        <button class="btn-dl primary" id="btn-dl-qualified" onclick="reDownload('qualified')" title="Download only comments that passed your filter rules">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="btn-dl-qualified-label">Download qualified</span>
+        </button>
+        <button class="btn-dl" id="btn-dl-all" onclick="reDownload('all')" style="display:none" title="Download all extracted comments regardless of filters">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="btn-dl-all-label">Download all</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="preview-table-wrap" id="preview-table-wrap">
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Comment</th>
+            <th>Date</th>
+            <th>Post</th>
+          </tr>
+        </thead>
+        <tbody id="preview-tbody"></tbody>
+      </table>
+      <div class="preview-empty" id="preview-empty" style="display:none">No comments match your search.</div>
+    </div>
+
+    <div class="preview-footer">
+      <span class="preview-footer-text" id="preview-footer-text"></span>
+      <span class="preview-footer-text" id="preview-legend" style="display:none">
+        <span style="color:#7de8a8">●</span> Qualified &nbsp;
+        <span style="color:#f07090">●</span> Excluded by filters
+      </span>
+    </div>
+
+  </div>
+
 </section>
 
 <section class="how">
@@ -1172,6 +1271,134 @@ function applyFilters(rows) {
 }
 
 // ────────────────────────────────────────────────────────────
+//  RESULTS PREVIEW TABLE
+// ────────────────────────────────────────────────────────────
+let _previewAll = [];
+let _previewQualified = [];
+let _qualifiedSet = new Set();
+let _filtersWereActive = false;
+
+function showPreview(allRows, qualifiedRows, filtersActive) {
+  _previewAll = allRows;
+  _previewQualified = qualifiedRows;
+  _qualifiedSet = new Set(qualifiedRows); // object reference lookup
+  _filtersWereActive = filtersActive;
+
+  const panel = document.getElementById('preview-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Reset search
+  document.getElementById('preview-search').value = '';
+
+  // Meta line
+  const meta = document.getElementById('preview-meta');
+  if (filtersActive) {
+    const excl = allRows.length - qualifiedRows.length;
+    meta.innerHTML =
+      `<span class="q-count">${qualifiedRows.length} qualified</span>` +
+      (excl > 0 ? ` &nbsp;·&nbsp; <span class="x-count">${excl} excluded</span>` : '') +
+      ` &nbsp;·&nbsp; ${allRows.length} total`;
+  } else {
+    meta.innerHTML = `${allRows.length} comment${allRows.length !== 1 ? 's' : ''} extracted`;
+  }
+
+  // Download buttons
+  const fmt = document.getElementById('fmt').value.toUpperCase();
+  document.getElementById('btn-dl-qualified-label').textContent =
+    `Download ${filtersActive ? 'qualified ' : ''}(${qualifiedRows.length}) as ${fmt}`;
+  const btnAll = document.getElementById('btn-dl-all');
+  if (filtersActive && allRows.length !== qualifiedRows.length) {
+    btnAll.style.display = 'flex';
+    document.getElementById('btn-dl-all-label').textContent = `Download all (${allRows.length}) as ${fmt}`;
+  } else {
+    btnAll.style.display = 'none';
+  }
+
+  // Legend
+  document.getElementById('preview-legend').style.display = filtersActive ? 'inline' : 'none';
+
+  renderPreview(allRows);
+}
+
+function formatPreviewDate(ts) {
+  if (!ts) return '—';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
+  } catch { return ts.slice(0, 10); }
+}
+
+function formatPostId(id) {
+  if (!id) return '—';
+  const s = String(id);
+  return s.length > 14 ? '…' + s.slice(-12) : s;
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderPreview(rows) {
+  const tbody = document.getElementById('preview-tbody');
+  const empty = document.getElementById('preview-empty');
+  tbody.innerHTML = '';
+
+  if (rows.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('preview-footer-text').textContent = 'No results.';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const frag = document.createDocumentFragment();
+  rows.forEach((row, i) => {
+    const isQualified = !_filtersWereActive || _qualifiedSet.has(row);
+    const cls = _filtersWereActive ? (isQualified ? 'row-ok' : 'row-out') : '';
+    const dot = _filtersWereActive ? `<span class="status-dot"></span>` : '';
+    const tr = document.createElement('tr');
+    if (cls) tr.className = cls;
+    tr.innerHTML = `
+      <td class="td-num">${i + 1}</td>
+      <td class="td-name">${dot}${escHtml(row.commenter_name)}</td>
+      <td class="td-comment">${escHtml(row.comment_text)}</td>
+      <td class="td-date">${formatPreviewDate(row.timestamp)}</td>
+      <td class="td-post">${formatPostId(row.post_id)}</td>`;
+    frag.appendChild(tr);
+  });
+  tbody.appendChild(frag);
+
+  updatePreviewFooter(rows.length, _previewAll.length);
+}
+
+function updatePreviewFooter(shown, total) {
+  const text = shown === total
+    ? `${total} comment${total !== 1 ? 's' : ''}`
+    : `${shown} of ${total} comments`;
+  document.getElementById('preview-footer-text').textContent = text;
+}
+
+function searchPreview() {
+  const q = document.getElementById('preview-search').value.trim().toLowerCase();
+  if (!q) { renderPreview(_previewAll); return; }
+  const filtered = _previewAll.filter(r =>
+    (r.commenter_name || '').toLowerCase().includes(q) ||
+    (r.comment_text  || '').toLowerCase().includes(q)
+  );
+  renderPreview(filtered);
+}
+
+function reDownload(which) {
+  const rows = which === 'all' ? _previewAll : _previewQualified;
+  if (!rows.length) return;
+  const fmt = document.getElementById('fmt').value;
+  const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
+  if (fmt === 'xlsx')     exportXLSX(rows, includeSummary);
+  else if (fmt === 'csv') exportCSV(rows);
+  else                    exportJSON(rows);
+}
+
+// ────────────────────────────────────────────────────────────
 //  MAIN HANDLER
 // ────────────────────────────────────────────────────────────
 async function handleExtract() {
@@ -1288,9 +1515,10 @@ async function handleExtract() {
     const panel = document.getElementById('status');
     const list  = panel.querySelector('.progress-list');
     panel.className = 'status-panel error';
-    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div><div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters.</div>`;
+    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div><div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters or check the preview below.</div>`;
     if (list) panel.appendChild(list);
     gtag('event', 'extract_error', { platform, error_message: 'no_qualified_comments' });
+    showPreview(all, qualified, filtersActive);
     return;
   }
 
@@ -1304,8 +1532,8 @@ async function handleExtract() {
     const list  = panel.querySelector('.progress-list');
     panel.className = 'status-panel success';
     const filterNote = filtersActive
-      ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules</div>`
-      : '';
+      ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — see preview below</div>`
+      : `<div style="margin-top:6px;font-size:11px;opacity:0.75">See preview below to verify before re-downloading</div>`;
     panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} downloaded as ${fmt.toUpperCase()}</div>${filterNote}`;
     if (list) panel.appendChild(list);
     gtag('event', 'extract_success', { platform, format: fmt, comment_count: qualifiedCount, total_count: totalCount });
@@ -1313,6 +1541,9 @@ async function handleExtract() {
     gtag('event', 'extract_error', { platform, error_message: e.message });
     setStatus('error', 'Export failed', e.message);
   }
+
+  // Always show preview after a successful extraction
+  showPreview(all, qualified, filtersActive);
 }
 
 function toggleFaq(btn) {

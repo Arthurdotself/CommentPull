@@ -1648,6 +1648,10 @@ function updatePreview() {
     panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
   }
 
+  // Keep report data in sync with current filter results
+  _reportData.totalCount     = totalCount;
+  _reportData.qualifiedCount = qualifiedCount;
+
   showPreview(_previewAll, qualified, filtersActive);
   resetExtractBtn();
 }

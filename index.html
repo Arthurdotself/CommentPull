@@ -290,6 +290,40 @@
   .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
   .free-badge { background: rgba(80,200,120,0.1); color: #7de8a8; border: 1px solid rgba(80,200,120,0.2); padding: 3px 10px; border-radius: 20px; font-size: 11px; }
 
+  /* ── Filter Rules ── */
+  input[type="number"], input[type="date"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; transition: all 0.2s; }
+  input[type="number"]:focus, input[type="date"]:focus { border-color: var(--accent); background: rgba(240,192,96,0.03); box-shadow: 0 0 0 3px var(--accent-glow); }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+
+  .filter-section { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
+  .filter-section:hover { border-color: var(--border-active); }
+  .filter-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--surface2); cursor: pointer; user-select: none; }
+  .filter-header-left { display: flex; align-items: center; gap: 8px; }
+  .filter-header-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+  .filter-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); transition: all 0.2s; }
+  .filter-badge.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+  .filter-chevron { width: 14px; height: 14px; color: var(--text-dim); transition: transform 0.2s; flex-shrink: 0; }
+  .filter-section.open .filter-chevron { transform: rotate(180deg); }
+
+  .filter-rules { display: none; flex-direction: column; border-top: 1px solid var(--border); }
+  .filter-section.open .filter-rules { display: flex; animation: fadeUp 0.2s ease; }
+
+  .filter-rule { border-bottom: 1px solid var(--border); }
+  .filter-rule:last-child { border-bottom: none; }
+  .filter-rule .toggle-row { border: none; border-radius: 0; background: var(--surface); }
+  .filter-rule .toggle-row:hover { background: rgba(255,255,255,0.015); }
+  .rule-inputs { padding: 0 20px 14px; background: var(--surface); }
+  .rule-note { font-size: 11px; color: var(--accent); margin-top: 6px; }
+  .rule-inline { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .rule-inline input[type="number"] { width: 90px; flex-shrink: 0; padding: 10px 12px; }
+  .rule-inline span { font-size: 12px; color: var(--text-dim); }
+  .rule-date-row { display: flex; gap: 10px; margin-top: 8px; }
+  .rule-date-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .rule-date-col label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .rule-date-col input[type="date"] { padding: 10px 12px; }
+
   @media (max-width: 640px) {
     nav { padding: 16px 20px; }
     .hero { padding: 120px 20px 60px; }
@@ -479,6 +513,106 @@
           </div>
         </div>
       </div>
+
+      <!-- 05 Filter Rules -->
+      <div class="filter-section" id="filter-section">
+        <div class="filter-header" onclick="toggleFilters()">
+          <div class="filter-header-left">
+            <span class="filter-header-label">Filter Rules</span>
+            <span class="tooltip-wrap" onclick="event.stopPropagation()">
+              <i class="info-icon">?</i>
+              <span class="tooltip">Set qualification rules that comments must pass before being exported or used in the randomizer. Only comments matching all active rules will be included. Deduplication always runs last.</span>
+            </span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="filter-badge" id="filter-badge">No filters</span>
+            <svg class="filter-chevron" id="filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+
+        <div class="filter-rules" id="filter-rules">
+
+          <!-- Rule: Keyword / Hashtag -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Must contain keyword or hashtag</div><div class="toggle-sub">e.g. #giveaway, win, contest</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-keyword" onchange="onRuleToggle('rule-keyword')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-keyword" style="display:none">
+              <input type="text" id="filter-keyword" placeholder="e.g.  #giveaway  or  win">
+            </div>
+          </div>
+
+          <!-- Rule: Min @mentions -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Minimum @mentions</div><div class="toggle-sub">Comment must tag at least N friends</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-mentions" onchange="onRuleToggle('rule-mentions')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-mentions" style="display:none">
+              <div class="rule-inline">
+                <input type="number" id="filter-mentions" value="2" min="1" max="20">
+                <span>or more @mentions required</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule: Min comment length -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Minimum comment length</div><div class="toggle-sub">Filter out spam, emoji-only, or one-word replies</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-length" onchange="onRuleToggle('rule-length')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-length" style="display:none">
+              <div class="rule-inline">
+                <input type="number" id="filter-length" value="10" min="1" max="500">
+                <span>characters minimum</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule: One entry per person -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">One entry per person</div><div class="toggle-sub">Keep only the first comment per commenter</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-dedup" onchange="onRuleToggle('rule-dedup')"><span class="toggle-track"></span></label>
+            </div>
+          </div>
+
+          <!-- Rule: Date range -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Date range</div><div class="toggle-sub">Only count comments posted within a period</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-daterange" onchange="onRuleToggle('rule-daterange')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-daterange" style="display:none">
+              <div class="rule-date-row">
+                <div class="rule-date-col">
+                  <label>From</label>
+                  <input type="date" id="filter-date-from">
+                </div>
+                <div class="rule-date-col">
+                  <label>To</label>
+                  <input type="date" id="filter-date-to">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule: Exclude usernames -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Exclude specific users</div><div class="toggle-sub">Remove admins, test accounts, or disqualified users</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-exclude" onchange="onRuleToggle('rule-exclude')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-exclude" style="display:none">
+              <input type="text" id="filter-exclude" placeholder="username1, username2, …">
+              <p class="rule-note">Comma-separated. Matches commenter names and usernames (case-insensitive).</p>
+            </div>
+          </div>
+
+        </div><!-- /filter-rules -->
+      </div><!-- /filter-section -->
 
       <div class="divider"></div>
 
@@ -947,6 +1081,97 @@ function exportJSON(rows) {
 }
 
 // ────────────────────────────────────────────────────────────
+//  FILTER RULES
+// ────────────────────────────────────────────────────────────
+function toggleFilters() {
+  const section = document.getElementById('filter-section');
+  section.classList.toggle('open');
+}
+
+function onRuleToggle(ruleId) {
+  const checked = document.getElementById(ruleId).checked;
+  const inputs = document.getElementById(`inputs-${ruleId}`);
+  if (inputs) {
+    inputs.style.display = checked ? 'block' : 'none';
+    if (checked) inputs.querySelector('input')?.focus();
+  }
+  updateFilterBadge();
+}
+
+function updateFilterBadge() {
+  const ids = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude'];
+  const active = ids.filter(id => document.getElementById(id).checked).length;
+  const badge = document.getElementById('filter-badge');
+  badge.textContent = active === 0 ? 'No filters' : `${active} rule${active !== 1 ? 's' : ''} active`;
+  badge.className = `filter-badge${active > 0 ? ' active' : ''}`;
+}
+
+function applyFilters(rows) {
+  const keywordOn  = document.getElementById('rule-keyword').checked;
+  const mentionsOn = document.getElementById('rule-mentions').checked;
+  const lengthOn   = document.getElementById('rule-length').checked;
+  const dedupOn    = document.getElementById('rule-dedup').checked;
+  const dateOn     = document.getElementById('rule-daterange').checked;
+  const excludeOn  = document.getElementById('rule-exclude').checked;
+
+  const anyActive = keywordOn || mentionsOn || lengthOn || dedupOn || dateOn || excludeOn;
+  if (!anyActive) return rows;
+
+  const keyword     = document.getElementById('filter-keyword').value.trim().toLowerCase();
+  const minMentions = parseInt(document.getElementById('filter-mentions').value) || 1;
+  const minLength   = parseInt(document.getElementById('filter-length').value)   || 1;
+  const rawFrom     = document.getElementById('filter-date-from').value;
+  const rawTo       = document.getElementById('filter-date-to').value;
+  const dateFrom    = rawFrom ? new Date(rawFrom + 'T00:00:00') : null;
+  const dateTo      = rawTo   ? new Date(rawTo   + 'T23:59:59') : null;
+  const excludeList = excludeOn
+    ? document.getElementById('filter-exclude').value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+    : [];
+
+  const seen = new Set();
+  const result = [];
+
+  for (const row of rows) {
+    const text = row.comment_text || '';
+    const name = (row.commenter_name || '').toLowerCase();
+    const id   = (row.commenter_id  || '').toLowerCase();
+
+    // Keyword / hashtag
+    if (keywordOn && keyword && !text.toLowerCase().includes(keyword)) continue;
+
+    // @mentions count
+    if (mentionsOn) {
+      const count = (text.match(/@[\w.]+/g) || []).length;
+      if (count < minMentions) continue;
+    }
+
+    // Comment length
+    if (lengthOn && text.trim().length < minLength) continue;
+
+    // Date range
+    if (dateOn) {
+      const ts = new Date(row.timestamp);
+      if (dateFrom && ts < dateFrom) continue;
+      if (dateTo   && ts > dateTo)   continue;
+    }
+
+    // Exclude specific users
+    if (excludeOn && excludeList.length && (excludeList.includes(name) || excludeList.includes(id))) continue;
+
+    // Dedup (runs last — after all other filters, so only unique qualifiers are counted)
+    if (dedupOn) {
+      const key = id || name;
+      if (seen.has(key)) continue;
+      seen.add(key);
+    }
+
+    result.push(row);
+  }
+
+  return result;
+}
+
+// ────────────────────────────────────────────────────────────
 //  MAIN HANDLER
 // ────────────────────────────────────────────────────────────
 async function handleExtract() {
@@ -1052,18 +1277,38 @@ async function handleExtract() {
     return;
   }
 
-  // Export
+  // Apply filter rules
+  const qualified = applyFilters(all);
+  const totalCount = all.length;
+  const qualifiedCount = qualified.length;
+  const filtersActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+
+  if (filtersActive && qualifiedCount === 0) {
+    const panel = document.getElementById('status');
+    const list  = panel.querySelector('.progress-list');
+    panel.className = 'status-panel error';
+    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div><div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters.</div>`;
+    if (list) panel.appendChild(list);
+    gtag('event', 'extract_error', { platform, error_message: 'no_qualified_comments' });
+    return;
+  }
+
+  // Export qualified comments
   try {
-    if (fmt === 'xlsx')     exportXLSX(all, includeSummary);
-    else if (fmt === 'csv') exportCSV(all);
-    else                    exportJSON(all);
+    if (fmt === 'xlsx')     exportXLSX(qualified, includeSummary);
+    else if (fmt === 'csv') exportCSV(qualified);
+    else                    exportJSON(qualified);
 
     const panel = document.getElementById('status');
     const list  = panel.querySelector('.progress-list');
     panel.className = 'status-panel success';
-    panel.innerHTML = `<div class="status-header">✓ ${all.length} comment${all.length!==1?'s':''} downloaded as ${fmt.toUpperCase()}</div>`;
+    const filterNote = filtersActive
+      ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules</div>`
+      : '';
+    panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} downloaded as ${fmt.toUpperCase()}</div>${filterNote}`;
     if (list) panel.appendChild(list);
-    gtag('event', 'extract_success', { platform, format: fmt, comment_count: all.length });
+    gtag('event', 'extract_success', { platform, format: fmt, comment_count: qualifiedCount, total_count: totalCount });
   } catch(e) {
     gtag('event', 'extract_error', { platform, error_message: e.message });
     setStatus('error', 'Export failed', e.message);

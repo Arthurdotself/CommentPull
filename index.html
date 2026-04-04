@@ -414,6 +414,29 @@
   .preview-footer-text { font-size: 11px; color: var(--text-muted); }
   .preview-empty { padding: 48px 24px; text-align: center; font-size: 12px; color: var(--text-muted); }
 
+  /* ── Token Health Check ── */
+  .btn-token-check { margin-top: 8px; padding: 7px 13px; background: none; border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-token-check:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .btn-token-check:disabled { opacity: 0.4; pointer-events: none; }
+  .btn-token-check svg { width: 12px; height: 12px; }
+  .token-health-card { border-radius: var(--radius); border: 1px solid; padding: 14px 16px; font-size: 12px; line-height: 1.7; animation: fadeUp 0.25s ease; }
+  .token-health-card.ok   { background: rgba(80,200,120,0.05);  border-color: rgba(80,200,120,0.25); }
+  .token-health-card.warn { background: rgba(240,192,96,0.05);  border-color: rgba(240,192,96,0.25); }
+  .token-health-card.err  { background: rgba(225,48,108,0.05);  border-color: rgba(225,48,108,0.25); }
+  .thc-name { font-weight: 500; color: var(--text); margin-bottom: 10px; }
+  .thc-perms { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+  .thc-perm { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .thc-perm-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .thc-perm-dot.ok   { background: #7de8a8; }
+  .thc-perm-dot.miss { background: #f07090; }
+  .thc-expiry { font-size: 11px; padding-top: 8px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .thc-ok   { color: #7de8a8; }
+  .thc-warn { color: var(--accent); }
+  .thc-err  { color: #f07090; }
+  .thc-action { margin-top: 8px; font-size: 11px; color: var(--text-dim); }
+  .thc-action a { color: var(--accent); text-decoration: none; }
+  .thc-action a:hover { text-decoration: underline; }
+
   /* ── Report sheet (screen: hidden; print: only thing shown) ── */
   #report-sheet { display: none; }
   .btn-report { padding: 9px 16px; background: var(--surface2); border: 1px solid var(--accent); border-radius: 8px; font-family: var(--mono); font-size: 12px; color: var(--accent); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
@@ -546,7 +569,14 @@
             <svg id="eye-hide" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
           </button>
         </div>
+        <button class="btn-token-check" id="btn-check-token" onclick="checkToken()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span id="btn-check-text">Check token health</span>
+        </button>
       </div>
+      <div class="token-health-card" id="token-health-card" style="display:none"></div>
 
       <!-- ── FACEBOOK CONTEXT ── -->
       <div class="ctx-block visible" id="ctx-fb">
@@ -1047,6 +1077,10 @@ function selectPlatform(p) {
     repliesCard.querySelector('.option-sub').textContent = 'Nested comments';
   }
   repliesCard.classList.remove('disabled');
+
+  // Clear token health card — permission requirements differ per platform
+  const healthCard = document.getElementById('token-health-card');
+  if (healthCard) healthCard.style.display = 'none';
 }
 
 // ────────────────────────────────────────────────────────────
@@ -1344,6 +1378,132 @@ function exportJSON(rows) {
   const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
   a.download = `commentpull_${platform}_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+
+// ────────────────────────────────────────────────────────────
+//  TOKEN HEALTH CHECK
+// ────────────────────────────────────────────────────────────
+const REQUIRED_PERMS = {
+  fb: [
+    { perm: 'pages_read_engagement',      label: 'Read page comments' },
+  ],
+  ig: [
+    { perm: 'pages_read_engagement',      label: 'Read page engagement' },
+    { perm: 'instagram_basic',            label: 'Instagram basic access' },
+    { perm: 'instagram_manage_comments',  label: 'Read Instagram comments' },
+  ],
+};
+
+async function checkToken() {
+  const token = document.getElementById('token-input').value.trim();
+  const card  = document.getElementById('token-health-card');
+  const btn   = document.getElementById('btn-check-token');
+  const label = document.getElementById('btn-check-text');
+
+  if (!token) {
+    card.className = 'token-health-card err';
+    card.innerHTML = '<div class="thc-err">Enter your token first.</div>';
+    card.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  label.textContent = 'Checking…';
+  card.style.display = 'none';
+
+  try {
+    // ── 1. Validate token + account name
+    const me = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+
+    // ── 2. Fetch granted permissions (soft-fail — may be empty for some token types)
+    let grantedSet = new Set();
+    let permsLoaded = false;
+    try {
+      const permsData = await gql(`/me/permissions?access_token=${enc(token)}`);
+      (permsData.data || []).forEach(p => { if (p.status === 'granted') grantedSet.add(p.permission); });
+      permsLoaded = grantedSet.size > 0;
+    } catch(_) {}
+
+    // ── 3. Token expiry via debug_token (soft-fail)
+    let expiresAt   = null;
+    let isShortLived = false;
+    try {
+      const debug = await gqlRaw(
+        `${GRAPH}/debug_token?input_token=${enc(token)}&access_token=${enc(token)}`
+      );
+      if (debug.data) {
+        expiresAt    = debug.data.expires_at ?? null;
+        isShortLived = expiresAt > 0 && (expiresAt - Date.now() / 1000) < 3600;
+      }
+    } catch(_) {}
+
+    // ── 4. Check required permissions for current platform
+    const required = REQUIRED_PERMS[platform] || REQUIRED_PERMS.fb;
+    const missing  = permsLoaded ? required.filter(r => !grantedSet.has(r.perm)) : [];
+
+    // ── 5. Determine card state
+    let state = 'ok';
+    if (missing.length > 0) state = 'err';
+    else if (isShortLived)   state = 'warn';
+
+    // ── 6. Build card HTML
+    let html = `<div class="thc-name">${escHtml(me.name)} <span style="color:var(--text-muted);font-weight:400;font-size:11px">· ID ${escHtml(me.id)}</span></div>`;
+
+    if (permsLoaded) {
+      html += '<div class="thc-perms">';
+      for (const { perm, label: desc } of required) {
+        const ok = grantedSet.has(perm);
+        html += `
+          <div class="thc-perm">
+            <span class="thc-perm-dot ${ok ? 'ok' : 'miss'}"></span>
+            <code style="font-size:11px;color:${ok ? 'var(--text-dim)' : '#f07090'}">${perm}</code>
+            <span style="color:var(--text-muted);font-size:10px">— ${desc}</span>
+            <span class="${ok ? 'thc-ok' : 'thc-err'}" style="margin-left:auto;font-size:10px">${ok ? 'granted' : 'MISSING'}</span>
+          </div>`;
+      }
+      html += '</div>';
+    } else {
+      html += `<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Permission details unavailable for Page Access Tokens — this is normal. Your token is valid. Permissions will be validated when you extract.</div>`;
+    }
+
+    // Expiry
+    html += '<div class="thc-expiry">';
+    if (expiresAt === null) {
+      html += `<span style="color:var(--text-muted);font-size:11px">Expiry info unavailable for Page Access Tokens. Page tokens are typically long-lived — re-generate from API Explorer if extraction fails.</span>`;
+    } else if (expiresAt === 0) {
+      html += `<span class="thc-ok">✓ Long-lived token — no expiry</span>`;
+    } else {
+      const secsLeft  = expiresAt - Date.now() / 1000;
+      const hoursLeft = (secsLeft / 3600).toFixed(1);
+      const expiryStr = new Date(expiresAt * 1000).toLocaleString();
+      html += isShortLived
+        ? `<span class="thc-warn">⚠ Expires soon: ${expiryStr} (${hoursLeft}h left) — <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:var(--accent)">refresh token →</a></span>`
+        : `<span class="thc-ok">✓ Expires: ${expiryStr} (${hoursLeft}h remaining)</span>`;
+    }
+    html += '</div>';
+
+    // Action links
+    if (missing.length > 0) {
+      html += `<div class="thc-action">Missing ${missing.length} permission${missing.length > 1 ? 's' : ''} for ${platform === 'ig' ? 'Instagram' : 'Facebook'}. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Re-generate token →</a></div>`;
+    }
+
+    card.className    = `token-health-card ${state}`;
+    card.innerHTML    = html;
+    card.style.display = 'block';
+
+    try { gtag('event', 'token_checked', { platform, status: state }); } catch(_) {}
+
+  } catch(e) {
+    card.className    = 'token-health-card err';
+    card.innerHTML    = `
+      <div class="thc-err" style="font-weight:500;margin-bottom:6px">✕ Token invalid or expired</div>
+      <div style="font-size:11px;color:var(--text-dim)">${escHtml(e.message)}</div>
+      <div class="thc-action"><a href="https://developers.facebook.com/tools/explorer/" target="_blank">Get a new token →</a></div>`;
+    card.style.display = 'block';
+  } finally {
+    btn.disabled      = false;
+    label.textContent = 'Check token health';
+  }
 }
 
 // ────────────────────────────────────────────────────────────

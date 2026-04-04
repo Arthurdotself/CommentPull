@@ -272,6 +272,19 @@
   .step-desc { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
   code { color: var(--accent); font-size: 11px; background: rgba(240,192,96,0.08); padding: 1px 5px; border-radius: 4px; }
 
+  /* FAQ */
+  .faq { max-width: 780px; margin: 0 auto; padding: 0 40px 100px; }
+  .faq-list { display: flex; flex-direction: column; gap: 2px; }
+  .faq-item { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .faq-item:hover { border-color: var(--border-active); }
+  .faq-q { width: 100%; background: var(--surface); border: none; padding: 18px 20px; font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--text); text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .faq-q .faq-chevron { width: 14px; height: 14px; flex-shrink: 0; color: var(--text-dim); transition: transform 0.2s; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-a { display: none; padding: 0 20px 18px; font-size: 12px; color: var(--text-dim); line-height: 1.8; background: var(--surface); }
+  .faq-a a { color: var(--accent); text-decoration: none; }
+  .faq-a a:hover { text-decoration: underline; }
+  .faq-item.open .faq-a { display: block; }
+
   footer { border-top: 1px solid var(--border); padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; max-width: 780px; margin: 0 auto; }
   .footer-left { font-size: 12px; color: var(--text-muted); }
   .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
@@ -280,7 +293,7 @@
   @media (max-width: 640px) {
     nav { padding: 16px 20px; }
     .hero { padding: 120px 20px 60px; }
-    .main, .how { padding-left: 20px; padding-right: 20px; }
+    .main, .how, .faq { padding-left: 20px; padding-right: 20px; }
     .steps-grid, .platform-select, .options-grid { grid-template-columns: 1fr; }
     .cta-row, .row2 { flex-direction: column; }
     .cta-row .btn-sm, .row2 .btn-sm { margin-top: 0; width: 100%; }
@@ -294,7 +307,7 @@
 
 <nav>
   <a href="#" class="logo">Comment<span>Pull</span></a>
-  <span class="nav-badge">Free Demo · Browser-only · No data stored</span>
+  <span class="nav-badge">Free Beta · Browser-only · No data stored</span>
 </nav>
 
 <section class="hero">
@@ -373,7 +386,7 @@
           </label>
           <div class="row2">
             <div class="field-group" style="gap:4px">
-              <input type="text" id="fb-page-id" placeholder="e.g. 968441023169325" spellcheck="false">
+              <input type="text" id="fb-page-id" placeholder="e.g. 9684410231xxxx" spellcheck="false">
               <div class="field-hint" id="fb-pageid-hint"></div>
             </div>
             <button class="btn-sm" id="btn-fb-auto" onclick="fbAutoDetect()">Auto-Detect →</button>
@@ -389,7 +402,7 @@
           </div>
           <div class="url-list" id="fb-url-list">
             <div class="url-entry">
-              <input type="url" class="fb-url" placeholder="https://www.facebook.com/icenter.iraq/posts/1358797512952452">
+              <input type="url" class="fb-url" placeholder="https://www.facebook.com/username/posts/13587975xxxx">
             </div>
           </div>
           <button class="add-url" id="fb-add-url" onclick="addUrl('fb')">
@@ -418,7 +431,7 @@
           </label>
           <div class="row2">
             <div class="field-group" style="gap:4px">
-              <input type="text" id="ig-page-id" placeholder="e.g. 968441023169325" spellcheck="false">
+              <input type="text" id="ig-page-id" placeholder="e.g. 9684410231xxxx" spellcheck="false">
               <div class="field-hint" id="ig-pageid-hint"></div>
             </div>
             <button class="btn-sm" id="btn-ig-auto" onclick="igAutoDetect()">Auto-detect →</button>
@@ -523,10 +536,82 @@
   </div>
 </section>
 
+<section class="faq">
+  <p class="section-label">FAQ</p>
+  <div class="faq-list">
+
+    <div class="faq-item open">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is this safe to use? Will my token or data be exposed?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a">
+        Yes. CommentPull runs <strong style="color:var(--text)">entirely in your browser</strong> — there is no backend server. Your access token, Page IDs, and all fetched comments never leave your device. The API calls go directly from your browser to Facebook/Instagram's servers. You can verify this yourself by opening DevTools → Network and inspecting every request.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How can I verify my data stays private?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a">
+        Open your browser's DevTools (F12) → Network tab before clicking Extract. You'll see every request goes only to <code>graph.facebook.com</code> — nothing is sent to any CommentPull server because there isn't one. The entire source code is also <a href="https://github.com/Arthurdotself/CommentPull" target="_blank">open source on GitHub</a> so you can read every line before using it.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Why is it free? What's the catch?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a">
+        CommentPull is currently in beta. During this period everything is free while we test, gather feedback, and improve the tool. No ads, no subscriptions, no data selling — just an early version being put through its paces.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does CommentPull store or sell my data?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a">
+        No. Nothing is stored, logged, or sold — ever. There are no accounts, no sign-ups, and no cookies beyond what your browser handles natively. The only analytics on this page is anonymous usage counting via Google Analytics (page views and button clicks), which contains no personal information.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is this against Facebook or Instagram's Terms of Service?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a">
+        CommentPull uses the official <strong style="color:var(--text)">Meta Graph API</strong> with your own access token — the same API Meta provides to developers. You are only accessing data you already have permission to access on your own Pages and accounts. This is well within Meta's platform policies.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I look at the source code?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a">
+        Absolutely. The full source is on <a href="https://github.com/Arthurdotself/CommentPull" target="_blank">GitHub — github.com/Arthurdotself/CommentPull</a>. It's a single HTML file with no build step, no obfuscation, and no dependencies beyond the XLSX library. Read it, fork it, or contribute.
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <footer>
   <span class="footer-left">CommentPull — Built for marketers, giveaways &amp; community managers.</span>
   <div class="footer-right">
-    <span class="free-badge">Free Demo</span>
+    <a href="https://github.com/Arthurdotself/CommentPull" target="_blank" style="color:var(--text-muted);text-decoration:none;display:flex;align-items:center;gap:5px;" title="View source on GitHub">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      Open source
+    </a>
+    <span>·</span>
+    <span class="free-badge">Free Beta</span>
     <span>· No ads · No data stored · Client-side only</span>
   </div>
 </footer>
@@ -542,6 +627,7 @@ let platform = 'fb';
 //  PLATFORM SWITCH
 // ────────────────────────────────────────────────────────────
 function selectPlatform(p) {
+  gtag('event', 'platform_selected', { platform: p });
   platform = p;
   ['fb','ig'].forEach(x => {
     document.getElementById(`btn-${x}`).classList.remove(`active-${x}`);
@@ -869,6 +955,8 @@ async function handleExtract() {
   const includeReplies = document.getElementById('opt-replies').classList.contains('selected');
   const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
 
+  gtag('event', 'extract_started', { platform });
+
   // ── Validate token ──
   if (!token) { setStatus('error','Access token required','Please enter your Page Access Token (step 02).'); return; }
 
@@ -959,6 +1047,7 @@ async function handleExtract() {
     const tip = anyError
       ? `Check your token has the right permissions and your Page/Account IDs are correct.`
       : `No comments found — the posts may be empty.`;
+    gtag('event', 'extract_error', { platform, error_message: anyError ? 'api_error' : 'no_comments' });
     setStatus('error', 'No comments collected', tip);
     return;
   }
@@ -974,7 +1063,15 @@ async function handleExtract() {
     panel.className = 'status-panel success';
     panel.innerHTML = `<div class="status-header">✓ ${all.length} comment${all.length!==1?'s':''} downloaded as ${fmt.toUpperCase()}</div>`;
     if (list) panel.appendChild(list);
-  } catch(e) { setStatus('error', 'Export failed', e.message); }
+    gtag('event', 'extract_success', { platform, format: fmt, comment_count: all.length });
+  } catch(e) {
+    gtag('event', 'extract_error', { platform, error_message: e.message });
+    setStatus('error', 'Export failed', e.message);
+  }
+}
+
+function toggleFaq(btn) {
+  btn.closest('.faq-item').classList.toggle('open');
 }
 </script>
 </body>

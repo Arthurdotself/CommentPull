@@ -2316,7 +2316,7 @@ async function drawWinners() {
     await runSlotMachine(winner.commenter_name, allNames, i + 1, n);
 
     _drawnWinners[i] = { row: winner, poolIdx };
-    winnersEl.appendChild(buildWinnerCardEl(winner, i, i === 0));
+    winnersEl.appendChild(buildWinnerCardEl(winner, i, true));
 
     if (i < n - 1) await new Promise(r => setTimeout(r, 600));
   }
@@ -2417,7 +2417,7 @@ function rerollWinner(index) {
   _drawnWinners[index] = { row: newRow, poolIdx: newPoolIdx };
 
   const oldCard = document.getElementById(`winner-card-${index}`);
-  const newCard = buildWinnerCardEl(newRow, index, index === 0);
+  const newCard = buildWinnerCardEl(newRow, index, true);
   oldCard.replaceWith(newCard);
 }
 

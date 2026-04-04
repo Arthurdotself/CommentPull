@@ -225,6 +225,9 @@
   .btn-extract:hover { background: #f5d080; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,192,96,0.25); }
   .btn-extract:active { transform: translateY(0); }
   .btn-extract.loading { pointer-events: none; background: #c9a040; }
+  .btn-extract.update-mode { background: none; border: 1.5px solid rgba(255,195,50,0.45); color: #ffc532; }
+  .btn-extract.update-mode:hover { border-color: #ffc532; background: rgba(255,195,50,0.08); color: #ffd966; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,195,50,0.12); }
+  .btn-extract.update-mode.loading { background: none; border-color: rgba(255,195,50,0.3); color: rgba(255,197,50,0.5); }
   .btn-extract svg { width: 16px; height: 16px; flex-shrink: 0; }
   .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
   .btn-extract.loading .spinner { display: block; }
@@ -377,15 +380,27 @@
   .preview-meta { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .preview-meta .q-count { color: #7de8a8; font-weight: 500; }
   .preview-meta .x-count { color: #f07090; font-weight: 500; }
-  .preview-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .preview-controls { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
   .preview-search-wrap { position: relative; }
   .preview-search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; color: var(--text-dim); pointer-events: none; }
-  .preview-search-wrap input { padding: 9px 12px 9px 30px; font-size: 12px; border-radius: 8px; width: 190px; }
+  .preview-search-wrap input { padding: 9px 12px 9px 30px; font-size: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; }
+  .preview-dl-row { display: flex; align-items: center; gap: 8px; }
+  .dl-btn-wrap { position: relative; }
   .btn-dl { padding: 9px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
   .btn-dl:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
   .btn-dl.primary { border-color: rgba(80,200,120,0.4); color: #7de8a8; background: rgba(80,200,120,0.05); }
   .btn-dl.primary:hover { border-color: #7de8a8; background: rgba(80,200,120,0.1); }
   .btn-dl svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .btn-dl .dl-caret { transition: transform 0.15s; }
+  .btn-dl.open .dl-caret { transform: rotate(180deg); }
+  .dl-dropdown-menu { position: absolute; top: calc(100% + 6px); right: 0; background: var(--surface); border: 1px solid var(--border-active); border-radius: var(--radius); min-width: 220px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; overflow: hidden; animation: fadeUp 0.12s ease; }
+  .dl-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 14px; background: none; border: none; border-bottom: 1px solid var(--border); text-align: left; cursor: pointer; transition: background 0.1s; font-family: var(--mono); }
+  .dl-menu-item:last-child { border-bottom: none; }
+  .dl-menu-item:hover { background: rgba(255,255,255,0.04); }
+  .dl-menu-item svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--text-dim); }
+  .dl-menu-item.dl-item-primary svg { color: #7de8a8; }
+  .dl-item-label { font-size: 12px; color: var(--text); }
+  .dl-item-desc { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
   .preview-table-wrap { overflow-x: auto; max-height: 400px; overflow-y: auto; }
   .preview-table-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -826,7 +841,7 @@
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             <div class="spinner"></div>
-            Extract &amp; Preview
+            <span class="btn-label">Extract &amp; Preview</span>
           </button>
         </div>
         <div class="status-panel" id="status"></div>
@@ -848,22 +863,39 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="preview-search" placeholder="Search name or comment…" oninput="searchPreview()">
         </div>
-        <div class="format-select">
-          <select id="fmt">
-            <option value="xlsx">Excel (.xlsx)</option>
-            <option value="csv">CSV (.csv)</option>
-            <option value="json">JSON (.json)</option>
-          </select>
-          <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <div class="preview-dl-row">
+          <div class="format-select">
+            <select id="fmt">
+              <option value="xlsx">Excel (.xlsx)</option>
+              <option value="csv">CSV (.csv)</option>
+              <option value="json">JSON (.json)</option>
+            </select>
+            <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </div>
+          <div class="dl-btn-wrap">
+            <button class="btn-dl primary" id="btn-dl-main" onclick="event.stopPropagation(); toggleDlMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+              <svg class="dl-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="dl-menu" class="dl-dropdown-menu" style="display:none">
+              <button class="dl-menu-item dl-item-primary" onclick="reDownload('qualified'); closeDlMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <div>
+                  <div class="dl-item-label">Filtered results</div>
+                  <div class="dl-item-desc" id="dl-qualified-desc"></div>
+                </div>
+              </button>
+              <button class="dl-menu-item" onclick="reDownload('all'); closeDlMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <div>
+                  <div class="dl-item-label">All results</div>
+                  <div class="dl-item-desc" id="dl-all-desc"></div>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
-        <button class="btn-dl primary" id="btn-dl-qualified" onclick="reDownload('qualified')" title="Download only comments that passed your filter rules">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span id="btn-dl-qualified-label">Download qualified</span>
-        </button>
-        <button class="btn-dl" id="btn-dl-all" onclick="reDownload('all')" style="display:none" title="Download all extracted comments regardless of filters">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span id="btn-dl-all-label">Download all</span>
-        </button>
       </div>
     </div>
 
@@ -1559,6 +1591,65 @@ function updateFilterBadge() {
   const badge = document.getElementById('filter-badge');
   badge.textContent = active === 0 ? 'No filters' : `${active} rule${active !== 1 ? 's' : ''} active`;
   badge.className = `filter-badge${active > 0 ? ' active' : ''}`;
+  markFiltersDirty();
+}
+
+// ── Dirty-state tracking for instant filter updates ──
+let _hasExtracted = false;
+let _filtersDirty = false;
+const _filterInputIds = ['filter-keyword','filter-mentions','filter-length','filter-date-from','filter-date-to','filter-exclude'];
+
+document.addEventListener('input', function(e) {
+  if (_filterInputIds.includes(e.target.id)) markFiltersDirty();
+});
+
+function markFiltersDirty() {
+  if (!_hasExtracted || _filtersDirty) return;
+  _filtersDirty = true;
+  const btn = document.getElementById('extract-btn');
+  btn.onclick = null;
+  btn.setAttribute('onclick', 'updatePreview()');
+  btn.querySelector('.btn-icon').innerHTML =
+    '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>' +
+    '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>';
+  btn.querySelector('.btn-label').textContent = 'Update Preview';
+  btn.classList.add('update-mode');
+}
+
+function resetExtractBtn() {
+  _filtersDirty = false;
+  const btn = document.getElementById('extract-btn');
+  btn.onclick = null;
+  btn.setAttribute('onclick', 'handleExtract()');
+  btn.querySelector('.btn-icon').innerHTML =
+    '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>';
+  btn.querySelector('.btn-label').textContent = 'Extract & Preview';
+  btn.classList.remove('update-mode');
+}
+
+function updatePreview() {
+  if (!_hasExtracted || !_previewAll.length) return;
+  const qualified = applyFilters(_previewAll);
+  const filtersActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+  const qualifiedCount = qualified.length;
+  const totalCount = _previewAll.length;
+
+  // Update status panel
+  const panel = document.getElementById('status');
+  panel.className = filtersActive && qualifiedCount === 0 ? 'status-panel error' : 'status-panel success';
+  if (filtersActive && qualifiedCount === 0) {
+    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div>` +
+      `<div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters.</div>`;
+  } else {
+    const filterNote = filtersActive
+      ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — download from the preview below</div>`
+      : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments in the preview below, then download when ready</div>`;
+    panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
+  }
+
+  showPreview(_previewAll, qualified, filtersActive);
+  resetExtractBtn();
 }
 
 // ────────────────────────────────────────────────────────────
@@ -1762,9 +1853,23 @@ function closePresetsMenu() {
 }
 
 document.addEventListener('click', function(e) {
-  if (!_presetsOpen) return;
-  if (!e.target.closest('#presets-menu') && !e.target.closest('#btn-presets')) closePresetsMenu();
+  if (_presetsOpen && !e.target.closest('#presets-menu') && !e.target.closest('#btn-presets')) closePresetsMenu();
+  if (_dlMenuOpen && !e.target.closest('#dl-menu') && !e.target.closest('#btn-dl-main')) closeDlMenu();
 });
+
+let _dlMenuOpen = false;
+function toggleDlMenu() { _dlMenuOpen ? closeDlMenu() : openDlMenu(); }
+function openDlMenu() {
+  _dlMenuOpen = true;
+  document.getElementById('dl-menu').style.display = 'block';
+  document.getElementById('btn-dl-main').classList.add('open');
+}
+function closeDlMenu() {
+  _dlMenuOpen = false;
+  document.getElementById('dl-menu').style.display = 'none';
+  const btn = document.getElementById('btn-dl-main');
+  if (btn) btn.classList.remove('open');
+}
 
 function applyFilters(rows) {
   const keywordOn  = document.getElementById('rule-keyword').checked;
@@ -1865,17 +1970,12 @@ function showPreview(allRows, qualifiedRows, filtersActive) {
     meta.innerHTML = `${allRows.length} comment${allRows.length !== 1 ? 's' : ''} extracted`;
   }
 
-  // Download buttons
+  // Download menu descriptions
   const fmt = document.getElementById('fmt').value.toUpperCase();
-  document.getElementById('btn-dl-qualified-label').textContent =
-    `Download ${filtersActive ? 'qualified ' : ''}(${qualifiedRows.length}) as ${fmt}`;
-  const btnAll = document.getElementById('btn-dl-all');
-  if (filtersActive && allRows.length !== qualifiedRows.length) {
-    btnAll.style.display = 'flex';
-    document.getElementById('btn-dl-all-label').textContent = `Download all (${allRows.length}) as ${fmt}`;
-  } else {
-    btnAll.style.display = 'none';
-  }
+  document.getElementById('dl-qualified-desc').textContent =
+    `${qualifiedRows.length} comment${qualifiedRows.length !== 1 ? 's' : ''} · ${fmt}`;
+  document.getElementById('dl-all-desc').textContent =
+    `${allRows.length} comment${allRows.length !== 1 ? 's' : ''} · ${fmt}`;
 
   // Legend
   document.getElementById('preview-legend').style.display = filtersActive ? 'inline' : 'none';
@@ -2081,6 +2181,8 @@ async function handleExtract() {
     panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div><div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters or check the preview below.</div>`;
     if (list) panel.appendChild(list);
     gtag('event', 'extract_error', { platform, error_message: 'no_qualified_comments' });
+    _hasExtracted = true;
+    resetExtractBtn();
     showPreview(all, qualified, filtersActive);
     return;
   }
@@ -2100,6 +2202,10 @@ async function handleExtract() {
   _reportData.extractedAt    = new Date();
   _reportData.totalCount     = totalCount;
   _reportData.qualifiedCount = qualifiedCount;
+
+  // Enable filter dirty-tracking for instant updates
+  _hasExtracted = true;
+  resetExtractBtn();
 
   // Always show preview after a successful extraction
   showPreview(all, qualified, filtersActive);

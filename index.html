@@ -324,6 +324,51 @@
   .rule-date-col label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
   .rule-date-col input[type="date"] { padding: 10px 12px; }
 
+  /* ── Winner Randomizer ── */
+  .rand-panel { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: fadeUp 0.35s ease; }
+  .rand-header { padding: 20px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .rand-title-text { font-family: var(--serif); font-size: 18px; font-weight: 400; font-style: italic; color: var(--text); }
+  .rand-pool-tag { font-size: 11px; color: var(--text-dim); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+  .rand-body { padding: 28px 32px; display: flex; flex-direction: column; gap: 22px; }
+
+  .rand-setup-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
+  .rand-stepper { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+  .rand-stepper-btn { width: 34px; height: 34px; background: var(--surface); border: none; color: var(--text); font-size: 20px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+  .rand-stepper-btn:hover { background: var(--accent-glow); color: var(--accent); }
+  .rand-stepper-val { min-width: 44px; text-align: center; font-size: 16px; font-weight: 500; color: var(--text); border-left: 1px solid var(--border); border-right: 1px solid var(--border); height: 34px; display: flex; align-items: center; justify-content: center; }
+
+  .btn-draw { width: 100%; padding: 16px 24px; background: var(--accent); color: #0d0d0d; border: none; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn-draw:hover:not(:disabled) { background: #f5d080; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(240,192,96,0.3); }
+  .btn-draw:active:not(:disabled) { transform: none; }
+  .btn-draw:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-draw svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .rand-stage { display: none; padding: 36px 32px; text-align: center; border-top: 1px solid var(--border); background: radial-gradient(ellipse at center, rgba(240,192,96,0.05) 0%, transparent 70%); }
+  .slot-drum { display: inline-flex; flex-direction: column; align-items: center; background: var(--surface2); border: 2px solid var(--accent); border-radius: 14px; padding: 24px 48px; min-width: 260px; box-shadow: 0 0 48px rgba(240,192,96,0.12); }
+  .slot-name { font-family: var(--serif); font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; min-height: 36px; max-width: 300px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .slot-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 10px; }
+
+  .rand-winners { display: flex; flex-direction: column; gap: 10px; padding: 0 32px 28px; }
+  .winner-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; display: flex; align-items: flex-start; gap: 14px; animation: winnerReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  .winner-card.gold { border-color: var(--accent); background: rgba(240,192,96,0.06); box-shadow: 0 0 30px rgba(240,192,96,0.1); }
+  @keyframes winnerReveal { from { opacity:0; transform: scale(0.92) translateY(10px); } to { opacity:1; transform: scale(1) translateY(0); } }
+  .winner-rank { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #0d0d0d; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .winner-card:not(.gold) .winner-rank { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); }
+  .winner-info { flex: 1; min-width: 0; }
+  .winner-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: var(--serif); }
+  .winner-comment { font-size: 12px; color: var(--text-dim); line-height: 1.6; word-break: break-word; margin-bottom: 5px; font-style: italic; }
+  .winner-meta { font-size: 11px; color: var(--text-muted); }
+  .btn-reroll { flex-shrink: 0; align-self: center; padding: 7px 12px; background: none; border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .btn-reroll:hover { border-color: var(--accent-ig); color: var(--accent-ig); background: rgba(225,48,108,0.05); }
+  .btn-reroll:disabled { opacity: 0.25; pointer-events: none; }
+  .btn-reroll svg { width: 12px; height: 12px; }
+
+  .rand-footer { padding: 16px 32px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .btn-draw-again { padding: 9px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; }
+  .btn-draw-again:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .rand-seed-info { font-size: 10px; color: var(--text-muted); line-height: 1.9; text-align: right; }
+  .rand-seed-info code { color: var(--text-dim); background: var(--surface); padding: 1px 5px; border-radius: 3px; font-size: 10px; }
+
   /* ── Results Preview Panel ── */
   .preview-panel { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: fadeUp 0.35s ease; }
   .preview-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -737,6 +782,68 @@
         <span style="color:#7de8a8">●</span> Qualified &nbsp;
         <span style="color:#f07090">●</span> Excluded by filters
       </span>
+    </div>
+
+  </div>
+
+  <!-- ── Winner Randomizer Panel ── -->
+  <div class="rand-panel" id="rand-panel" style="display:none">
+
+    <div class="rand-header">
+      <span class="rand-title-text">Winner Randomizer</span>
+      <span class="rand-pool-tag" id="rand-pool-tag"></span>
+    </div>
+
+    <div class="rand-body">
+
+      <!-- Number of winners stepper -->
+      <div class="rand-setup-row">
+        <div>
+          <div class="toggle-label">Number of winners</div>
+          <div class="toggle-sub">Drawn fairly from the qualified pool</div>
+        </div>
+        <div class="rand-stepper">
+          <button class="rand-stepper-btn" onclick="adjustWinners(-1)">−</button>
+          <div class="rand-stepper-val" id="rand-winner-count">1</div>
+          <button class="rand-stepper-btn" onclick="adjustWinners(1)">+</button>
+        </div>
+      </div>
+
+      <!-- Manual exclusions -->
+      <div class="field-group">
+        <label>
+          Exclude from draw
+          <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0;font-weight:400">— optional</span>
+        </label>
+        <input type="text" id="rand-exclude" placeholder="username1, username2, …">
+        <div class="field-hint info" style="display:block">Comma-separated names. These people won't be drawn even if they qualified.</div>
+      </div>
+
+      <!-- Draw button -->
+      <button class="btn-draw" id="btn-draw" onclick="drawWinners()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span id="btn-draw-text">Draw 1 Winner</span>
+      </button>
+
+    </div>
+
+    <!-- Slot machine stage (hidden until draw starts) -->
+    <div class="rand-stage" id="rand-stage">
+      <div class="slot-drum">
+        <div class="slot-name" id="slot-name">—</div>
+        <div class="slot-sub" id="slot-sub">preparing…</div>
+      </div>
+    </div>
+
+    <!-- Winner cards rendered here -->
+    <div class="rand-winners" id="rand-winners"></div>
+
+    <!-- Footer: draw-again + seed transparency -->
+    <div class="rand-footer" id="rand-footer" style="display:none">
+      <button class="btn-draw-again" onclick="resetDraw()">↺ Draw again</button>
+      <div class="rand-seed-info" id="rand-seed-info"></div>
     </div>
 
   </div>
@@ -1319,6 +1426,9 @@ function showPreview(allRows, qualifiedRows, filtersActive) {
   document.getElementById('preview-legend').style.display = filtersActive ? 'inline' : 'none';
 
   renderPreview(allRows);
+
+  // Show randomizer below
+  showRandSection();
 }
 
 function formatPreviewDate(ts) {
@@ -1546,9 +1656,298 @@ async function handleExtract() {
   showPreview(all, qualified, filtersActive);
 }
 
+// ────────────────────────────────────────────────────────────
+//  WINNER RANDOMIZER
+// ────────────────────────────────────────────────────────────
+let _randWinnerCount = 1;
+let _randPool        = [];   // eligible pool for current draw
+let _drawnWinners    = [];   // [{row, poolIdx}] — current winners by position
+let _rerolledIdxs    = new Set(); // pool indices that were re-rolled away
+
+// ── Seeded PRNG (mulberry32) for reproducible, transparent draws
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// ── Build the eligible pool: qualified minus manual draw exclusions
+function buildRandPool() {
+  const raw = (document.getElementById('rand-exclude').value || '').split(',')
+    .map(s => s.trim().toLowerCase()).filter(Boolean);
+  return _previewQualified.filter(r => {
+    const name = (r.commenter_name || '').toLowerCase();
+    const uid  = (r.commenter_id  || '').toLowerCase();
+    return !raw.includes(name) && !raw.includes(uid);
+  });
+}
+
+// ── Stepper
+function adjustWinners(delta) {
+  const max = Math.min(_previewQualified.length || 20, 20);
+  _randWinnerCount = Math.max(1, Math.min(max, _randWinnerCount + delta));
+  document.getElementById('rand-winner-count').textContent = _randWinnerCount;
+  document.getElementById('btn-draw-text').textContent =
+    `Draw ${_randWinnerCount} Winner${_randWinnerCount !== 1 ? 's' : ''}`;
+}
+
+// ── Show / hide the randomizer panel (called from showPreview)
+function showRandSection() {
+  const n     = _previewQualified.length;
+  const panel = document.getElementById('rand-panel');
+  if (n === 0) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  document.getElementById('rand-pool-tag').textContent =
+    `${n} eligible entr${n !== 1 ? 'ies' : 'y'}`;
+  // Clamp winner count
+  _randWinnerCount = Math.min(_randWinnerCount, n);
+  document.getElementById('rand-winner-count').textContent = _randWinnerCount;
+  document.getElementById('btn-draw-text').textContent =
+    `Draw ${_randWinnerCount} Winner${_randWinnerCount !== 1 ? 's' : ''}`;
+  resetDraw();
+}
+
+// ── Main draw orchestrator
+async function drawWinners() {
+  const pool = buildRandPool();
+  const n    = _randWinnerCount;
+
+  if (pool.length === 0) {
+    alert('No eligible entries in the pool. Extract comments first, or relax your filter rules.');
+    return;
+  }
+  if (n > pool.length) {
+    alert(`Only ${pool.length} eligible entr${pool.length !== 1 ? 'ies' : 'y'} available — can't draw ${n} unique winners. Reduce the count.`);
+    return;
+  }
+
+  // Setup state
+  _randPool     = pool;
+  _drawnWinners = new Array(n).fill(null);
+  _rerolledIdxs = new Set();
+  document.getElementById('rand-winners').innerHTML = '';
+  document.getElementById('rand-footer').style.display = 'none';
+
+  const btn = document.getElementById('btn-draw');
+  btn.disabled = true;
+
+  // Seed + seeded shuffle (Fisher-Yates on indices)
+  const seed = Date.now();
+  const rng  = mulberry32(seed);
+  const indices = pool.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const pickedIndices = indices.slice(0, n);
+
+  // Show slot stage
+  const stage = document.getElementById('rand-stage');
+  stage.style.display = 'block';
+  stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const allNames = pool.map(r => r.commenter_name);
+
+  for (let i = 0; i < n; i++) {
+    const poolIdx = pickedIndices[i];
+    const winner  = pool[poolIdx];
+
+    await runSlotMachine(winner.commenter_name, allNames, i + 1, n);
+
+    _drawnWinners[i] = { row: winner, poolIdx };
+    document.getElementById('rand-winners').appendChild(
+      buildWinnerCardEl(winner, i, i === 0)
+    );
+
+    if (i < n - 1) await new Promise(r => setTimeout(r, 600));
+  }
+
+  stage.style.display = 'none';
+  btn.disabled = false;
+  showRandFooter(seed, pool.length, n);
+  startConfetti();
+  setTimeout(stopConfetti, 4200);
+  try { gtag('event', 'winner_drawn', { platform, winner_count: n }); } catch(_) {}
+}
+
+// ── Slot machine animation — returns a Promise that resolves when animation ends
+function runSlotMachine(finalName, allNames, winnerNum, totalWinners) {
+  return new Promise(resolve => {
+    const slotName = document.getElementById('slot-name');
+    const slotSub  = document.getElementById('slot-sub');
+    slotSub.textContent = totalWinners > 1
+      ? `Drawing winner ${winnerNum} of ${totalWinners}…`
+      : 'Drawing winner…';
+
+    const DURATION = 2400; // ms total
+    const start    = Date.now();
+    let   interval = 55;   // ms between ticks — starts fast
+
+    function tick() {
+      const elapsed  = Date.now() - start;
+      const progress = Math.min(elapsed / DURATION, 1);
+
+      if (progress >= 1) {
+        slotName.textContent = finalName;
+        resolve();
+        return;
+      }
+
+      // Show a random name from the pool
+      slotName.textContent = allNames[Math.floor(Math.random() * allNames.length)];
+
+      // Ease out: interval grows quadratically so it slows down dramatically near the end
+      interval = 55 + Math.pow(progress, 2.8) * 380;
+      setTimeout(tick, interval);
+    }
+
+    tick();
+  });
+}
+
+// ── Build a winner card DOM element
+function buildWinnerCardEl(row, index, isGold) {
+  const card = document.createElement('div');
+  card.className = `winner-card${isGold ? ' gold' : ''}`;
+  card.id = `winner-card-${index}`;
+
+  const date    = formatPreviewDate(row.timestamp);
+  const rawText = row.comment_text || '';
+  const excerpt = rawText.length > 220 ? rawText.slice(0, 220) + '…' : rawText;
+
+  card.innerHTML = `
+    <div class="winner-rank">${index + 1}</div>
+    <div class="winner-info">
+      <div class="winner-name">${escHtml(row.commenter_name)}</div>
+      <div class="winner-comment">"${escHtml(excerpt)}"</div>
+      <div class="winner-meta">${date}</div>
+    </div>
+    <button class="btn-reroll" onclick="rerollWinner(${index})" title="Replace this winner with a different random pick">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <polyline points="1 4 1 10 7 10"/>
+        <polyline points="23 20 23 14 17 14"/>
+        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+      </svg>
+      Re-roll
+    </button>`;
+
+  return card;
+}
+
+// ── Re-roll a single winner position
+function rerollWinner(index) {
+  if (!_drawnWinners[index]) return;
+
+  // Blacklist the current winner's pool index (they can never be re-picked in this session)
+  _rerolledIdxs.add(_drawnWinners[index].poolIdx);
+
+  // Build the "unavailable" set: current winners + all rerolled
+  const inUse = new Set(_drawnWinners.filter(Boolean).map(d => d.poolIdx));
+  const available = _randPool
+    .map((_, idx) => idx)
+    .filter(idx => !inUse.has(idx) && !_rerolledIdxs.has(idx));
+
+  if (available.length === 0) {
+    alert('No more eligible entries to re-roll from. Everyone in the pool has already been drawn or re-rolled.');
+    return;
+  }
+
+  const newPoolIdx = available[Math.floor(Math.random() * available.length)];
+  const newRow     = _randPool[newPoolIdx];
+  _drawnWinners[index] = { row: newRow, poolIdx: newPoolIdx };
+
+  const oldCard = document.getElementById(`winner-card-${index}`);
+  const newCard = buildWinnerCardEl(newRow, index, index === 0);
+  oldCard.replaceWith(newCard);
+}
+
+// ── Footer: transparency info
+function showRandFooter(seed, poolSize, winnerCount) {
+  const drawn = _drawnWinners.filter(Boolean).length;
+  document.getElementById('rand-seed-info').innerHTML =
+    `Pool: ${poolSize} eligible &nbsp;·&nbsp; Winners drawn: ${drawn}<br>` +
+    `Seed: <code>${seed}</code> &nbsp;·&nbsp; ${new Date().toLocaleString()}`;
+  document.getElementById('rand-footer').style.display = 'flex';
+}
+
+// ── Reset to ready state (keeps the panel visible)
+function resetDraw() {
+  _drawnWinners = [];
+  _rerolledIdxs = new Set();
+  _randPool     = [];
+  document.getElementById('rand-winners').innerHTML = '';
+  document.getElementById('rand-stage').style.display  = 'none';
+  document.getElementById('rand-footer').style.display = 'none';
+  const btn = document.getElementById('btn-draw');
+  if (btn) btn.disabled = false;
+}
+
+// ────────────────────────────────────────────────────────────
+//  CONFETTI
+// ────────────────────────────────────────────────────────────
+let _confettiRaf = null;
+
+function startConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx    = canvas.getContext('2d');
+  const colors = ['#f0c060','#f5d080','#7de8a8','#e8e8e8','#e1306c','#60b0f0'];
+
+  const particles = Array.from({ length: 90 }, () => ({
+    x:         Math.random() * canvas.width,
+    y:         -10 - Math.random() * 60,
+    r:         3 + Math.random() * 6,
+    speed:     2.2 + Math.random() * 2.8,
+    color:     colors[Math.floor(Math.random() * colors.length)],
+    tiltAngle: Math.random() * Math.PI * 2,
+    tiltSpeed: 0.04 + Math.random() * 0.08,
+    wobble:    Math.random() * Math.PI * 2,
+    opacity:   1,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+
+    for (const p of particles) {
+      p.tiltAngle += p.tiltSpeed;
+      p.wobble    += 0.05;
+      p.y         += p.speed;
+      p.x         += Math.sin(p.wobble) * 1.2;
+      p.opacity   -= 0.005;
+
+      if (p.opacity > 0 && p.y < canvas.height + 20) alive = true;
+
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle   = p.color;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, p.r, p.r * 0.45, p.tiltAngle, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+    if (alive) _confettiRaf = requestAnimationFrame(draw);
+    else stopConfetti();
+  }
+
+  if (_confettiRaf) cancelAnimationFrame(_confettiRaf);
+  _confettiRaf = requestAnimationFrame(draw);
+}
+
+function stopConfetti() {
+  if (_confettiRaf) { cancelAnimationFrame(_confettiRaf); _confettiRaf = null; }
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function toggleFaq(btn) {
   btn.closest('.faq-item').classList.toggle('open');
 }
 </script>
+<canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:block"></canvas>
 </body>
 </html>

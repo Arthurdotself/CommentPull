@@ -820,22 +820,13 @@
       <!-- CTA -->
       <div>
         <div class="cta-row">
-          <div class="format-select">
-            <select id="fmt">
-              <option value="xlsx">Excel (.xlsx)</option>
-              <option value="csv">CSV (.csv)</option>
-              <option value="json">JSON (.json)</option>
-            </select>
-            <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </div>
           <button class="btn-extract" id="extract-btn" onclick="handleExtract()">
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             <div class="spinner"></div>
-            Extract &amp; Download
+            Extract &amp; Preview
           </button>
         </div>
         <div class="status-panel" id="status"></div>
@@ -856,6 +847,14 @@
         <div class="preview-search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="preview-search" placeholder="Search name or comment…" oninput="searchPreview()">
+        </div>
+        <div class="format-select">
+          <select id="fmt">
+            <option value="xlsx">Excel (.xlsx)</option>
+            <option value="csv">CSV (.csv)</option>
+            <option value="json">JSON (.json)</option>
+          </select>
+          <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
         </div>
         <button class="btn-dl primary" id="btn-dl-qualified" onclick="reDownload('qualified')" title="Download only comments that passed your filter rules">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1969,9 +1968,7 @@ function reDownload(which) {
 // ────────────────────────────────────────────────────────────
 async function handleExtract() {
   const token = document.getElementById('token-input').value.trim();
-  const fmt   = document.getElementById('fmt').value;
   const includeReplies = document.getElementById('opt-replies').classList.contains('selected');
-  const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
 
   gtag('event', 'extract_started', { platform });
 
@@ -2088,25 +2085,16 @@ async function handleExtract() {
     return;
   }
 
-  // Export qualified comments
-  try {
-    if (fmt === 'xlsx')     exportXLSX(qualified, includeSummary);
-    else if (fmt === 'csv') exportCSV(qualified);
-    else                    exportJSON(qualified);
-
-    const panel = document.getElementById('status');
-    const list  = panel.querySelector('.progress-list');
-    panel.className = 'status-panel success';
-    const filterNote = filtersActive
-      ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — see preview below</div>`
-      : `<div style="margin-top:6px;font-size:11px;opacity:0.75">See preview below to verify before re-downloading</div>`;
-    panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} downloaded as ${fmt.toUpperCase()}</div>${filterNote}`;
-    if (list) panel.appendChild(list);
-    gtag('event', 'extract_success', { platform, format: fmt, comment_count: qualifiedCount, total_count: totalCount });
-  } catch(e) {
-    gtag('event', 'extract_error', { platform, error_message: e.message });
-    setStatus('error', 'Export failed', e.message);
-  }
+  // Show results in preview
+  const panel = document.getElementById('status');
+  const list  = panel.querySelector('.progress-list');
+  panel.className = 'status-panel success';
+  const filterNote = filtersActive
+    ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — download from the preview below</div>`
+    : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments in the preview below, then download when ready</div>`;
+  panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
+  if (list) panel.appendChild(list);
+  gtag('event', 'extract_success', { platform, comment_count: qualifiedCount, total_count: totalCount });
 
   // Store data for the PDF report
   _reportData.extractedAt    = new Date();

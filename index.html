@@ -293,7 +293,7 @@
   /* ── Filter Rules ── */
   input[type="number"], input[type="date"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; transition: all 0.2s; }
   input[type="number"]:focus, input[type="date"]:focus { border-color: var(--accent); background: rgba(240,192,96,0.03); box-shadow: 0 0 0 3px var(--accent-glow); }
-  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; }
   input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
 
@@ -483,6 +483,31 @@
     .rp-foot-label { color: #aaa; margin-right: 6px; }
     .rp-foot-brand { font-size: 8.5pt; color: #bbb; margin-top: 6px; }
   }
+
+  /* ── Filter Preset System ── */
+  .btn-presets { padding: 4px 10px 4px 8px; background: none; border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; letter-spacing: 0.04em; white-space: nowrap; }
+  .btn-presets:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .btn-presets .presets-caret { width: 10px; height: 10px; transition: transform 0.15s; }
+  .btn-presets.open .presets-caret { transform: rotate(180deg); }
+  .btn-presets .presets-icon { width: 11px; height: 11px; }
+  .presets-menu { position: fixed; background: var(--surface); border: 1px solid var(--border-active); border-radius: var(--radius); min-width: 236px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; overflow: hidden; animation: fadeUp 0.12s ease; }
+  .presets-menu-section { border-bottom: 1px solid var(--border); }
+  .presets-menu-section:last-child { border-bottom: none; }
+  .presets-menu-label { font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding: 8px 14px 3px; }
+  .preset-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; cursor: pointer; transition: background 0.1s; gap: 10px; }
+  .preset-item:hover { background: rgba(255,255,255,0.04); }
+  .preset-item-info { flex: 1; min-width: 0; }
+  .preset-item-name { font-size: 12px; color: var(--text); }
+  .preset-item-desc { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .preset-item-del { background: none; border: none; width: 22px; height: 22px; border-radius: 4px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .preset-item-del:hover { color: #f07090; background: rgba(225,48,108,0.1); }
+  .preset-item-del svg { width: 11px; height: 11px; }
+  .presets-empty { padding: 7px 14px 9px; font-size: 11px; color: var(--text-muted); font-style: italic; }
+  .presets-save-area { padding: 8px 14px 12px; }
+  .presets-save-row { display: flex; gap: 6px; margin-top: 5px; }
+  .presets-save-row input { flex: 1; padding: 8px 10px; font-size: 12px; border-radius: 6px; min-width: 0; }
+  .btn-preset-save { padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .btn-preset-save:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
 
   @media (max-width: 640px) {
     nav { padding: 16px 20px; }
@@ -696,6 +721,11 @@
             </span>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
+            <button class="btn-presets" id="btn-presets" onclick="event.stopPropagation(); togglePresetsMenu()">
+              <svg class="presets-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              Presets
+              <svg class="presets-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
             <span class="filter-badge" id="filter-badge">No filters</span>
             <svg class="filter-chevron" id="filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
@@ -1532,6 +1562,211 @@ function updateFilterBadge() {
   badge.className = `filter-badge${active > 0 ? ' active' : ''}`;
 }
 
+// ────────────────────────────────────────────────────────────
+//  FILTER PRESET SYSTEM
+// ────────────────────────────────────────────────────────────
+const BUILTIN_PRESETS = [
+  {
+    id: 'standard-giveaway',
+    name: 'Standard Giveaway',
+    desc: 'Dedup + 1 mention + keyword required',
+    config: { dedupOn: true, mentionsOn: true, mentions: 1, keywordOn: true, keyword: '#giveaway' },
+  },
+  {
+    id: 'comment-to-win',
+    name: 'Comment to Win',
+    desc: 'One entry per person only',
+    config: { dedupOn: true },
+  },
+  {
+    id: 'hashtag-campaign',
+    name: 'Hashtag Campaign',
+    desc: 'Must include a specific hashtag',
+    config: { keywordOn: true, keyword: '' },
+  },
+  {
+    id: 'clean-extract',
+    name: 'Clean Extract',
+    desc: 'No filters — all comments included',
+    config: {},
+  },
+];
+
+const LS_PRESETS_KEY = 'commentpull_presets';
+let _presetsOpen = false;
+
+function loadCustomPresets() {
+  try { return JSON.parse(localStorage.getItem(LS_PRESETS_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function savePresetsToStorage(presets) {
+  localStorage.setItem(LS_PRESETS_KEY, JSON.stringify(presets));
+}
+
+function getCurrentFilterState() {
+  return {
+    keywordOn:   document.getElementById('rule-keyword').checked,
+    keyword:     document.getElementById('filter-keyword').value,
+    mentionsOn:  document.getElementById('rule-mentions').checked,
+    mentions:    document.getElementById('filter-mentions').value,
+    lengthOn:    document.getElementById('rule-length').checked,
+    length:      document.getElementById('filter-length').value,
+    dedupOn:     document.getElementById('rule-dedup').checked,
+    daterangeOn: document.getElementById('rule-daterange').checked,
+    dateFrom:    document.getElementById('filter-date-from').value,
+    dateTo:      document.getElementById('filter-date-to').value,
+    excludeOn:   document.getElementById('rule-exclude').checked,
+    exclude:     document.getElementById('filter-exclude').value,
+  };
+}
+
+function applyFilterConfig(config) {
+  const ruleIds = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude'];
+  // Clear all rules first
+  ruleIds.forEach(id => {
+    document.getElementById(id).checked = false;
+    const inputs = document.getElementById(`inputs-${id}`);
+    if (inputs) inputs.style.display = 'none';
+  });
+
+  function enable(id, condition, setup) {
+    if (!condition) return;
+    document.getElementById(id).checked = true;
+    const inputs = document.getElementById(`inputs-${id}`);
+    if (inputs) inputs.style.display = 'block';
+    if (setup) setup();
+  }
+
+  enable('rule-keyword',   config.keywordOn,   () => { document.getElementById('filter-keyword').value  = config.keyword  ?? ''; });
+  enable('rule-mentions',  config.mentionsOn,  () => { document.getElementById('filter-mentions').value = config.mentions ?? 2;  });
+  enable('rule-length',    config.lengthOn,    () => { document.getElementById('filter-length').value   = config.length   ?? 10; });
+  enable('rule-dedup',     config.dedupOn);
+  enable('rule-daterange', config.daterangeOn, () => {
+    document.getElementById('filter-date-from').value = config.dateFrom ?? '';
+    document.getElementById('filter-date-to').value   = config.dateTo   ?? '';
+  });
+  enable('rule-exclude', config.excludeOn, () => { document.getElementById('filter-exclude').value = config.exclude ?? ''; });
+
+  updateFilterBadge();
+}
+
+function _afterPresetApply() {
+  const anyActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+  if (anyActive) document.getElementById('filter-section').classList.add('open');
+  closePresetsMenu();
+}
+
+function applyBuiltinPreset(i) {
+  applyFilterConfig(BUILTIN_PRESETS[i].config);
+  _afterPresetApply();
+}
+
+function applyCustomPreset(i) {
+  const presets = loadCustomPresets();
+  if (!presets[i]) return;
+  applyFilterConfig(presets[i].config);
+  _afterPresetApply();
+}
+
+function deleteCustomPreset(i) {
+  const presets = loadCustomPresets();
+  presets.splice(i, 1);
+  savePresetsToStorage(presets);
+  renderPresetsMenu();
+}
+
+function saveCustomPreset() {
+  const nameInput = document.getElementById('preset-name-input');
+  if (!nameInput) return;
+  const name = nameInput.value.trim();
+  if (!name) { nameInput.focus(); return; }
+
+  const presets = loadCustomPresets();
+  const config  = getCurrentFilterState();
+  const existIdx = presets.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+
+  if (existIdx >= 0) {
+    if (!confirm(`A preset named "${name}" already exists. Overwrite it?`)) return;
+    presets[existIdx].config = config;
+  } else {
+    presets.push({ name, config });
+  }
+
+  savePresetsToStorage(presets);
+  nameInput.value = '';
+  renderPresetsMenu();
+}
+
+function renderPresetsMenu() {
+  const menu    = document.getElementById('presets-menu');
+  const custom  = loadCustomPresets();
+  const delIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+  let html = '<div class="presets-menu-section"><div class="presets-menu-label">Built-in</div>';
+  BUILTIN_PRESETS.forEach((p, i) => {
+    html += `<div class="preset-item" onclick="applyBuiltinPreset(${i})">
+      <div class="preset-item-info">
+        <div class="preset-item-name">${escHtml(p.name)}</div>
+        <div class="preset-item-desc">${escHtml(p.desc)}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<div class="presets-menu-section"><div class="presets-menu-label">Saved</div>';
+  if (custom.length === 0) {
+    html += '<div class="presets-empty">No saved presets yet.</div>';
+  } else {
+    custom.forEach((p, i) => {
+      html += `<div class="preset-item" onclick="applyCustomPreset(${i})">
+        <div class="preset-item-info"><div class="preset-item-name">${escHtml(p.name)}</div></div>
+        <button class="preset-item-del" onclick="event.stopPropagation(); deleteCustomPreset(${i})" title="Delete">${delIcon}</button>
+      </div>`;
+    });
+  }
+  html += '</div>';
+
+  html += `<div class="presets-menu-section presets-save-area">
+    <div class="presets-menu-label">Save current filters</div>
+    <div class="presets-save-row">
+      <input type="text" id="preset-name-input" placeholder="Preset name…" onkeydown="if(event.key==='Enter') saveCustomPreset()">
+      <button class="btn-preset-save" onclick="saveCustomPreset()">Save</button>
+    </div>
+  </div>`;
+
+  menu.innerHTML = html;
+}
+
+function togglePresetsMenu() {
+  _presetsOpen ? closePresetsMenu() : openPresetsMenu();
+}
+
+function openPresetsMenu() {
+  _presetsOpen = true;
+  renderPresetsMenu();
+  const menu = document.getElementById('presets-menu');
+  const btn  = document.getElementById('btn-presets');
+  const rect = btn.getBoundingClientRect();
+  menu.style.top   = (rect.bottom + 6) + 'px';
+  menu.style.right = (window.innerWidth - rect.right) + 'px';
+  menu.style.left  = 'auto';
+  menu.style.display = 'block';
+  btn.classList.add('open');
+}
+
+function closePresetsMenu() {
+  _presetsOpen = false;
+  document.getElementById('presets-menu').style.display = 'none';
+  document.getElementById('btn-presets').classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (!_presetsOpen) return;
+  if (!e.target.closest('#presets-menu') && !e.target.closest('#btn-presets')) closePresetsMenu();
+});
+
 function applyFilters(rows) {
   const keywordOn  = document.getElementById('rule-keyword').checked;
   const mentionsOn = document.getElementById('rule-mentions').checked;
@@ -2289,6 +2524,7 @@ function toggleFaq(btn) {
   btn.closest('.faq-item').classList.toggle('open');
 }
 </script>
+<div id="presets-menu" style="display:none"></div>
 <div id="report-sheet"></div>
 <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:block"></canvas>
 </body>

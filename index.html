@@ -414,6 +414,53 @@
   .preview-footer-text { font-size: 11px; color: var(--text-muted); }
   .preview-empty { padding: 48px 24px; text-align: center; font-size: 12px; color: var(--text-muted); }
 
+  /* ── Report sheet (screen: hidden; print: only thing shown) ── */
+  #report-sheet { display: none; }
+  .btn-report { padding: 9px 16px; background: var(--surface2); border: 1px solid var(--accent); border-radius: 8px; font-family: var(--mono); font-size: 12px; color: var(--accent); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .btn-report:hover { background: var(--accent-glow); box-shadow: 0 0 16px var(--accent-glow); }
+  .btn-report svg { width: 13px; height: 13px; }
+
+  /* ── Print styles ── */
+  @media print {
+    nav, .hero, .main, .how, .faq, footer, #confetti-canvas { display: none !important; }
+    body::before { display: none !important; }
+    body { background: #fff !important; color: #111 !important; margin: 0; padding: 0; }
+    #report-sheet { display: block !important; }
+
+    .rp-page { padding: 44px 52px; font-family: 'DM Mono', monospace; font-size: 10.5pt; color: #111; }
+    .rp-header { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 2px solid #111; padding-bottom: 14px; margin-bottom: 30px; }
+    .rp-logo { font-family: 'Fraunces', serif; font-size: 20pt; font-weight: 700; color: #111; letter-spacing: -0.5px; }
+    .rp-logo span { font-weight: 300; font-style: italic; color: #555; }
+    .rp-doc-title { font-size: 9pt; letter-spacing: 0.2em; text-transform: uppercase; color: #777; }
+
+    .rp-section { margin-bottom: 28px; }
+    .rp-section-title { font-size: 8.5pt; letter-spacing: 0.2em; text-transform: uppercase; color: #999; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; margin-bottom: 14px; }
+
+    .rp-grid { display: flex; flex-direction: column; gap: 7px; }
+    .rp-row { display: flex; gap: 12px; align-items: baseline; }
+    .rp-label { font-size: 8.5pt; color: #888; width: 140px; flex-shrink: 0; }
+    .rp-val { font-size: 10pt; color: #111; }
+    .rp-urls { display: flex; flex-direction: column; gap: 3px; }
+    .rp-url { font-size: 8.5pt; color: #555; word-break: break-all; }
+    .rp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .rp-tag { border: 1px solid #ccc; border-radius: 4px; padding: 1px 7px; font-size: 8.5pt; color: #444; }
+    .rp-notag { font-size: 9pt; color: #aaa; font-style: italic; }
+
+    .rp-winner { display: flex; gap: 14px; align-items: flex-start; border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; page-break-inside: avoid; }
+    .rp-winner.first { border-color: #c8a830; background: #fffdf5; }
+    .rp-winner-rank { width: 28px; height: 28px; border-radius: 50%; background: #111; color: #fff; font-size: 11pt; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rp-winner.first .rp-winner-rank { background: #c8a830; }
+    .rp-winner-body { flex: 1; }
+    .rp-winner-name { font-family: 'Fraunces', serif; font-size: 13pt; font-weight: 700; color: #111; margin-bottom: 5px; }
+    .rp-winner-comment { font-size: 9.5pt; color: #444; font-style: italic; line-height: 1.55; margin-bottom: 4px; }
+    .rp-winner-meta { font-size: 8.5pt; color: #999; }
+
+    .rp-footer { border-top: 1px solid #e0e0e0; padding-top: 14px; margin-top: 30px; display: flex; flex-direction: column; gap: 5px; }
+    .rp-foot-row { font-size: 9pt; color: #666; }
+    .rp-foot-label { color: #aaa; margin-right: 6px; }
+    .rp-foot-brand { font-size: 8.5pt; color: #bbb; margin-top: 6px; }
+  }
+
   @media (max-width: 640px) {
     nav { padding: 16px 20px; }
     .hero { padding: 120px 20px 60px; }
@@ -841,9 +888,21 @@
     <!-- Winner cards rendered here -->
     <div class="rand-winners" id="rand-winners"></div>
 
-    <!-- Footer: draw-again + seed transparency -->
+    <!-- Footer: draw-again + generate report + seed transparency -->
     <div class="rand-footer" id="rand-footer" style="display:none">
-      <button class="btn-draw-again" onclick="resetDraw()">↺ Draw again</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn-draw-again" onclick="resetDraw()">↺ Draw again</button>
+        <button class="btn-report" onclick="generateReport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          Generate Report
+        </button>
+      </div>
       <div class="rand-seed-info" id="rand-seed-info"></div>
     </div>
 
@@ -1654,8 +1713,118 @@ async function handleExtract() {
     setStatus('error', 'Export failed', e.message);
   }
 
+  // Store data for the PDF report
+  _reportData.extractedAt    = new Date();
+  _reportData.totalCount     = totalCount;
+  _reportData.qualifiedCount = qualifiedCount;
+
   // Always show preview after a successful extraction
   showPreview(all, qualified, filtersActive);
+}
+
+// ────────────────────────────────────────────────────────────
+//  GIVEAWAY REPORT
+// ────────────────────────────────────────────────────────────
+let _reportData = { extractedAt: null, totalCount: 0, qualifiedCount: 0, seed: null, drawnAt: null, poolSize: 0 };
+
+function getActiveFiltersSummary() {
+  const rules = [];
+  if (document.getElementById('rule-keyword').checked) {
+    const kw = document.getElementById('filter-keyword').value.trim();
+    if (kw) rules.push(`Must contain "${kw}"`);
+  }
+  if (document.getElementById('rule-mentions').checked) {
+    const n = document.getElementById('filter-mentions').value;
+    rules.push(`Min. ${n} @mention${n > 1 ? 's' : ''}`);
+  }
+  if (document.getElementById('rule-length').checked) {
+    const n = document.getElementById('filter-length').value;
+    rules.push(`Min. ${n} characters`);
+  }
+  if (document.getElementById('rule-dedup').checked) rules.push('One entry per person');
+  if (document.getElementById('rule-daterange').checked) {
+    const from = document.getElementById('filter-date-from').value;
+    const to   = document.getElementById('filter-date-to').value;
+    const parts = [];
+    if (from) parts.push(`from ${from}`);
+    if (to)   parts.push(`to ${to}`);
+    if (parts.length) rules.push(`Date range: ${parts.join(' ')}`);
+  }
+  if (document.getElementById('rule-exclude').checked) {
+    const ex = document.getElementById('filter-exclude').value.trim();
+    if (ex) rules.push(`Excluded: ${ex}`);
+  }
+  return rules;
+}
+
+function generateReport() {
+  const winners = _drawnWinners.filter(Boolean);
+  if (!_reportData.extractedAt || winners.length === 0) {
+    alert('Draw winners first before generating a report.');
+    return;
+  }
+
+  const plat    = platform === 'ig' ? 'Instagram' : 'Facebook';
+  const urls    = [...document.querySelectorAll(platform === 'fb' ? '.fb-url' : '.ig-url')]
+                    .map(i => i.value.trim()).filter(Boolean);
+  const filters = getActiveFiltersSummary();
+
+  const urlsHtml = urls.length
+    ? `<div class="rp-urls">${urls.map(u => `<span class="rp-url">${escHtml(u)}</span>`).join('')}</div>`
+    : '<span class="rp-notag">—</span>';
+
+  const filtersHtml = filters.length
+    ? `<div class="rp-tags">${filters.map(f => `<span class="rp-tag">${escHtml(f)}</span>`).join('')}</div>`
+    : '<span class="rp-notag">No filters — all comments included</span>';
+
+  const winnersHtml = winners.map((w, i) => `
+    <div class="rp-winner${i === 0 ? ' first' : ''}">
+      <div class="rp-winner-rank">${i + 1}</div>
+      <div class="rp-winner-body">
+        <div class="rp-winner-name">${escHtml(w.row.commenter_name)}</div>
+        <div class="rp-winner-comment">"${escHtml((w.row.comment_text || '').slice(0, 280))}"</div>
+        <div class="rp-winner-meta">${formatPreviewDate(w.row.timestamp)}</div>
+      </div>
+    </div>`).join('');
+
+  const excludeRaw = document.getElementById('rand-exclude').value.trim();
+
+  document.getElementById('report-sheet').innerHTML = `
+    <div class="rp-page">
+      <div class="rp-header">
+        <div class="rp-logo">Comment<span>Pull</span></div>
+        <div class="rp-doc-title">Giveaway Draw Report</div>
+      </div>
+
+      <div class="rp-section">
+        <div class="rp-section-title">Draw Summary</div>
+        <div class="rp-grid">
+          <div class="rp-row"><span class="rp-label">Platform</span><span class="rp-val">${plat}</span></div>
+          <div class="rp-row"><span class="rp-label">Post URL${urls.length > 1 ? 's' : ''}</span><span class="rp-val">${urlsHtml}</span></div>
+          <div class="rp-row"><span class="rp-label">Extracted on</span><span class="rp-val">${_reportData.extractedAt.toLocaleString()}</span></div>
+          <div class="rp-row"><span class="rp-label">Total comments</span><span class="rp-val">${_reportData.totalCount.toLocaleString()}</span></div>
+          <div class="rp-row"><span class="rp-label">Filter rules</span><span class="rp-val">${filtersHtml}</span></div>
+          <div class="rp-row"><span class="rp-label">Qualified</span><span class="rp-val">${_reportData.qualifiedCount.toLocaleString()} entries</span></div>
+          <div class="rp-row"><span class="rp-label">Draw pool</span><span class="rp-val">${_reportData.poolSize.toLocaleString()} eligible${excludeRaw ? ' (after manual exclusions)' : ''}</span></div>
+          <div class="rp-row"><span class="rp-label">Winners drawn</span><span class="rp-val">${winners.length}</span></div>
+        </div>
+      </div>
+
+      <div class="rp-section">
+        <div class="rp-section-title">Winner${winners.length > 1 ? 's' : ''}</div>
+        ${winnersHtml}
+      </div>
+
+      <div class="rp-footer">
+        <div class="rp-foot-row"><span class="rp-foot-label">Random seed</span><strong>${_reportData.seed}</strong></div>
+        <div class="rp-foot-row"><span class="rp-foot-label">Drawn on</span>${_reportData.drawnAt ? _reportData.drawnAt.toLocaleString() : '—'}</div>
+        <div class="rp-foot-row"><span class="rp-foot-label">Algorithm</span>mulberry32 PRNG · Fisher-Yates shuffle · Seed = Date.now() at draw time</div>
+        <div class="rp-foot-brand">Generated by CommentPull — commentpull.com &nbsp;·&nbsp; All draws are client-side, verifiable, and reproducible by seed.</div>
+      </div>
+    </div>`;
+
+  try { gtag('event', 'report_generated', { platform, winner_count: winners.length }); } catch(_) {}
+  window.print();
 }
 
 // ────────────────────────────────────────────────────────────
@@ -1872,9 +2041,16 @@ function rerollWinner(index) {
 // ── Footer: transparency info
 function showRandFooter(seed, poolSize, winnerCount) {
   const drawn = _drawnWinners.filter(Boolean).length;
+  const now   = new Date();
+
+  // Store for PDF report
+  _reportData.seed     = seed;
+  _reportData.drawnAt  = now;
+  _reportData.poolSize = poolSize;
+
   document.getElementById('rand-seed-info').innerHTML =
     `Pool: ${poolSize} eligible &nbsp;·&nbsp; Winners drawn: ${drawn}<br>` +
-    `Seed: <code>${seed}</code> &nbsp;·&nbsp; ${new Date().toLocaleString()}`;
+    `Seed: <code>${seed}</code> &nbsp;·&nbsp; ${now.toLocaleString()}`;
   document.getElementById('rand-footer').style.display = 'flex';
 }
 
@@ -1953,6 +2129,7 @@ function toggleFaq(btn) {
   btn.closest('.faq-item').classList.toggle('open');
 }
 </script>
+<div id="report-sheet"></div>
 <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:block"></canvas>
 </body>
 </html>

@@ -2944,6 +2944,8 @@ function toggleFaq(btn) {
   .auth-footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px; }
   .auth-footer a { color: var(--text-dim); cursor: pointer; text-decoration: underline; }
   .auth-footer a:hover { color: var(--text); }
+  .auth-inline-btn { background: none; border: none; padding: 0; font-family: inherit; font-size: inherit; color: var(--text-dim); cursor: pointer; text-decoration: underline; }
+  .auth-inline-btn:hover { color: var(--text); }
   /* OAuth buttons */
   .oauth-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0 14px; }
   .oauth-divider::before, .oauth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
@@ -3046,7 +3048,7 @@ function toggleFaq(btn) {
         </div>
         <div class="form-error" id="si-error"></div>
         <button type="submit" class="btn-submit" id="si-btn">Sign in</button>
-        <p class="auth-footer">No account? <a onclick="switchTab('signup')">Sign up free</a></p>
+        <p class="auth-footer">No account? <button type="button" class="auth-inline-btn" onclick="switchTab('signup')">Sign up free</button></p>
       </form>
 
       <!-- Sign up form -->
@@ -3065,7 +3067,7 @@ function toggleFaq(btn) {
         </div>
         <div class="form-error" id="su-error"></div>
         <button type="submit" class="btn-submit" id="su-btn">Create account</button>
-        <p class="auth-footer">Already have one? <a onclick="switchTab('signin')">Sign in</a></p>
+        <p class="auth-footer">Already have one? <button type="button" class="auth-inline-btn" onclick="switchTab('signin')">Sign in</button></p>
       </form>
     </div>
   </div>

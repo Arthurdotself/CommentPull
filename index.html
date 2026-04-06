@@ -221,7 +221,12 @@
   .divider { height: 1px; background: var(--border); }
 
   /* CTA */
-  .cta-row { display: flex; align-items: center; gap: 16px; }
+  .cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .token-budget-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); margin-top: 8px; }
+  .token-budget-bar .tb-count { color: var(--accent); font-weight: 600; font-size: 12px; }
+  .token-budget-bar .tb-count.low { color: #f09060; }
+  .token-budget-bar .tb-earn { color: var(--text-dim); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .token-budget-bar .tb-earn:hover { color: #50c878; }
   .btn-extract { flex: 1; padding: 16px 24px; background: var(--accent); color: #0d0d0d; border: none; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .btn-extract:hover { background: #f5d080; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,192,96,0.25); }
   .btn-extract:active { transform: translateY(0); }
@@ -546,7 +551,31 @@
 
 <nav>
   <a href="#" class="logo">Comment<span>Pull</span></a>
-  <span class="nav-badge">Free Beta · Browser-only · No data stored</span>
+  <div class="nav-right">
+    <button class="btn-nav" onclick="openPricing()">Pricing</button>
+    <div id="nav-auth-guest">
+      <button class="btn-nav" onclick="openAuth('signin')">Sign in</button>
+      <button class="btn-nav accent" onclick="openAuth('signup')">Sign up</button>
+    </div>
+    <div id="nav-auth-user" style="display:none">
+      <div class="user-chip" onclick="toggleUserMenu()">
+        <span id="nav-user-plan" class="plan-dot free"></span>
+        <span id="nav-user-name"></span>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div id="user-dropdown" class="user-dropdown" style="display:none">
+        <div class="dropdown-email" id="nav-user-email"></div>
+        <div class="dropdown-token-row">
+          <span class="dropdown-token-icon">🪙</span>
+          <span id="nav-user-tokens">250 tokens</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item accent-item" onclick="openPricing()">Earn more tokens</button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item danger" onclick="doSignOut()">Sign out</button>
+      </div>
+    </div>
+  </div>
 </nav>
 
 <section class="hero">
@@ -875,6 +904,11 @@
             <span class="btn-label">Extract &amp; Preview</span>
           </button>
         </div>
+        <div id="token-budget-bar" class="token-budget-bar" style="display:none">
+          🪙 <span id="tb-count" class="tb-count">250</span> tokens remaining
+          &nbsp;·&nbsp;
+          <span class="tb-earn" onclick="openPricing()">earn more →</span>
+        </div>
         <div class="status-panel" id="status"></div>
       </div>
 
@@ -1068,7 +1102,7 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        Yes. CommentPull runs <strong style="color:var(--text)">entirely in your browser</strong> — there is no backend server. Your access token, Page IDs, and all fetched comments never leave your device. The API calls go directly from your browser to Facebook/Instagram's servers. You can verify this yourself by opening DevTools → Network and inspecting every request.
+        Yes. Your access token and all comment extraction happen <strong style="color:var(--text)">entirely in your browser</strong> — the API calls go directly from your device to Facebook, Instagram, or YouTube's servers. CommentPull's servers never see your token or the content you extract. You can verify this by opening DevTools (F12) → Network tab and confirming requests go only to platform APIs.
       </div>
     </div>
 
@@ -1078,17 +1112,17 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        Open your browser's DevTools (F12) → Network tab before clicking Extract. You'll see every request goes only to <code>graph.facebook.com</code> — nothing is sent to any CommentPull server because there isn't one. The entire source code is also <a href="https://github.com/Arthurdotself/CommentPull" target="_blank">open source on GitHub</a> so you can read every line before using it.
+        Open DevTools (F12) → Network tab before clicking Extract. Every extraction request goes directly to <code>graph.facebook.com</code>, <code>graph.instagram.com</code>, or <code>youtube.googleapis.com</code> — nothing related to your token or comments is sent to CommentPull's servers. Our backend only handles account sign-in and plan management.
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Why is it free? What's the catch?
+        What are tokens and how does the limit work?
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        CommentPull is currently in beta. During this period everything is free while we test, gather feedback, and improve the tool. No ads, no subscriptions, no data selling — just an early version being put through its paces.
+        Each comment you extract counts as one token. Free accounts start with <strong style="color:var(--text)">250 tokens</strong> and can extract up to 5 posts. Need more? <strong style="color:var(--text)">Watch a short ad to earn +500 tokens instantly</strong> — up to 10 ads per day. Tokens earned from ads never expire, and no payment is ever required.
       </div>
     </div>
 
@@ -1098,7 +1132,7 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        No. Nothing is stored, logged, or sold — ever. There are no accounts, no sign-ups, and no cookies beyond what your browser handles natively. The only analytics on this page is anonymous usage counting via Google Analytics (page views and button clicks), which contains no personal information.
+        No. Your account stores only your email, name, and plan — nothing about the posts or comments you extract. Extracted data is processed entirely in your browser and downloaded directly to your device. We never see it, store it, or sell it.
       </div>
     </div>
 
@@ -1114,11 +1148,11 @@
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Can I look at the source code?
+        How do I get support?
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        Absolutely. The full source is on <a href="https://github.com/Arthurdotself/CommentPull" target="_blank">GitHub — github.com/Arthurdotself/CommentPull</a>. It's a single HTML file with no build step, no obfuscation, and no dependencies beyond the XLSX library. Read it, fork it, or contribute.
+        All users can reach us by email and typically get a response within a few business days. CommentPull is completely free — there's no paid plan. Earn extra tokens by watching ads, and use the tool as much as you need.
       </div>
     </div>
 
@@ -1128,13 +1162,11 @@
 <footer>
   <span class="footer-left">CommentPull — Built for marketers, giveaways &amp; community managers.</span>
   <div class="footer-right">
-    <a href="https://github.com/Arthurdotself/CommentPull" target="_blank" style="color:var(--text-muted);text-decoration:none;display:flex;align-items:center;gap:5px;" title="View source on GitHub">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-      Open source
-    </a>
+    <a href="/about.html" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--text-dim)'" onmouseout="this.style.color='var(--text-muted)'">About</a>
     <span>·</span>
-    <span class="free-badge">Free Beta</span>
-    <span>· No ads · No data stored · Client-side only</span>
+    <a href="/privacy.html" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--text-dim)'" onmouseout="this.style.color='var(--text-muted)'">Privacy Policy</a>
+    <span>·</span>
+    <span>Extraction is 100% client-side · Free forever</span>
   </div>
 </footer>
 
@@ -1334,7 +1366,7 @@ async function resolveIgUserId(fbPageId, token) {
 // ────────────────────────────────────────────────────────────
 //  FETCH ALL COMMENTS — Facebook
 // ────────────────────────────────────────────────────────────
-async function fetchFbComments(fullPostId, token, filter, onUpdate) {
+async function fetchFbComments(fullPostId, token, filter, onUpdate, maxComments = Infinity) {
   const results = [];
   let url = `${GRAPH}/${fullPostId}/comments?` + new URLSearchParams({
     access_token: token, fields: 'id,from,message,created_time', filter, limit: '100',
@@ -1343,6 +1375,7 @@ async function fetchFbComments(fullPostId, token, filter, onUpdate) {
     const data = await gqlRaw(url);
     if (data.error) throw new Error(data.error.message);
     for (const c of (data.data || [])) {
+      if (results.length >= maxComments) break;
       results.push({
         post_id: fullPostId,
         commenter_name: c.from?.name ?? 'Unknown',
@@ -1353,6 +1386,7 @@ async function fetchFbComments(fullPostId, token, filter, onUpdate) {
       });
     }
     if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
     url = data.paging?.next ?? null;
   }
   return results;
@@ -1361,9 +1395,8 @@ async function fetchFbComments(fullPostId, token, filter, onUpdate) {
 // ────────────────────────────────────────────────────────────
 //  FETCH ALL COMMENTS — Instagram
 // ────────────────────────────────────────────────────────────
-async function fetchIgComments(mediaId, token, includeReplies, onUpdate) {
+async function fetchIgComments(mediaId, token, includeReplies, onUpdate, maxComments = Infinity) {
   const results = [];
-  // Fetch top-level comments
   let url = `${GRAPH}/${mediaId}/comments?` + new URLSearchParams({
     access_token: token,
     fields: 'id,username,text,timestamp,replies{id,username,text,timestamp}',
@@ -1373,18 +1406,19 @@ async function fetchIgComments(mediaId, token, includeReplies, onUpdate) {
     const data = await gqlRaw(url);
     if (data.error) throw new Error(data.error.message);
     for (const c of (data.data || [])) {
+      if (results.length >= maxComments) break;
       results.push({
         post_id:        mediaId,
         commenter_name: c.username   ?? 'Unknown',
-        commenter_id:   c.id         ?? '',   // IG comments use id (not a separate user id)
+        commenter_id:   c.id         ?? '',
         comment_text:   c.text       ?? '',
         timestamp:      c.timestamp  ?? '',
         comment_id:     c.id         ?? '',
         reply_to:       '',
       });
-      // Include replies if toggled
       if (includeReplies && c.replies?.data) {
         for (const r of c.replies.data) {
+          if (results.length >= maxComments) break;
           results.push({
             post_id:        mediaId,
             commenter_name: r.username ?? 'Unknown',
@@ -1398,6 +1432,7 @@ async function fetchIgComments(mediaId, token, includeReplies, onUpdate) {
       }
     }
     if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
     url = data.paging?.next ?? null;
   }
   return results;
@@ -1425,7 +1460,7 @@ function extractYtVideoId(url) {
 // ────────────────────────────────────────────────────────────
 //  YOUTUBE — FETCH ALL COMMENTS (YouTube Data API v3)
 // ────────────────────────────────────────────────────────────
-async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate) {
+async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate, maxComments = Infinity) {
   const YT = 'https://www.googleapis.com/youtube/v3';
   const results = [];
   let pageToken = '';
@@ -1442,6 +1477,7 @@ async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate) {
     const data = await res.json();
     if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
     for (const thread of (data.items || [])) {
+      if (results.length >= maxComments) break;
       const top = thread.snippet.topLevelComment.snippet;
       results.push({
         post_id:        videoId,
@@ -1454,6 +1490,7 @@ async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate) {
       });
       if (includeReplies && thread.replies?.comments) {
         for (const reply of thread.replies.comments) {
+          if (results.length >= maxComments) break;
           const rs = reply.snippet;
           results.push({
             post_id:        videoId,
@@ -1468,6 +1505,7 @@ async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate) {
       }
     }
     if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
     pageToken = data.nextPageToken ?? '';
   } while (pageToken);
   return results;
@@ -2210,13 +2248,32 @@ async function handleExtract() {
 
   gtag('event', 'extract_started', { platform });
 
-  // ── Validate token ──
+  // ── Token balance check (guest or logged-in) ──
+  const isGuest    = !currentUser;
+  const tokenBudgetStart = isGuest ? getGuestTokens() : (currentUser.tokens ?? 0);
+
+  if (tokenBudgetStart <= 0) {
+    if (isGuest) {
+      setStatus('error', 'No free tokens remaining',
+        '<span>You\'ve used your 250 free tokens. ' +
+        '<button onclick="openAuth(\'signup\')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:6px;padding:5px 12px;font-family:var(--mono);font-size:11px;font-weight:500;cursor:pointer;margin-left:6px">Sign up free →</button>' +
+        '</span>');
+    } else {
+      setStatus('error', 'No tokens remaining',
+        'You\'ve used all your tokens. Watch an ad to earn +500 tokens instantly, or wait until tomorrow for your free 250 to refill.');
+      openPricing();
+    }
+    return;
+  }
+
+  // ── Validate API token/key ──
   if (!token) { setStatus('error','Access token required','Please enter your Page Access Token (step 02).'); return; }
 
   const btn = document.getElementById('extract-btn');
   btn.classList.add('loading');
   const all = [];
   let anyError = false;
+  let tokenBudget = tokenBudgetStart; // shared across all posts
 
   try {
     if (platform === 'fb') {
@@ -2230,6 +2287,7 @@ async function handleExtract() {
       const filter = includeReplies ? 'stream' : 'toplevel';
 
       for (let i = 0; i < urls.length; i++) {
+        if (tokenBudget <= 0) break;
         const link = urls[i], fullId = buildFullPostId(link, pageId);
         const label = link.length > 44 ? '…'+link.slice(-41) : link;
         const pid = `p${i}`;
@@ -2237,8 +2295,9 @@ async function handleExtract() {
         try {
           const comments = await fetchFbComments(fullId, token, filter, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          });
+          }, tokenBudget);
           all.push(...comments);
+          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`); anyError = true; }
       }
@@ -2252,6 +2311,7 @@ async function handleExtract() {
       setStatus('info', 'Connecting to YouTube Data API…', '');
 
       for (let i = 0; i < urls.length; i++) {
+        if (tokenBudget <= 0) break;
         const url  = urls[i];
         const videoId = extractYtVideoId(url);
         const label   = url.length > 44 ? '…'+url.slice(-41) : url;
@@ -2266,8 +2326,9 @@ async function handleExtract() {
         try {
           const comments = await fetchYtComments(videoId, apiKey, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          });
+          }, tokenBudget);
           all.push(...comments);
+          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
           setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
@@ -2296,6 +2357,7 @@ async function handleExtract() {
       }
 
       for (let i = 0; i < urls.length; i++) {
+        if (tokenBudget <= 0) break;
         const url = urls[i];
         const shortcode = extractIgShortcode(url);
         const label = url.length > 44 ? '…'+url.slice(-41) : url;
@@ -2312,8 +2374,9 @@ async function handleExtract() {
           setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
           const comments = await fetchIgComments(mediaId, token, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          });
+          }, tokenBudget);
           all.push(...comments);
+          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
           setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
@@ -2324,6 +2387,20 @@ async function handleExtract() {
   } catch(e) {
     setStatus('error', 'Unexpected error', e.message);
     btn.classList.remove('loading'); return;
+  }
+
+  // ── Deduct tokens ──
+  if (all.length > 0) {
+    if (isGuest) {
+      setGuestTokens(tokenBudgetStart - all.length);
+      updateTokenDisplay();
+    } else {
+      try {
+        const usage = await apiFetch('POST', '/use-tokens.php', { count: all.length });
+        currentUser.tokens = usage.tokens;
+        updateTokenDisplay();
+      } catch (_) { /* non-fatal — extraction already succeeded */ }
+    }
   }
 
   btn.classList.remove('loading');
@@ -2361,10 +2438,16 @@ async function handleExtract() {
   const panel = document.getElementById('status');
   const list  = panel.querySelector('.progress-list');
   panel.className = 'status-panel success';
+  const cappedByTokens = tokenBudget <= 0;
+  const tokenNote = cappedByTokens
+    ? (isGuest
+        ? `<div style="margin-top:8px;font-size:12px;color:#f09060">⚠ You've used all your free tokens — <button onclick="openAuth('signup')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:6px;padding:4px 12px;font-family:var(--mono);font-size:11px;font-weight:500;cursor:pointer;margin-left:4px">Sign up free to continue →</button></div>`
+        : `<div style="margin-top:6px;font-size:11px;color:#f09060">⚠ Reached your token limit — <span style="cursor:pointer;text-decoration:underline" onclick="openPricing()">watch an ad to earn +500 tokens</span></div>`)
+    : '';
   const filterNote = filtersActive
     ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — download from the preview below</div>`
     : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments in the preview below, then download when ready</div>`;
-  panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
+  panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${tokenNote}${filterNote}`;
   if (list) panel.appendChild(list);
   gtag('event', 'extract_success', { platform, comment_count: qualifiedCount, total_count: totalCount });
 
@@ -2478,7 +2561,7 @@ function generateReport() {
         <div class="rp-foot-row"><span class="rp-foot-label">Random seed</span><strong>${_reportData.seed}</strong></div>
         <div class="rp-foot-row"><span class="rp-foot-label">Drawn on</span>${_reportData.drawnAt ? _reportData.drawnAt.toLocaleString() : '—'}</div>
         <div class="rp-foot-row"><span class="rp-foot-label">Algorithm</span>mulberry32 PRNG · Fisher-Yates shuffle · Seed = Date.now() at draw time</div>
-        <div class="rp-foot-brand">Generated by CommentPull — commentpull.com &nbsp;·&nbsp; All draws are client-side, verifiable, and reproducible by seed.</div>
+        <div class="rp-foot-brand">Generated by CommentPull — slateblue-mink-718658.hostingersite.com &nbsp;·&nbsp; All draws are client-side, verifiable, and reproducible by seed.</div>
       </div>
     </div>`;
 
@@ -2791,5 +2874,646 @@ function toggleFaq(btn) {
 <div id="presets-menu" class="presets-menu" style="display:none"></div>
 <div id="report-sheet"></div>
 <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:block"></canvas>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH & PRICING STYLES
+════════════════════════════════════════════════════════════ -->
+<style>
+  /* Nav right */
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  #nav-auth-guest { display: flex; align-items: center; gap: 8px; }
+  .btn-nav { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border); background: none; color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-nav:hover { border-color: var(--border-active); color: var(--text); }
+  .btn-nav.accent { border-color: rgba(240,192,96,0.4); color: var(--accent); background: var(--accent-glow); }
+  .btn-nav.accent:hover { border-color: var(--accent); background: rgba(240,192,96,0.22); }
+
+  /* User chip */
+  .user-chip { display: flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
+  .user-chip:hover { border-color: var(--border-active); color: var(--text); }
+  .plan-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .plan-dot.free { background: var(--text-muted); }
+  .plan-dot.pro  { background: var(--accent); box-shadow: 0 0 6px rgba(240,192,96,0.5); }
+  #nav-auth-user { position: relative; }
+  .user-dropdown { position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5); z-index: 200; }
+  .dropdown-email { padding: 12px 16px; font-size: 11px; color: var(--text-muted); word-break: break-all; }
+  .dropdown-divider { height: 1px; background: var(--border); }
+  .dropdown-item { width: 100%; padding: 11px 16px; background: none; border: none; color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; text-align: left; transition: all 0.15s; }
+  .dropdown-item:hover { background: var(--surface2); color: var(--text); }
+  .dropdown-item.accent-item { color: var(--accent); }
+  .dropdown-item.accent-item:hover { background: var(--accent-glow); }
+  .dropdown-item.danger:hover { background: rgba(255,80,80,0.08); color: #ff6060; }
+
+  /* Modal overlay */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 420px; overflow: hidden; transform: translateY(12px); transition: transform 0.25s; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header { padding: 24px 28px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+  .modal-title { font-family: var(--serif); font-size: 22px; font-weight: 300; font-style: italic; color: var(--text); }
+  .modal-close { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: none; color: var(--text-dim); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .modal-close:hover { border-color: var(--border-active); color: var(--text); }
+  .modal-body { padding: 24px 28px 28px; }
+
+  /* Auth tabs */
+  .auth-tabs { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+  .auth-tab { flex: 1; padding: 9px; background: none; border: none; color: var(--text-muted); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.15s; }
+  .auth-tab.active { background: var(--surface2); color: var(--text); }
+
+  /* Form */
+  .form-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+  .form-field label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+  .form-field input { padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.15s; }
+  .form-field input:focus { border-color: var(--border-active); }
+  .form-field input::placeholder { color: var(--text-muted); }
+  .form-error { font-size: 12px; color: #ff6060; margin-bottom: 14px; min-height: 16px; }
+  .btn-submit { width: 100%; padding: 13px; background: var(--accent); color: #0d0d0d; border: none; border-radius: 8px; font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+  .btn-submit:hover { background: #f5d080; }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .auth-footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px; }
+  .auth-footer a { color: var(--text-dim); cursor: pointer; text-decoration: underline; }
+  .auth-footer a:hover { color: var(--text); }
+  /* OAuth buttons */
+  .oauth-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0 14px; }
+  .oauth-divider::before, .oauth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .oauth-divider span { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  .oauth-buttons { display: flex; flex-direction: column; gap: 8px; }
+  .btn-oauth { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 10px 16px; border-radius: 8px; font-family: var(--mono); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; border: 1px solid var(--border); background: var(--surface2); color: var(--text-dim); }
+  .btn-oauth:hover { border-color: var(--border-active); color: var(--text); background: var(--surface); }
+  .btn-oauth svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Pricing modal */
+  .pricing-modal { max-width: 520px; }
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 540px) { .pricing-grid { grid-template-columns: 1fr; } }
+  .plan-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.2s; background: var(--surface2); }
+  .plan-card:hover { border-color: var(--border-active); }
+  .plan-card.earn-card { border-color: rgba(80,200,120,0.3); background: rgba(80,200,120,0.03); }
+  .plan-card.earn-card:hover { border-color: rgba(80,200,120,0.55); }
+  .plan-badge { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: var(--accent-glow); border: 1px solid rgba(240,192,96,0.25); padding: 3px 8px; border-radius: 20px; display: inline-block; align-self: flex-start; }
+  .plan-badge.green { color: #50c878; background: rgba(80,200,120,0.08); border-color: rgba(80,200,120,0.25); }
+  .plan-name { font-family: var(--serif); font-size: 18px; font-weight: 400; font-style: italic; color: var(--text); }
+  .plan-price { display: flex; align-items: baseline; gap: 4px; }
+  .plan-price-amount { font-size: 28px; font-weight: 500; color: var(--text); }
+  .plan-price-amount.green { color: #50c878; }
+  .plan-price-period { font-size: 12px; color: var(--text-dim); }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .plan-features li { font-size: 12px; color: var(--text-dim); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+  .plan-features li::before { content: '✓'; color: var(--accent); font-size: 11px; margin-top: 1px; flex-shrink: 0; }
+  .plan-features li.dim::before { content: '–'; color: var(--text-muted); }
+  .plan-features li.dim { color: var(--text-muted); }
+  .btn-plan { width: 100%; padding: 11px; border-radius: 8px; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border); background: none; color: var(--text-dim); margin-top: auto; }
+  .btn-plan:hover { border-color: var(--border-active); color: var(--text); }
+  .btn-plan.primary { background: var(--accent); color: #0d0d0d; border-color: var(--accent); font-weight: 500; }
+  .btn-plan.primary:hover { background: #f5d080; }
+  .btn-plan.green { background: rgba(80,200,120,0.12); color: #50c878; border-color: rgba(80,200,120,0.4); font-weight: 500; }
+  .btn-plan.green:hover:not(:disabled) { background: rgba(80,200,120,0.22); border-color: rgba(80,200,120,0.7); }
+  .btn-plan:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ad-countdown { font-size: 12px; color: var(--text-muted); text-align: center; padding: 8px 0 0; font-family: var(--mono); }
+  .ad-countdown span { color: #50c878; font-weight: 600; }
+  .pricing-earn-cta { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 14px; padding: 10px 14px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); line-height: 1.6; }
+  .pricing-token-row { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--text-dim); }
+  .pricing-token-row strong { color: var(--accent); font-size: 14px; }
+  .ads-left-badge { font-size: 10px; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; }
+  .pricing-note { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 12px; }
+  /* Dropdown token row */
+  .dropdown-token-row { display: flex; align-items: center; gap: 6px; padding: 6px 14px 8px; font-size: 12px; color: var(--text-dim); font-family: var(--mono); }
+  .dropdown-token-icon { font-size: 13px; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-family: var(--mono); font-size: 13px; color: var(--text); z-index: 2000; opacity: 0; transition: all 0.3s; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4); pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: rgba(80,200,120,0.4); color: #7de8a8; }
+  .toast.error   { border-color: rgba(255,80,80,0.4);  color: #ff8080; }
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH MODAL
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal" onclick="closeOnBackdrop(event,'auth-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="auth-modal-title">Sign in</span>
+      <button class="modal-close" onclick="closeModal('auth-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign in</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign up</button>
+      </div>
+
+      <!-- OAuth buttons (shared, above both forms) -->
+      <div class="oauth-buttons" style="margin-bottom:4px">
+        <a href="/backend/api/oauth-google.php" class="btn-oauth">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Continue with Google
+        </a>
+        <a href="/backend/api/oauth-github.php" class="btn-oauth">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+          </svg>
+          Continue with GitHub
+        </a>
+      </div>
+
+      <div class="oauth-divider"><span>or use email</span></div>
+
+      <!-- Sign in form -->
+      <form id="form-signin" onsubmit="doSignIn(event)">
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" id="si-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label>Password</label>
+          <input type="password" id="si-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <div class="form-error" id="si-error"></div>
+        <button type="submit" class="btn-submit" id="si-btn">Sign in</button>
+        <p class="auth-footer">No account? <a onclick="switchTab('signup')">Sign up free</a></p>
+      </form>
+
+      <!-- Sign up form -->
+      <form id="form-signup" onsubmit="doSignUp(event)" style="display:none">
+        <div class="form-field">
+          <label>Name</label>
+          <input type="text" id="su-name" placeholder="Your name" required autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" id="su-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label>Password</label>
+          <input type="password" id="su-password" placeholder="Min. 8 characters" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="form-error" id="su-error"></div>
+        <button type="submit" class="btn-submit" id="su-btn">Create account</button>
+        <p class="auth-footer">Already have one? <a onclick="switchTab('signin')">Sign in</a></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PRICING MODAL
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="pricing-modal" onclick="closeOnBackdrop(event,'pricing-modal')">
+  <div class="modal pricing-modal">
+    <div class="modal-header">
+      <span class="modal-title">Plans &amp; Tokens</span>
+      <button class="modal-close" onclick="closeModal('pricing-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pricing-grid">
+
+        <!-- Free Plan -->
+        <div class="plan-card">
+          <span class="plan-badge">🔹 Default</span>
+          <div class="plan-name">Free</div>
+          <div class="plan-price">
+            <span class="plan-price-amount">Free</span>
+            <span class="plan-price-period">forever</span>
+          </div>
+          <ul class="plan-features">
+            <li>250 tokens on signup</li>
+            <li>Up to 5 posts</li>
+            <li>Export CSV &amp; JSON</li>
+            <li>Winner picker</li>
+          </ul>
+          <button class="btn-plan" disabled>Current plan</button>
+        </div>
+
+        <!-- Earn Tokens via Ads -->
+        <div class="plan-card earn-card">
+          <span class="plan-badge green">🎯 Rewarded Ads</span>
+          <div class="plan-name">Watch &amp; Earn</div>
+          <div class="plan-price">
+            <span class="plan-price-amount green">+500</span>
+            <span class="plan-price-period">tokens / ad</span>
+          </div>
+          <ul class="plan-features">
+            <li>Watch 1 short ad → +500 tokens</li>
+            <li>Up to 10 ads per day</li>
+            <li>Tokens never expire</li>
+            <li>Instant reward</li>
+          </ul>
+          <button class="btn-plan green" id="btn-watch-ad" onclick="watchAd()">▶ Watch Ad → +500 tokens</button>
+          <div id="ad-countdown" class="ad-countdown" style="display:none">Ad playing… <span id="ad-timer">5</span>s remaining</div>
+        </div>
+
+      </div>
+
+      <div class="pricing-earn-cta">
+        👉 Need more tokens? Earn them instantly by watching a short ad — no payment needed.
+      </div>
+
+      <div id="pricing-token-row" class="pricing-token-row" style="display:none">
+        <span>Your balance:</span>
+        <strong><span id="pricing-token-count">250</span> tokens</strong>
+        <span id="pricing-ads-left" class="ads-left-badge">10 ads left today</span>
+      </div>
+
+      <p class="pricing-note">1 comment = 1 token · Earned tokens never expire · No credit card needed</p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- BETA gift modal — remove with beta block -->
+<div class="modal-overlay" id="beta-modal" onclick="closeOnBackdrop(event,'beta-modal')">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <div class="modal-body" style="padding:36px 32px 32px">
+      <div style="font-size:48px;margin-bottom:16px">🎁</div>
+      <h2 style="font-family:var(--serif);font-size:24px;font-weight:300;font-style:italic;color:var(--text);margin-bottom:12px">You got a beta gift!</h2>
+      <p style="font-size:13px;color:var(--text-dim);line-height:1.75;margin-bottom:8px">
+        Welcome, <strong id="beta-modal-name" style="color:var(--text)"></strong>!<br>
+        Since CommentPull is in <strong style="color:var(--accent)">beta</strong>, you've been gifted
+        <strong style="color:var(--accent)">unlimited tokens</strong> — completely free.
+      </p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:28px">
+        Extract as many comments as you like while we're in beta.<br>
+        Your feedback helps us build a better product.
+      </p>
+      <button onclick="closeModal('beta-modal')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:8px;padding:12px 32px;font-family:var(--mono);font-size:13px;font-weight:500;cursor:pointer;width:100%;transition:background 0.2s" onmouseover="this.style.background='#f5d080'" onmouseout="this.style.background='var(--accent)'">
+        Start extracting →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH & PAYMENT JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+// ── State ─────────────────────────────────────────────────────────
+const API = '/backend/api';
+let currentUser = null;
+
+// ── Boot: restore session + handle OAuth return ───────────────────
+(async function boot() {
+  const params = new URLSearchParams(location.search);
+
+  // ── OAuth return ──
+  if (params.get('oauth') === 'success') {
+    const oauthToken = params.get('token');
+    const oauthName  = params.get('name') || 'there';
+    const betaGift   = params.get('beta_gift') === '1'; // BETA
+    history.replaceState({}, '', location.pathname);
+    if (oauthToken) {
+      localStorage.setItem('cp_token', oauthToken);
+      try {
+        const res = await apiFetch('GET', '/me.php');
+        if (res.id) {
+          setUser(res);
+          // BETA: show gift modal for new OAuth users, plain toast for returning
+          if (betaGift) {
+            showBetaGiftModal(oauthName);
+          } else {
+            showToast('Welcome back, ' + oauthName + '!', 'success');
+          }
+        }
+      } catch (_) { localStorage.removeItem('cp_token'); }
+    }
+    return;
+  }
+
+  if (params.get('oauth') === 'error') {
+    const msg = params.get('message') || 'Sign-in failed. Please try again.';
+    history.replaceState({}, '', location.pathname);
+    showToast(msg, 'error');
+    return;
+  }
+
+  // ── Regular session restore ──
+  const token = localStorage.getItem('cp_token');
+  if (!token) {
+    // No session — show guest token balance
+    updateTokenDisplay();
+    return;
+  }
+  try {
+    const res = await apiFetch('GET', '/me.php');
+    if (res.id) setUser(res);
+    else updateTokenDisplay(); // failed silently — show guest bar
+  } catch (_) {
+    localStorage.removeItem('cp_token');
+    updateTokenDisplay();
+  }
+})();
+
+// ── API helper ────────────────────────────────────────────────────
+async function apiFetch(method, path, body) {
+  const token = localStorage.getItem('cp_token');
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  };
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  if (body)  opts.body = JSON.stringify(body);
+
+  const res = await fetch(API + path, opts);
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (_) {
+    // Server returned non-JSON (PHP error, 502, etc.)
+    throw new Error('Server error (' + res.status + '). Please try again.');
+  }
+
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+// ── Auth state ────────────────────────────────────────────────────
+function setUser(user) {
+  currentUser = user;
+
+  document.getElementById('nav-auth-guest').style.display = 'none';
+  document.getElementById('nav-auth-user').style.display  = 'flex';
+  document.getElementById('nav-user-name').textContent    = user.name;
+  document.getElementById('nav-user-email').textContent   = user.email;
+
+  const dot = document.getElementById('nav-user-plan');
+  dot.className = 'plan-dot ' + user.plan;
+
+  updateTokenDisplay();
+}
+
+// ── Guest token helpers ───────────────────────────────────────────
+function getGuestTokens() {
+  const stored = localStorage.getItem('cp_guest_tokens');
+  if (stored === null) {
+    localStorage.setItem('cp_guest_tokens', '250');
+    return 250;
+  }
+  return Math.max(0, parseInt(stored, 10) || 0);
+}
+function setGuestTokens(n) {
+  localStorage.setItem('cp_guest_tokens', String(Math.max(0, n)));
+}
+
+function updateTokenDisplay() {
+  const isGuest  = !currentUser;
+  const tokens   = isGuest ? getGuestTokens() : (currentUser.tokens ?? 250);
+  const adsLeft  = isGuest ? null : (currentUser.ads_remaining ?? 10);
+
+  // Nav dropdown token count (logged-in only)
+  const tokEl = document.getElementById('nav-user-tokens');
+  if (tokEl && !isGuest) tokEl.textContent = tokens.toLocaleString() + ' tokens';
+
+  // Budget bar (shown for everyone)
+  const bar     = document.getElementById('token-budget-bar');
+  const tbCount = document.getElementById('tb-count');
+  const tbEarn  = bar?.querySelector('.tb-earn');
+  if (bar) bar.style.display = '';
+  if (tbCount) {
+    tbCount.textContent = tokens.toLocaleString();
+    tbCount.className   = 'tb-count' + (tokens <= 50 ? ' low' : '');
+  }
+  if (tbEarn) {
+    if (isGuest && tokens <= 0) {
+      tbEarn.textContent = 'Sign up free to continue →';
+      tbEarn.onclick     = () => openAuth('signup');
+    } else if (isGuest) {
+      tbEarn.textContent = 'sign up for daily refill →';
+      tbEarn.onclick     = () => openAuth('signup');
+    } else {
+      tbEarn.textContent = 'earn more →';
+      tbEarn.onclick     = () => openPricing();
+    }
+  }
+
+  // Pricing modal token row (logged-in only)
+  const rowEl   = document.getElementById('pricing-token-row');
+  const countEl = document.getElementById('pricing-token-count');
+  const adsEl   = document.getElementById('pricing-ads-left');
+  if (!isGuest) {
+    if (rowEl)   rowEl.style.display   = '';
+    if (countEl) countEl.textContent   = tokens.toLocaleString();
+    if (adsEl)   adsEl.textContent     = adsLeft + ' ad' + (adsLeft === 1 ? '' : 's') + ' left today';
+  }
+
+  // Refresh watch-ad button state (logged-in only)
+  const adBtn = document.getElementById('btn-watch-ad');
+  if (adBtn && !isGuest && !adBtn.disabled) {
+    if (adsLeft <= 0) {
+      adBtn.disabled    = true;
+      adBtn.textContent = 'Come back tomorrow';
+    } else {
+      adBtn.textContent = `▶ Watch Ad → +500 tokens (${adsLeft} left today)`;
+    }
+  }
+}
+
+function clearUser() {
+  currentUser = null;
+  localStorage.removeItem('cp_token');
+  document.getElementById('nav-auth-guest').style.display = 'flex';
+  document.getElementById('nav-auth-user').style.display  = 'none';
+  document.getElementById('user-dropdown').style.display  = 'none';
+  updateTokenDisplay(); // show guest balance in budget bar
+}
+
+// ── Sign in ───────────────────────────────────────────────────────
+async function doSignIn(e) {
+  e.preventDefault();
+  const btn = document.getElementById('si-btn');
+  const err = document.getElementById('si-error');
+  err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try {
+    const data = await apiFetch('POST', '/signin.php', {
+      email:    document.getElementById('si-email').value.trim(),
+      password: document.getElementById('si-password').value,
+    });
+    localStorage.setItem('cp_token', data.token);
+    setUser(data.user);
+    closeModal('auth-modal');
+    showToast('Welcome back, ' + data.user.name + '!', 'success');
+  } catch (ex) {
+    err.textContent = ex.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+}
+
+// ── Sign up ───────────────────────────────────────────────────────
+// BETA: remove this function when beta ends
+function showBetaGiftModal(name) {
+  document.getElementById('beta-modal-name').textContent = name;
+  document.getElementById('beta-modal').style.display = '';
+  openModal('beta-modal');
+}
+
+async function doSignUp(e) {
+  e.preventDefault();
+  const btn = document.getElementById('su-btn');
+  const err = document.getElementById('su-error');
+  err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  try {
+    const data = await apiFetch('POST', '/signup.php', {
+      name:     document.getElementById('su-name').value.trim(),
+      email:    document.getElementById('su-email').value.trim(),
+      password: document.getElementById('su-password').value,
+    });
+    localStorage.setItem('cp_token', data.token);
+    setUser(data.user);
+    closeModal('auth-modal');
+    // BETA: remove the if-block below when beta ends
+    if (data.beta_gift) {
+      showBetaGiftModal(data.user.name);
+    } else {
+      showToast('Account created — welcome!', 'success');
+    }
+  } catch (ex) {
+    err.textContent = ex.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create account';
+  }
+}
+
+// ── Sign out ──────────────────────────────────────────────────────
+async function doSignOut() {
+  document.getElementById('user-dropdown').style.display = 'none';
+  try { await apiFetch('POST', '/signout.php'); } catch (_) {}
+  clearUser();
+  showToast('Signed out.', '');
+}
+
+// ── Checkout ──────────────────────────────────────────────────────
+// ── Watch ad → earn tokens ────────────────────────────────────────
+let _adPlaying = false;
+
+async function watchAd() {
+  if (!currentUser) {
+    closeModal('pricing-modal');
+    openAuth('signup');
+    showToast('Sign in to earn tokens.', '');
+    return;
+  }
+  if (_adPlaying) return;
+  _adPlaying = true;
+
+  const btn       = document.getElementById('btn-watch-ad');
+  const countdown = document.getElementById('ad-countdown');
+  const timerEl   = document.getElementById('ad-timer');
+
+  btn.disabled    = true;
+  btn.textContent = 'Ad loading…';
+  countdown.style.display = '';
+
+  // Simulate rewarded ad (5-second countdown)
+  let secs = 5;
+  timerEl.textContent = secs;
+  await new Promise(resolve => {
+    const iv = setInterval(() => {
+      secs--;
+      timerEl.textContent = secs;
+      if (secs <= 0) { clearInterval(iv); resolve(); }
+    }, 1000);
+  });
+
+  countdown.style.display = 'none';
+  btn.textContent = 'Claiming reward…';
+
+  try {
+    const data = await apiFetch('POST', '/earn-tokens.php');
+    currentUser.tokens            = data.tokens;
+    currentUser.ads_watched_today = data.ads_watched_today;
+    currentUser.ads_remaining     = data.ads_remaining;
+    updateTokenDisplay();
+    showToast(`+${data.reward.toLocaleString()} tokens earned! Balance: ${data.tokens.toLocaleString()} tokens.`, 'success');
+  } catch (ex) {
+    showToast(ex.message, 'error');
+    btn.disabled    = false;
+    btn.textContent = '▶ Watch Ad → +500 tokens';
+  }
+
+  _adPlaying = false;
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────
+function openAuth(tab) {
+  switchTab(tab || 'signin');
+  openModal('auth-modal');
+}
+
+function openPricing() {
+  if (currentUser) updateTokenDisplay();
+  openModal('pricing-modal');
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeOnBackdrop(e, id) {
+  if (e.target === e.currentTarget) closeModal(id);
+}
+
+function switchTab(tab) {
+  const isSignIn = tab === 'signin';
+  document.getElementById('form-signin').style.display = isSignIn ? '' : 'none';
+  document.getElementById('form-signup').style.display = isSignIn ? 'none' : '';
+  document.getElementById('tab-signin').classList.toggle('active', isSignIn);
+  document.getElementById('tab-signup').classList.toggle('active', !isSignIn);
+  document.getElementById('auth-modal-title').textContent = isSignIn ? 'Sign in' : 'Sign up';
+  document.getElementById('si-error').textContent = '';
+  document.getElementById('su-error').textContent = '';
+}
+
+function toggleUserMenu() {
+  const d = document.getElementById('user-dropdown');
+  d.style.display = d.style.display === 'none' ? '' : 'none';
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('nav-auth-user');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('user-dropdown').style.display = 'none';
+  }
+});
+
+// Close modals with Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['auth-modal', 'pricing-modal', 'beta-modal'].forEach(closeModal);
+    document.getElementById('user-dropdown').style.display = 'none';
+  }
+});
+
+// ── Toast ─────────────────────────────────────────────────────────
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent  = msg;
+  t.className    = 'toast ' + (type || '');
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
 </body>
 </html>

@@ -77,13 +77,23 @@
   "screenshot": "https://commentpull.com/Asset/og-image.png"
 }
 </script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXZ5Y2NJE3"></script>
+<!-- Google tag (gtag.js) — deferred until idle to reduce TBT -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-NXZ5Y2NJE3');
+  function _loadGtag() {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-NXZ5Y2NJE3';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-NXZ5Y2NJE3');
+  }
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(_loadGtag, { timeout: 3000 });
+  } else {
+    setTimeout(_loadGtag, 1000);
+  }
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -98,7 +108,7 @@
   :root {
     --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
     --border: #2a2a2a; --border-active: #444;
-    --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
+    --text: #e8e8e8; --text-dim: #888; --text-muted: #767676;
     --accent-ig: #e1306c; --accent-fb: #1877f2;
     --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
     --accent-yt: #ff2d2d;
@@ -159,7 +169,7 @@
 
   /* Fields */
   .field-group { display: flex; flex-direction: column; gap: 6px; }
-  label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: flex; align-items: center; gap: 8px; }
+  label, .field-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); display: flex; align-items: center; gap: 8px; }
   .hint-link { font-size: 10px; color: var(--text-muted); text-transform: none; letter-spacing: 0; cursor: pointer; background: none; border: none; font-family: var(--mono); padding: 0; text-decoration: underline; text-underline-offset: 2px; transition: color 0.15s; }
   .hint-link:hover { color: var(--accent); }
   .input-wrap { position: relative; }
@@ -556,7 +566,7 @@
 <body>
 
 <nav>
-  <a href="#" class="logo">Comment<span>Pull</span></a>
+  <a href="/" class="logo">Comment<span>Pull</span></a>
   <div class="nav-right">
     <a href="/support.html" class="btn-nav">Support</a>
     <a href="/contact.html" class="btn-nav">Contact</a>
@@ -586,6 +596,7 @@
   </div>
 </nav>
 
+<main>
 <section class="hero">
   <p class="hero-eyebrow">Social Data Extraction</p>
   <h1>Extract <em>Facebook, Instagram<br>& YouTube comments</em><br>in seconds.</h1>
@@ -608,7 +619,7 @@
 
       <!-- 01 Platform -->
       <div class="field-group">
-        <label>01 — Platform</label>
+        <div class="field-label">01 — Platform</div>
         <div class="platform-select">
           <button class="platform-btn active-fb" id="btn-fb" onclick="selectPlatform('fb')">
             <div class="platform-icon fb">
@@ -639,7 +650,7 @@
 
       <!-- 02 Token (shared) -->
       <div class="field-group">
-        <label>
+        <label for="token-input">
           <span id="token-label-text">02 — Page Access Token</span>
           <span class="tooltip-wrap">
             <i class="info-icon">?</i>
@@ -663,7 +674,7 @@
       <div class="ctx-block visible" id="ctx-fb">
         <!-- FB Page ID -->
         <div class="field-group">
-          <label>
+          <label for="fb-page-id">
             03 — Facebook Page ID
             <span class="tooltip-wrap">
               <i class="info-icon">?</i>
@@ -681,14 +692,14 @@
 
         <!-- FB Post URLs -->
         <div class="field-group">
-          <label>04 — Post URL(s)</label>
+          <label for="fb-url-0">04 — Post URL(s)</label>
           <div class="toggle-row" style="margin-bottom:4px">
             <div><div class="toggle-label">Multiple posts</div><div class="toggle-sub">Extract from several posts at once</div></div>
             <label class="toggle"><input type="checkbox" id="fb-multi" onchange="onMultiToggle('fb')"><span class="toggle-track"></span></label>
           </div>
           <div class="url-list" id="fb-url-list">
             <div class="url-entry">
-              <input type="url" class="fb-url" placeholder="https://www.facebook.com/username/posts/13587975xxxx">
+              <input type="url" id="fb-url-0" class="fb-url" placeholder="https://www.facebook.com/username/posts/13587975xxxx">
             </div>
           </div>
           <button class="add-url" id="fb-add-url" onclick="addUrl('fb')">
@@ -708,7 +719,7 @@
 
         <!-- IG: FB Page ID to look up IG account -->
         <div class="field-group">
-          <label>
+          <label for="ig-page-id">
             03 — Facebook Page ID
             <span class="tooltip-wrap">
               <i class="info-icon">?</i>
@@ -726,14 +737,14 @@
 
         <!-- IG Post URLs -->
         <div class="field-group">
-          <label>04 — Instagram Post URL(s)</label>
+          <label for="ig-url-0">04 — Instagram Post URL(s)</label>
           <div class="toggle-row" style="margin-bottom:4px">
             <div><div class="toggle-label">Multiple posts</div><div class="toggle-sub">Extract from several posts at once</div></div>
             <label class="toggle"><input type="checkbox" id="ig-multi" onchange="onMultiToggle('ig')"><span class="toggle-track"></span></label>
           </div>
           <div class="url-list" id="ig-url-list">
             <div class="url-entry">
-              <input type="url" class="ig-url" placeholder="https://www.instagram.com/p/ABC123def456/">
+              <input type="url" id="ig-url-0" class="ig-url" placeholder="https://www.instagram.com/p/ABC123def456/">
             </div>
           </div>
           <button class="add-url" id="ig-add-url" onclick="addUrl('ig')">
@@ -753,14 +764,14 @@
 
         <!-- YT Video URLs -->
         <div class="field-group">
-          <label>03 — Video URL(s)</label>
+          <label for="yt-url-0">03 — Video URL(s)</label>
           <div class="toggle-row" style="margin-bottom:4px">
             <div><div class="toggle-label">Multiple videos</div><div class="toggle-sub">Extract from several videos at once</div></div>
             <label class="toggle"><input type="checkbox" id="yt-multi" onchange="onMultiToggle('yt')"><span class="toggle-track"></span></label>
           </div>
           <div class="url-list" id="yt-url-list">
             <div class="url-entry">
-              <input type="url" class="yt-url" placeholder="https://www.youtube.com/watch?v=…">
+              <input type="url" id="yt-url-0" class="yt-url" placeholder="https://www.youtube.com/watch?v=…">
             </div>
           </div>
           <button class="add-url" id="yt-add-url" onclick="addUrl('yt')">
@@ -772,7 +783,7 @@
 
       <!-- Options (shared) -->
       <div class="field-group">
-        <label>Export options</label>
+        <div class="field-label">Export options</div>
         <div class="options-grid">
           <div class="option-card selected" id="opt-comments" onclick="toggleOption(this)">
             <div class="option-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
@@ -823,7 +834,7 @@
               <label class="toggle"><input type="checkbox" id="rule-keyword" onchange="onRuleToggle('rule-keyword')"><span class="toggle-track"></span></label>
             </div>
             <div class="rule-inputs" id="inputs-rule-keyword" style="display:none">
-              <input type="text" id="filter-keyword" placeholder="e.g.  #giveaway  or  win">
+              <input type="text" id="filter-keyword" aria-label="Keyword or hashtag" placeholder="e.g.  #giveaway  or  win">
             </div>
           </div>
 
@@ -835,7 +846,7 @@
             </div>
             <div class="rule-inputs" id="inputs-rule-mentions" style="display:none">
               <div class="rule-inline">
-                <input type="number" id="filter-mentions" value="2" min="1" max="20">
+                <input type="number" id="filter-mentions" aria-label="Minimum number of @mentions" value="2" min="1" max="20">
                 <span>or more @mentions required</span>
               </div>
             </div>
@@ -849,7 +860,7 @@
             </div>
             <div class="rule-inputs" id="inputs-rule-length" style="display:none">
               <div class="rule-inline">
-                <input type="number" id="filter-length" value="10" min="1" max="500">
+                <input type="number" id="filter-length" aria-label="Minimum comment length in characters" value="10" min="1" max="500">
                 <span>characters minimum</span>
               </div>
             </div>
@@ -872,11 +883,11 @@
             <div class="rule-inputs" id="inputs-rule-daterange" style="display:none">
               <div class="rule-date-row">
                 <div class="rule-date-col">
-                  <label>From</label>
+                  <label for="filter-date-from">From</label>
                   <input type="date" id="filter-date-from">
                 </div>
                 <div class="rule-date-col">
-                  <label>To</label>
+                  <label for="filter-date-to">To</label>
                   <input type="date" id="filter-date-to">
                 </div>
               </div>
@@ -934,7 +945,7 @@
       <div class="preview-controls">
         <div class="preview-search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="preview-search" placeholder="Search name or comment…" oninput="searchPreview()">
+          <input type="text" id="preview-search" aria-label="Search results by name or comment" placeholder="Search name or comment…" oninput="searchPreview()">
         </div>
         <div class="preview-dl-row">
           <div class="format-select">
@@ -1166,6 +1177,7 @@
 
   </div>
 </section>
+</main>
 
 <footer>
   <span class="footer-left">CommentPull — Built for marketers, giveaways &amp; community managers.</span>

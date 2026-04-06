@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — CommentPull</title>
+<meta name="description" content="CommentPull — built for marketers, community managers, and giveaway organizers who need fast, clean comment data without writing a line of code.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="canonical" href="https://commentpull.com/about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
+    --border: #2a2a2a; --border-active: #444;
+    --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
+    --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
+    --radius: 10px; --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 999; opacity: 0.4; }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: linear-gradient(to bottom, rgba(13,13,13,0.97) 0%, transparent 100%); backdrop-filter: blur(4px); }
+  .logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--text-dim); font-weight: 300; font-style: italic; }
+  .btn-nav { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+  .btn-nav:hover { border-color: var(--border-active); color: var(--text); }
+
+  /* Page */
+  .page { max-width: 720px; margin: 0 auto; padding: 120px 40px 80px; }
+
+  .page-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+  .page-title { font-family: var(--serif); font-size: 48px; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.1; margin-bottom: 24px; }
+  .page-lead { font-size: 15px; color: var(--text-dim); line-height: 1.8; max-width: 560px; margin-bottom: 64px; }
+
+  /* Stat row */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 64px; }
+  .stat { background: var(--surface2); padding: 28px 24px; }
+  .stat-number { font-family: var(--serif); font-size: 36px; font-weight: 300; font-style: italic; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+  .stat-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* Prose */
+  .prose { display: flex; flex-direction: column; gap: 48px; }
+  .section-title { font-family: var(--serif); font-size: 22px; font-weight: 300; font-style: italic; color: var(--text); margin-bottom: 16px; }
+  .prose p { font-size: 13px; color: var(--text-dim); line-height: 1.85; }
+  .prose p + p { margin-top: 12px; }
+  strong { color: var(--text); font-weight: 500; }
+
+  /* Values */
+  .values { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+  .value-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .value-icon { font-size: 20px; margin-bottom: 10px; }
+  .value-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 6px; }
+  .value-desc { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 20px; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 16px; flex-shrink: 0; margin-top: 4px; }
+  .tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .tl-line { flex: 1; width: 1px; background: var(--border); margin: 4px 0; min-height: 24px; }
+  .tl-item:last-child .tl-line { display: none; }
+  .tl-right { padding-bottom: 28px; }
+  .tl-date { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+  .tl-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+  .tl-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  /* CTA */
+  .cta-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 40px; text-align: center; }
+  .cta-title { font-family: var(--serif); font-size: 28px; font-weight: 300; font-style: italic; color: var(--text); margin-bottom: 12px; }
+  .cta-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.7; }
+  .btn-cta { display: inline-block; background: var(--accent); color: #0d0d0d; font-family: var(--mono); font-size: 13px; font-weight: 500; padding: 13px 32px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+  .btn-cta:hover { background: #f5d080; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--border); padding: 32px 40px; max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .footer-left { font-size: 12px; color: var(--text-muted); }
+  .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; }
+  .footer-right a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-right a:hover { color: var(--text-dim); }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .page { padding: 100px 20px 60px; }
+    .page-title { font-size: 34px; }
+    .stats { grid-template-columns: 1fr; }
+    .values { grid-template-columns: 1fr; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Comment<span>Pull</span></a>
+  <a href="/" class="btn-nav">← Back to app</a>
+</nav>
+
+<div class="page">
+
+  <p class="page-eyebrow">About</p>
+  <h1 class="page-title">Built for the people<br>running the comments.</h1>
+  <p class="page-lead">CommentPull exists because copying comments by hand is a terrible way to spend your afternoon. We built the tool we wished existed — fast, private, and free.</p>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Platforms supported</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">0</div>
+      <div class="stat-label">Bytes stored from your extractions</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">Free</div>
+      <div class="stat-label">Always, for everyone</div>
+    </div>
+  </div>
+
+  <div class="prose">
+
+    <!-- Story -->
+    <div>
+      <h2 class="section-title">The story</h2>
+      <p>It started with a giveaway. Someone needed to pull every commenter from a Facebook post to pick a fair winner — and discovered that the options were either (a) copy-paste everything by hand, (b) pay for an overpriced enterprise tool, or (c) figure out the Graph API yourself.</p>
+      <p>CommentPull is option (d): open the tool, paste the URL, get a clean file. No API knowledge required. No subscription. No data sent anywhere you didn't ask it to go.</p>
+      <p>We added Instagram, then YouTube, then filters, winner picker, Excel export, and a token system powered by rewarded ads instead of a paywall — because the tool should be accessible to everyone, from a solo creator to a brand team.</p>
+    </div>
+
+    <!-- How it works -->
+    <div>
+      <h2 class="section-title">How it actually works</h2>
+      <p>When you click Extract, your browser makes direct API calls to Facebook, Instagram, or YouTube — <strong>not to our servers</strong>. Your access token travels from your device to Meta or Google and nowhere else. The comments come back to your browser, get processed in memory, and land in a file on your device.</p>
+      <p>Our backend only handles three things: your account (email + hashed password), your token balance, and your session. That's it. We've deliberately built a system where we <em>can't</em> see your data even if we wanted to.</p>
+    </div>
+
+    <!-- Values -->
+    <div>
+      <h2 class="section-title">What we care about</h2>
+      <div class="values">
+        <div class="value-card">
+          <div class="value-icon">🔒</div>
+          <div class="value-title">Privacy by design</div>
+          <div class="value-desc">Your extraction data never touches our servers. We've engineered the architecture so we have nothing to leak.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <div class="value-title">Speed over ceremony</div>
+          <div class="value-desc">No onboarding flows. No dashboards to configure. Paste a URL, get comments. That's the whole product.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🆓</div>
+          <div class="value-title">Free, not freemium</div>
+          <div class="value-desc">No paywalled features. Earn extra tokens by watching an optional ad. No credit card, ever.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔧</div>
+          <div class="value-title">Does one thing well</div>
+          <div class="value-desc">We won't add a CRM, a scheduler, or an AI content writer. CommentPull extracts comments. That's the mission.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div>
+      <h2 class="section-title">Timeline</h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2024 — Early build</div>
+            <div class="tl-title">Facebook comment extraction</div>
+            <div class="tl-desc">First version: Facebook posts only, CSV export, no account needed.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2024 — Expansion</div>
+            <div class="tl-title">Instagram &amp; YouTube added</div>
+            <div class="tl-desc">Multi-platform support, reply threading, Excel export with summary sheet.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2024 — Features</div>
+            <div class="tl-title">Filters &amp; winner picker</div>
+            <div class="tl-desc">Keyword filters, dedup, date range, mention rules, and a fair random winner picker.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2025 — Accounts</div>
+            <div class="tl-title">Token system &amp; rewarded ads</div>
+            <div class="tl-desc">Free accounts with 250 daily tokens. Earn +500 tokens per ad watched — no subscription required.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact / CTA -->
+    <div class="cta-block">
+      <div class="cta-title">Ready to pull some comments?</div>
+      <p class="cta-desc">Free account. 250 tokens to start.<br>No credit card, no trial period, no catch.</p>
+      <a href="/" class="btn-cta">Start extracting →</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <span class="footer-left">© 2025 CommentPull</span>
+  <div class="footer-right">
+    <a href="/about.html">About</a>
+    <a href="/privacy.html">Privacy Policy</a>
+    <a href="/">Back to app</a>
+  </div>
+</footer>
+
+</body>
+</html>

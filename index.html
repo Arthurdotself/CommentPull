@@ -98,6 +98,7 @@
     --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
     --accent-ig: #e1306c; --accent-fb: #1877f2;
     --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
+    --accent-yt: #ff2d2d;
     --radius: 10px; --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -120,6 +121,7 @@
   .pill { display: flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1px solid; }
   .pill.fb  { color: var(--accent-fb); border-color: rgba(24,119,242,0.3); background: rgba(24,119,242,0.05); }
   .pill.ig  { color: var(--accent-ig); border-color: rgba(225,48,108,0.3); background: rgba(225,48,108,0.05); }
+  .pill.yt    { color: var(--accent-yt); border-color: rgba(255,45,45,0.3); background: rgba(255,45,45,0.05); }
   .pill.coming { color: var(--text-muted); border-color: var(--border); background: transparent; }
   .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
@@ -131,17 +133,19 @@
   .card-body { padding: 32px; display: flex; flex-direction: column; gap: 28px; }
 
   /* Platform toggle */
-  .platform-select { display: flex; gap: 12px; }
+  .platform-select { display: flex; gap: 12px; flex-wrap: wrap; }
   .platform-btn { flex: 1; padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; text-align: left; position: relative; overflow: hidden; }
   .platform-btn:hover { border-color: var(--border-active); }
   .platform-btn.active-fb { border-color: rgba(24,119,242,0.55); background: rgba(24,119,242,0.07); }
   .platform-btn.active-ig { border-color: rgba(225,48,108,0.55); background: rgba(225,48,108,0.07); }
+  .platform-btn.active-yt { border-color: rgba(255,45,45,0.55); background: rgba(255,45,45,0.07); }
   .platform-btn .check { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); display: none; align-items: center; justify-content: center; }
-  .platform-btn.active-fb .check, .platform-btn.active-ig .check { display: flex; }
+  .platform-btn.active-fb .check, .platform-btn.active-ig .check, .platform-btn.active-yt .check { display: flex; }
   .platform-btn .check svg { width: 10px; height: 10px; stroke: #000; stroke-width: 2.5; fill: none; }
   .platform-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .platform-icon.fb { background: rgba(24,119,242,0.15); }
   .platform-icon.ig { background: rgba(225,48,108,0.12); }
+  .platform-icon.yt { background: rgba(255,45,45,0.12); }
   .platform-icon svg { width: 18px; height: 18px; }
   .platform-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
   .platform-sub  { font-size: 11px; color: var(--text-dim); }
@@ -159,9 +163,6 @@
   input[type="text"], input[type="password"], input[type="url"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; transition: all 0.2s; }
   input:focus { border-color: var(--accent); background: rgba(240,192,96,0.03); box-shadow: 0 0 0 3px var(--accent-glow); }
   input::placeholder { color: var(--text-muted); }
-  .eye-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-dim); padding: 4px; display: flex; align-items: center; transition: color 0.15s; }
-  .eye-btn:hover { color: var(--text); }
-  .eye-btn svg { width: 16px; height: 16px; }
   input.has-toggle { padding-right: 42px; }
 
   .row2 { display: flex; gap: 10px; align-items: center; }
@@ -220,11 +221,19 @@
   .divider { height: 1px; background: var(--border); }
 
   /* CTA */
-  .cta-row { display: flex; align-items: center; gap: 16px; }
+  .cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .token-budget-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); margin-top: 8px; }
+  .token-budget-bar .tb-count { color: var(--accent); font-weight: 600; font-size: 12px; }
+  .token-budget-bar .tb-count.low { color: #f09060; }
+  .token-budget-bar .tb-earn { color: var(--text-dim); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .token-budget-bar .tb-earn:hover { color: #50c878; }
   .btn-extract { flex: 1; padding: 16px 24px; background: var(--accent); color: #0d0d0d; border: none; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .btn-extract:hover { background: #f5d080; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,192,96,0.25); }
   .btn-extract:active { transform: translateY(0); }
   .btn-extract.loading { pointer-events: none; background: #c9a040; }
+  .btn-extract.update-mode { background: none; border: 1.5px solid rgba(255,195,50,0.45); color: #ffc532; }
+  .btn-extract.update-mode:hover { border-color: #ffc532; background: rgba(255,195,50,0.08); color: #ffd966; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,195,50,0.12); }
+  .btn-extract.update-mode.loading { background: none; border-color: rgba(255,195,50,0.3); color: rgba(255,197,50,0.5); }
   .btn-extract svg { width: 16px; height: 16px; flex-shrink: 0; }
   .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
   .btn-extract.loading .spinner { display: block; }
@@ -290,6 +299,237 @@
   .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
   .free-badge { background: rgba(80,200,120,0.1); color: #7de8a8; border: 1px solid rgba(80,200,120,0.2); padding: 3px 10px; border-radius: 20px; font-size: 11px; }
 
+  /* ── Filter Rules ── */
+  input[type="number"], input[type="date"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; font-family: var(--mono); font-size: 13px; color: var(--text); outline: none; transition: all 0.2s; }
+  input[type="number"]:focus, input[type="date"]:focus { border-color: var(--accent); background: rgba(240,192,96,0.03); box-shadow: 0 0 0 3px var(--accent-glow); }
+  input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+
+  .filter-section { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.2s; }
+  .filter-section:hover { border-color: var(--border-active); }
+  .filter-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--surface2); cursor: pointer; user-select: none; }
+  .filter-header-left { display: flex; align-items: center; gap: 8px; }
+  .filter-header-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+  .filter-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); transition: all 0.2s; }
+  .filter-badge.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+  .filter-chevron { width: 14px; height: 14px; color: var(--text-dim); transition: transform 0.2s; flex-shrink: 0; }
+  .filter-section.open .filter-chevron { transform: rotate(180deg); }
+
+  .filter-rules { display: none; flex-direction: column; border-top: 1px solid var(--border); }
+  .filter-section.open .filter-rules { display: flex; animation: fadeUp 0.2s ease; }
+
+  .filter-rule { border-bottom: 1px solid var(--border); }
+  .filter-rule:last-child { border-bottom: none; }
+  .filter-rule .toggle-row { border: none; border-radius: 0; background: var(--surface); }
+  .filter-rule .toggle-row:hover { background: rgba(255,255,255,0.015); }
+  .rule-inputs { padding: 0 20px 14px; background: var(--surface); }
+  .rule-note { font-size: 11px; color: var(--accent); margin-top: 6px; }
+  .rule-inline { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .rule-inline input[type="number"] { width: 90px; flex-shrink: 0; padding: 10px 12px; }
+  .rule-inline span { font-size: 12px; color: var(--text-dim); }
+  .rule-date-row { display: flex; gap: 10px; margin-top: 8px; }
+  .rule-date-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .rule-date-col label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .rule-date-col input[type="date"] { padding: 10px 12px; }
+
+  /* ── Winner Randomizer ── */
+  .rand-panel { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: fadeUp 0.35s ease; }
+  .rand-header { padding: 20px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .rand-title-text { font-family: var(--serif); font-size: 18px; font-weight: 400; font-style: italic; color: var(--text); }
+  .rand-pool-tag { font-size: 11px; color: var(--text-dim); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; }
+  .rand-body { padding: 28px 32px; display: flex; flex-direction: column; gap: 22px; }
+
+  .rand-setup-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
+  .rand-stepper { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+  .rand-stepper-btn { width: 34px; height: 34px; background: var(--surface); border: none; color: var(--text); font-size: 20px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+  .rand-stepper-btn:hover { background: var(--accent-glow); color: var(--accent); }
+  .rand-stepper-val { min-width: 44px; text-align: center; font-size: 16px; font-weight: 500; color: var(--text); border-left: 1px solid var(--border); border-right: 1px solid var(--border); height: 34px; display: flex; align-items: center; justify-content: center; }
+
+  .btn-draw { width: 100%; padding: 16px 24px; background: var(--accent); color: #0d0d0d; border: none; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn-draw:hover:not(:disabled) { background: #f5d080; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(240,192,96,0.3); }
+  .btn-draw:active:not(:disabled) { transform: none; }
+  .btn-draw:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-draw svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .rand-stage { display: none; padding: 36px 32px; text-align: center; border-top: 1px solid var(--border); background: radial-gradient(ellipse at center, rgba(240,192,96,0.05) 0%, transparent 70%); }
+  .slot-drum { display: inline-flex; flex-direction: column; align-items: center; background: var(--surface2); border: 2px solid var(--accent); border-radius: 14px; padding: 24px 48px; min-width: 260px; box-shadow: 0 0 48px rgba(240,192,96,0.12); }
+  .slot-name { font-family: var(--serif); font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; min-height: 36px; max-width: 300px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .slot-sub { font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 10px; }
+
+  .rand-winners { display: flex; flex-direction: column; gap: 10px; padding: 0 32px 28px; }
+  .winner-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; display: flex; align-items: flex-start; gap: 14px; animation: winnerReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  .winner-card.gold { border-color: var(--accent); background: rgba(240,192,96,0.06); box-shadow: 0 0 30px rgba(240,192,96,0.1); }
+  @keyframes winnerReveal { from { opacity:0; transform: scale(0.92) translateY(10px); } to { opacity:1; transform: scale(1) translateY(0); } }
+  .winner-rank { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #0d0d0d; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .winner-card:not(.gold) .winner-rank { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); }
+  .winner-info { flex: 1; min-width: 0; }
+  .winner-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: var(--serif); }
+  .winner-comment { font-size: 12px; color: var(--text-dim); line-height: 1.6; word-break: break-word; margin-bottom: 5px; font-style: italic; }
+  .winner-meta { font-size: 11px; color: var(--text-muted); }
+  .btn-reroll { flex-shrink: 0; align-self: center; padding: 7px 12px; background: none; border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .btn-reroll:hover { border-color: var(--accent-ig); color: var(--accent-ig); background: rgba(225,48,108,0.05); }
+  .btn-reroll:disabled { opacity: 0.25; pointer-events: none; }
+  .rand-winners.drawing .btn-reroll { opacity: 0.25; pointer-events: none; cursor: not-allowed; }
+  .btn-reroll svg { width: 12px; height: 12px; }
+
+  .rand-footer { padding: 16px 32px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .btn-draw-again { padding: 9px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; }
+  .btn-draw-again:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .rand-seed-info { font-size: 10px; color: var(--text-muted); line-height: 1.9; text-align: right; }
+  .rand-seed-info code { color: var(--text-dim); background: var(--surface); padding: 1px 5px; border-radius: 3px; font-size: 10px; }
+
+  /* ── Results Preview Panel ── */
+  .preview-panel { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: fadeUp 0.35s ease; }
+  .preview-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .preview-title { font-family: var(--serif); font-size: 15px; font-weight: 400; font-style: italic; color: var(--text); }
+  .preview-meta { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .preview-meta .q-count { color: #7de8a8; font-weight: 500; }
+  .preview-meta .x-count { color: #f07090; font-weight: 500; }
+  .preview-controls { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+  .preview-search-wrap { position: relative; }
+  .preview-search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; color: var(--text-dim); pointer-events: none; }
+  .preview-search-wrap input { padding: 9px 12px 9px 30px; font-size: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; }
+  .preview-dl-row { display: flex; align-items: center; gap: 8px; }
+  .dl-btn-wrap { position: relative; }
+  .btn-dl { padding: 9px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .btn-dl:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .btn-dl.primary { border-color: rgba(80,200,120,0.4); color: #7de8a8; background: rgba(80,200,120,0.05); }
+  .btn-dl.primary:hover { border-color: #7de8a8; background: rgba(80,200,120,0.1); }
+  .btn-dl svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .btn-dl .dl-caret { transition: transform 0.15s; }
+  .btn-dl.open .dl-caret { transform: rotate(180deg); }
+  .dl-dropdown-menu { position: absolute; top: calc(100% + 6px); right: 0; background: var(--surface); border: 1px solid var(--border-active); border-radius: var(--radius); min-width: 220px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; overflow: hidden; animation: fadeUp 0.12s ease; }
+  .dl-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 14px; background: none; border: none; border-bottom: 1px solid var(--border); text-align: left; cursor: pointer; transition: background 0.1s; font-family: var(--mono); }
+  .dl-menu-item:last-child { border-bottom: none; }
+  .dl-menu-item:hover { background: rgba(255,255,255,0.04); }
+  .dl-menu-item svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--text-dim); }
+  .dl-menu-item.dl-item-primary svg { color: #7de8a8; }
+  .dl-item-label { font-size: 12px; color: var(--text); }
+  .dl-item-desc { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  .preview-table-wrap { overflow-x: auto; max-height: 400px; overflow-y: auto; }
+  .preview-table-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+  .preview-table-wrap::-webkit-scrollbar-track { background: transparent; }
+  .preview-table-wrap::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 3px; }
+  .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .preview-table thead th { position: sticky; top: 0; z-index: 2; background: var(--surface); padding: 10px 14px; text-align: left; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); white-space: nowrap; font-weight: 500; }
+  .preview-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  .preview-table tbody tr:last-child { border-bottom: none; }
+  .preview-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+  .preview-table tbody tr.row-ok  { background: rgba(80,200,120,0.04); }
+  .preview-table tbody tr.row-ok:hover  { background: rgba(80,200,120,0.08); }
+  .preview-table tbody tr.row-out { background: rgba(225,48,108,0.04); }
+  .preview-table tbody tr.row-out:hover { background: rgba(225,48,108,0.07); }
+  .preview-table td { padding: 10px 14px; vertical-align: top; }
+  .td-num  { color: var(--text-muted); font-size: 11px; width: 32px; white-space: nowrap; }
+  .td-name { color: var(--text); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+  .td-comment { color: var(--text-dim); max-width: 320px; word-break: break-word; line-height: 1.55; }
+  .td-date { color: var(--text-muted); white-space: nowrap; font-size: 11px; }
+  .td-post { color: var(--text-muted); font-size: 11px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; flex-shrink: 0; vertical-align: middle; }
+  .row-ok  .status-dot { background: #7de8a8; }
+  .row-out .status-dot { background: #f07090; }
+
+  .preview-footer { padding: 12px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .preview-footer-text { font-size: 11px; color: var(--text-muted); }
+  .preview-empty { padding: 48px 24px; text-align: center; font-size: 12px; color: var(--text-muted); }
+
+  /* ── Token Health Check ── */
+  .btn-token-check { margin-top: 8px; padding: 7px 13px; background: none; border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-token-check:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .btn-token-check:disabled { opacity: 0.4; pointer-events: none; }
+  .btn-token-check svg { width: 12px; height: 12px; }
+  .token-health-card { border-radius: var(--radius); border: 1px solid; padding: 14px 16px; font-size: 12px; line-height: 1.7; animation: fadeUp 0.25s ease; }
+  .token-health-card.ok   { background: rgba(80,200,120,0.05);  border-color: rgba(80,200,120,0.25); }
+  .token-health-card.warn { background: rgba(240,192,96,0.05);  border-color: rgba(240,192,96,0.25); }
+  .token-health-card.err  { background: rgba(225,48,108,0.05);  border-color: rgba(225,48,108,0.25); }
+  .thc-name { font-weight: 500; color: var(--text); margin-bottom: 10px; }
+  .thc-perms { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+  .thc-perm { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .thc-perm-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .thc-perm-dot.ok   { background: #7de8a8; }
+  .thc-perm-dot.miss { background: #f07090; }
+  .thc-expiry { font-size: 11px; padding-top: 8px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .thc-ok   { color: #7de8a8; }
+  .thc-warn { color: var(--accent); }
+  .thc-err  { color: #f07090; }
+  .thc-action { margin-top: 8px; font-size: 11px; color: var(--text-dim); }
+  .thc-action a { color: var(--accent); text-decoration: none; }
+  .thc-action a:hover { text-decoration: underline; }
+
+  /* ── Report sheet (screen: hidden; print: only thing shown) ── */
+  #report-sheet { display: none; }
+  .btn-report { padding: 9px 16px; background: var(--surface2); border: 1px solid var(--accent); border-radius: 8px; font-family: var(--mono); font-size: 12px; color: var(--accent); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .btn-report:hover { background: var(--accent-glow); box-shadow: 0 0 16px var(--accent-glow); }
+  .btn-report svg { width: 13px; height: 13px; }
+
+  /* ── Print styles ── */
+  @media print {
+    nav, .hero, .main, .how, .faq, footer, #confetti-canvas { display: none !important; }
+    body::before { display: none !important; }
+    body { background: #fff !important; color: #111 !important; margin: 0; padding: 0; }
+    #report-sheet { display: block !important; }
+
+    .rp-page { padding: 44px 52px; font-family: 'DM Mono', monospace; font-size: 10.5pt; color: #111; }
+    .rp-header { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 2px solid #111; padding-bottom: 14px; margin-bottom: 30px; }
+    .rp-logo { font-family: 'Fraunces', serif; font-size: 20pt; font-weight: 700; color: #111; letter-spacing: -0.5px; }
+    .rp-logo span { font-weight: 300; font-style: italic; color: #555; }
+    .rp-doc-title { font-size: 9pt; letter-spacing: 0.2em; text-transform: uppercase; color: #777; }
+
+    .rp-section { margin-bottom: 28px; }
+    .rp-section-title { font-size: 8.5pt; letter-spacing: 0.2em; text-transform: uppercase; color: #999; border-bottom: 1px solid #e0e0e0; padding-bottom: 5px; margin-bottom: 14px; }
+
+    .rp-grid { display: flex; flex-direction: column; gap: 7px; }
+    .rp-row { display: flex; gap: 12px; align-items: baseline; }
+    .rp-label { font-size: 8.5pt; color: #888; width: 140px; flex-shrink: 0; }
+    .rp-val { font-size: 10pt; color: #111; }
+    .rp-urls { display: flex; flex-direction: column; gap: 3px; }
+    .rp-url { font-size: 8.5pt; color: #555; word-break: break-all; }
+    .rp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .rp-tag { border: 1px solid #ccc; border-radius: 4px; padding: 1px 7px; font-size: 8.5pt; color: #444; }
+    .rp-notag { font-size: 9pt; color: #aaa; font-style: italic; }
+
+    .rp-winner { display: flex; gap: 14px; align-items: flex-start; border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; page-break-inside: avoid; }
+    .rp-winner.first { border-color: #c8a830; background: #fffdf5; }
+    .rp-winner-rank { width: 28px; height: 28px; border-radius: 50%; background: #111; color: #fff; font-size: 11pt; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rp-winner.first .rp-winner-rank { background: #c8a830; }
+    .rp-winner-body { flex: 1; }
+    .rp-winner-name { font-family: 'Fraunces', serif; font-size: 13pt; font-weight: 700; color: #111; margin-bottom: 5px; }
+    .rp-winner-comment { font-size: 9.5pt; color: #444; font-style: italic; line-height: 1.55; margin-bottom: 4px; }
+    .rp-winner-meta { font-size: 8.5pt; color: #999; }
+
+    .rp-footer { border-top: 1px solid #e0e0e0; padding-top: 14px; margin-top: 30px; display: flex; flex-direction: column; gap: 5px; }
+    .rp-foot-row { font-size: 9pt; color: #666; }
+    .rp-foot-label { color: #aaa; margin-right: 6px; }
+    .rp-foot-brand { font-size: 8.5pt; color: #bbb; margin-top: 6px; }
+  }
+
+  /* ── Filter Preset System ── */
+  .btn-presets { padding: 4px 10px 4px 8px; background: none; border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; letter-spacing: 0.04em; white-space: nowrap; }
+  .btn-presets:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .btn-presets .presets-caret { width: 10px; height: 10px; transition: transform 0.15s; }
+  .btn-presets.open .presets-caret { transform: rotate(180deg); }
+  .btn-presets .presets-icon { width: 11px; height: 11px; }
+  .presets-menu { position: fixed; background: var(--surface); border: 1px solid var(--border-active); border-radius: var(--radius); min-width: 236px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; overflow: hidden; animation: fadeUp 0.12s ease; }
+  .presets-menu-section { border-bottom: 1px solid var(--border); }
+  .presets-menu-section:last-child { border-bottom: none; }
+  .presets-menu-label { font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding: 8px 14px 3px; }
+  .preset-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; cursor: pointer; transition: background 0.1s; gap: 10px; }
+  .preset-item:hover { background: rgba(255,255,255,0.04); }
+  .preset-item-info { flex: 1; min-width: 0; }
+  .preset-item-name { font-size: 12px; color: var(--text); }
+  .preset-item-desc { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .preset-item-del { background: none; border: none; width: 22px; height: 22px; border-radius: 4px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .preset-item-del:hover { color: #f07090; background: rgba(225,48,108,0.1); }
+  .preset-item-del svg { width: 11px; height: 11px; }
+  .presets-empty { padding: 7px 14px 9px; font-size: 11px; color: var(--text-muted); font-style: italic; }
+  .presets-save-area { padding: 8px 14px 12px; }
+  .presets-save-row { display: flex; gap: 6px; margin-top: 5px; }
+  .presets-save-row input { flex: 1; padding: 8px 10px; font-size: 12px; border-radius: 6px; min-width: 0; }
+  .btn-preset-save { padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .btn-preset-save:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
   @media (max-width: 640px) {
     nav { padding: 16px 20px; }
     .hero { padding: 120px 20px 60px; }
@@ -300,6 +540,10 @@
     footer { flex-direction: column; gap: 12px; text-align: center; }
     .card-body { padding: 20px; }
     .card-header { padding: 16px 20px; }
+    .preview-header { flex-direction: column; align-items: flex-start; }
+    .preview-controls { width: 100%; }
+    .preview-search-wrap input { width: 100%; }
+    .td-post { display: none; }
   }
 </style>
 </head>
@@ -307,18 +551,42 @@
 
 <nav>
   <a href="#" class="logo">Comment<span>Pull</span></a>
-  <span class="nav-badge">Free Beta · Browser-only · No data stored</span>
+  <div class="nav-right">
+    <button class="btn-nav" onclick="openPricing()">Pricing</button>
+    <div id="nav-auth-guest">
+      <button class="btn-nav" onclick="openAuth('signin')">Sign in</button>
+      <button class="btn-nav accent" onclick="openAuth('signup')">Sign up</button>
+    </div>
+    <div id="nav-auth-user" style="display:none">
+      <div class="user-chip" onclick="toggleUserMenu()">
+        <span id="nav-user-plan" class="plan-dot free"></span>
+        <span id="nav-user-name"></span>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div id="user-dropdown" class="user-dropdown" style="display:none">
+        <div class="dropdown-email" id="nav-user-email"></div>
+        <div class="dropdown-token-row">
+          <span class="dropdown-token-icon">🪙</span>
+          <span id="nav-user-tokens">250 tokens</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item accent-item" onclick="openPricing()">Earn more tokens</button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item danger" onclick="doSignOut()">Sign out</button>
+      </div>
+    </div>
+  </div>
 </nav>
 
 <section class="hero">
   <p class="hero-eyebrow">Social Data Extraction</p>
-  <h1>Extract <em>Facebook &<br>Instagram comments</em><br>in seconds.</h1>
-  <p class="hero-desc">Enter your access token and post URLs. All comments with usernames and timestamps are fetched directly from Facebook or Instagram and downloaded as a clean file. Runs entirely in your browser — nothing is stored or sent anywhere.</p>
+  <h1>Extract <em>Facebook, Instagram<br>& YouTube comments</em><br>in seconds.</h1>
+  <p class="hero-desc">Enter your access token (or API key) and post URLs. All comments with usernames and timestamps are fetched directly from the platform and downloaded as a clean file. Runs entirely in your browser — nothing is stored or sent anywhere.</p>
   <div class="platforms">
     <span class="pill fb"><span class="dot"></span>Facebook — Live</span>
     <span class="pill ig"><span class="dot"></span>Instagram — Live</span>
+    <span class="pill yt"><span class="dot"></span>YouTube — Live</span>
     <span class="pill coming">TikTok — Soon</span>
-    <span class="pill coming">YouTube — Soon</span>
   </div>
 </section>
 
@@ -351,27 +619,37 @@
             <div><div class="platform-name">Instagram</div><div class="platform-sub">Business / Creator</div></div>
             <div class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
           </button>
+          <button class="platform-btn" id="btn-yt" onclick="selectPlatform('yt')">
+            <div class="platform-icon yt">
+              <svg viewBox="0 0 24 24" fill="#ff2d2d"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.05 0 12 0 12s0 3.95.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.47 20.5 12 20.5 12 20.5s7.53 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.95 24 12 24 12s0-3.95-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
+            </div>
+            <div><div class="platform-name">YouTube</div><div class="platform-sub">Any public video</div></div>
+            <div class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          </button>
         </div>
       </div>
 
       <!-- 02 Token (shared) -->
       <div class="field-group">
         <label>
-          02 — Page Access Token
+          <span id="token-label-text">02 — Page Access Token</span>
           <span class="tooltip-wrap">
             <i class="info-icon">?</i>
             <span class="tooltip" id="token-tooltip">Go to developers.facebook.com → Graph API Explorer. Select your App, then your Page. For Facebook: add pages_read_engagement. For Instagram: also add instagram_basic + instagram_manage_comments. Click Generate Token. Your token never leaves your device.</span>
           </span>
-          <button class="hint-link" onclick="window.open('https://developers.facebook.com/tools/explorer/','_blank')">Get token →</button>
+          <button class="hint-link" id="token-hint-link" onclick="window.open('https://developers.facebook.com/tools/explorer/','_blank')">Get token →</button>
         </label>
         <div class="input-wrap">
-          <input type="password" id="token-input" class="has-toggle" placeholder="EAABsbCS4IUA…" autocomplete="off" spellcheck="false">
-          <button class="eye-btn" id="eye-btn">
-            <svg id="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            <svg id="eye-hide" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-          </button>
+          <input type="text" id="token-input" placeholder="EAABsbCS4IUA…" autocomplete="off" spellcheck="false">
         </div>
+        <button class="btn-token-check" id="btn-check-token" onclick="checkToken()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span id="btn-check-text">Check token health</span>
+        </button>
       </div>
+      <div class="token-health-card" id="token-health-card" style="display:none"></div>
 
       <!-- ── FACEBOOK CONTEXT ── -->
       <div class="ctx-block visible" id="ctx-fb">
@@ -457,6 +735,33 @@
         </div>
       </div>
 
+      <!-- ── YOUTUBE CONTEXT ── -->
+      <div class="ctx-block" id="ctx-yt">
+
+        <!-- YT info callout -->
+        <div class="callout" style="border-color:rgba(255,45,45,0.2);background:rgba(255,45,45,0.04)">
+          <strong>Requirements:</strong> Any public YouTube video. You need a <strong>YouTube Data API v3 key</strong> — create one free at <a href="https://console.developers.google.com/" target="_blank">Google Cloud Console</a> (enable the YouTube Data API v3). Your API key never leaves your browser.
+        </div>
+
+        <!-- YT Video URLs -->
+        <div class="field-group">
+          <label>03 — Video URL(s)</label>
+          <div class="toggle-row" style="margin-bottom:4px">
+            <div><div class="toggle-label">Multiple videos</div><div class="toggle-sub">Extract from several videos at once</div></div>
+            <label class="toggle"><input type="checkbox" id="yt-multi" onchange="onMultiToggle('yt')"><span class="toggle-track"></span></label>
+          </div>
+          <div class="url-list" id="yt-url-list">
+            <div class="url-entry">
+              <input type="url" class="yt-url" placeholder="https://www.youtube.com/watch?v=…">
+            </div>
+          </div>
+          <button class="add-url" id="yt-add-url" onclick="addUrl('yt')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add another video
+          </button>
+        </div>
+      </div>
+
       <!-- Options (shared) -->
       <div class="field-group">
         <label>Export options</label>
@@ -480,11 +785,150 @@
         </div>
       </div>
 
+      <!-- 05 Filter Rules -->
+      <div class="filter-section" id="filter-section">
+        <div class="filter-header" onclick="toggleFilters()">
+          <div class="filter-header-left">
+            <span class="filter-header-label">Filter Rules</span>
+            <span class="tooltip-wrap" onclick="event.stopPropagation()">
+              <i class="info-icon">?</i>
+              <span class="tooltip">Set qualification rules that comments must pass before being exported or used in the randomizer. Only comments matching all active rules will be included. Deduplication always runs last.</span>
+            </span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="btn-presets" id="btn-presets" onclick="event.stopPropagation(); togglePresetsMenu()">
+              <svg class="presets-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              Presets
+              <svg class="presets-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <span class="filter-badge" id="filter-badge">No filters</span>
+            <svg class="filter-chevron" id="filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+
+        <div class="filter-rules" id="filter-rules">
+
+          <!-- Rule: Keyword / Hashtag -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Must contain keyword or hashtag</div><div class="toggle-sub">e.g. #giveaway, win, contest</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-keyword" onchange="onRuleToggle('rule-keyword')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-keyword" style="display:none">
+              <input type="text" id="filter-keyword" placeholder="e.g.  #giveaway  or  win">
+            </div>
+          </div>
+
+          <!-- Rule: Min @mentions -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Minimum @mentions</div><div class="toggle-sub">Comment must tag at least N friends</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-mentions" onchange="onRuleToggle('rule-mentions')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-mentions" style="display:none">
+              <div class="rule-inline">
+                <input type="number" id="filter-mentions" value="2" min="1" max="20">
+                <span>or more @mentions required</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule: Min comment length -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Minimum comment length</div><div class="toggle-sub">Filter out spam, emoji-only, or one-word replies</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-length" onchange="onRuleToggle('rule-length')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-length" style="display:none">
+              <div class="rule-inline">
+                <input type="number" id="filter-length" value="10" min="1" max="500">
+                <span>characters minimum</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule: One entry per person -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">One entry per person</div><div class="toggle-sub">Keep only the first comment per commenter</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-dedup" onchange="onRuleToggle('rule-dedup')"><span class="toggle-track"></span></label>
+            </div>
+          </div>
+
+          <!-- Rule: Date range -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Date range</div><div class="toggle-sub">Only count comments posted within a period</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-daterange" onchange="onRuleToggle('rule-daterange')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-daterange" style="display:none">
+              <div class="rule-date-row">
+                <div class="rule-date-col">
+                  <label>From</label>
+                  <input type="date" id="filter-date-from">
+                </div>
+                <div class="rule-date-col">
+                  <label>To</label>
+                  <input type="date" id="filter-date-to">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rule: Exclude usernames -->
+          <div class="filter-rule">
+            <div class="toggle-row">
+              <div><div class="toggle-label">Exclude specific users</div><div class="toggle-sub">Remove admins, test accounts, or disqualified users</div></div>
+              <label class="toggle"><input type="checkbox" id="rule-exclude" onchange="onRuleToggle('rule-exclude')"><span class="toggle-track"></span></label>
+            </div>
+            <div class="rule-inputs" id="inputs-rule-exclude" style="display:none">
+              <input type="text" id="filter-exclude" placeholder="username1, username2, …">
+              <p class="rule-note">Comma-separated. Matches commenter names and usernames (case-insensitive).</p>
+            </div>
+          </div>
+
+        </div><!-- /filter-rules -->
+      </div><!-- /filter-section -->
+
       <div class="divider"></div>
 
       <!-- CTA -->
       <div>
         <div class="cta-row">
+          <button class="btn-extract" id="extract-btn" onclick="handleExtract()">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <div class="spinner"></div>
+            <span class="btn-label">Extract &amp; Preview</span>
+          </button>
+        </div>
+        <div id="token-budget-bar" class="token-budget-bar" style="display:none">
+          🪙 <span id="tb-count" class="tb-count">250</span> tokens remaining
+          &nbsp;·&nbsp;
+          <span class="tb-earn" onclick="openPricing()">earn more →</span>
+        </div>
+        <div class="status-panel" id="status"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Results Preview Panel ── -->
+  <div class="preview-panel" id="preview-panel" style="display:none">
+
+    <div class="preview-header">
+      <div>
+        <div class="preview-title">Results Preview</div>
+        <div class="preview-meta" id="preview-meta"></div>
+      </div>
+      <div class="preview-controls">
+        <div class="preview-search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="preview-search" placeholder="Search name or comment…" oninput="searchPreview()">
+        </div>
+        <div class="preview-dl-row">
           <div class="format-select">
             <select id="fmt">
               <option value="xlsx">Excel (.xlsx)</option>
@@ -493,21 +937,133 @@
             </select>
             <span class="select-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
           </div>
-          <button class="btn-extract" id="extract-btn" onclick="handleExtract()">
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            <div class="spinner"></div>
-            Extract &amp; Download
-          </button>
+          <div class="dl-btn-wrap">
+            <button class="btn-dl primary" id="btn-dl-main" onclick="event.stopPropagation(); toggleDlMenu()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download
+              <svg class="dl-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="dl-menu" class="dl-dropdown-menu" style="display:none">
+              <button class="dl-menu-item dl-item-primary" onclick="reDownload('qualified'); closeDlMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <div>
+                  <div class="dl-item-label">Filtered results</div>
+                  <div class="dl-item-desc" id="dl-qualified-desc"></div>
+                </div>
+              </button>
+              <button class="dl-menu-item" onclick="reDownload('all'); closeDlMenu()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <div>
+                  <div class="dl-item-label">All results</div>
+                  <div class="dl-item-desc" id="dl-all-desc"></div>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="status-panel" id="status"></div>
+      </div>
+    </div>
+
+    <div class="preview-table-wrap" id="preview-table-wrap">
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Comment</th>
+            <th>Date</th>
+            <th>Post</th>
+          </tr>
+        </thead>
+        <tbody id="preview-tbody"></tbody>
+      </table>
+      <div class="preview-empty" id="preview-empty" style="display:none">No comments match your search.</div>
+    </div>
+
+    <div class="preview-footer">
+      <span class="preview-footer-text" id="preview-footer-text"></span>
+      <span class="preview-footer-text" id="preview-legend" style="display:none">
+        <span style="color:#7de8a8">●</span> Qualified &nbsp;
+        <span style="color:#f07090">●</span> Excluded by filters
+      </span>
+    </div>
+
+  </div>
+
+  <!-- ── Winner Randomizer Panel ── -->
+  <div class="rand-panel" id="rand-panel" style="display:none">
+
+    <div class="rand-header">
+      <span class="rand-title-text">Winner Randomizer</span>
+      <span class="rand-pool-tag" id="rand-pool-tag"></span>
+    </div>
+
+    <div class="rand-body">
+
+      <!-- Number of winners stepper -->
+      <div class="rand-setup-row">
+        <div>
+          <div class="toggle-label">Number of winners</div>
+          <div class="toggle-sub">Drawn fairly from the qualified pool</div>
+        </div>
+        <div class="rand-stepper">
+          <button class="rand-stepper-btn" onclick="adjustWinners(-1)">−</button>
+          <div class="rand-stepper-val" id="rand-winner-count">1</div>
+          <button class="rand-stepper-btn" onclick="adjustWinners(1)">+</button>
+        </div>
       </div>
 
+      <!-- Manual exclusions -->
+      <div class="field-group">
+        <label>
+          Exclude from draw
+          <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0;font-weight:400">— optional</span>
+        </label>
+        <input type="text" id="rand-exclude" placeholder="username1, username2, …">
+        <div class="field-hint info" style="display:block">Comma-separated names. These people won't be drawn even if they qualified.</div>
+      </div>
+
+      <!-- Draw button -->
+      <button class="btn-draw" id="btn-draw" onclick="drawWinners()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span id="btn-draw-text">Draw 1 Winner</span>
+      </button>
+
     </div>
+
+    <!-- Slot machine stage (hidden until draw starts) -->
+    <div class="rand-stage" id="rand-stage">
+      <div class="slot-drum">
+        <div class="slot-name" id="slot-name">—</div>
+        <div class="slot-sub" id="slot-sub">preparing…</div>
+      </div>
+    </div>
+
+    <!-- Winner cards rendered here -->
+    <div class="rand-winners" id="rand-winners"></div>
+
+    <!-- Footer: draw-again + generate report + seed transparency -->
+    <div class="rand-footer" id="rand-footer" style="display:none">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn-draw-again" onclick="resetDraw()">↺ Draw again</button>
+        <button class="btn-report" onclick="generateReport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          Generate Report
+        </button>
+      </div>
+      <div class="rand-seed-info" id="rand-seed-info"></div>
+    </div>
+
   </div>
+
 </section>
 
 <section class="how">
@@ -546,7 +1102,7 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        Yes. CommentPull runs <strong style="color:var(--text)">entirely in your browser</strong> — there is no backend server. Your access token, Page IDs, and all fetched comments never leave your device. The API calls go directly from your browser to Facebook/Instagram's servers. You can verify this yourself by opening DevTools → Network and inspecting every request.
+        Yes. Your access token and all comment extraction happen <strong style="color:var(--text)">entirely in your browser</strong> — the API calls go directly from your device to Facebook, Instagram, or YouTube's servers. CommentPull's servers never see your token or the content you extract. You can verify this by opening DevTools (F12) → Network tab and confirming requests go only to platform APIs.
       </div>
     </div>
 
@@ -556,17 +1112,17 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        Open your browser's DevTools (F12) → Network tab before clicking Extract. You'll see every request goes only to <code>graph.facebook.com</code> — nothing is sent to any CommentPull server because there isn't one. The entire source code is also <a href="https://github.com/Arthurdotself/CommentPull" target="_blank">open source on GitHub</a> so you can read every line before using it.
+        Open DevTools (F12) → Network tab before clicking Extract. Every extraction request goes directly to <code>graph.facebook.com</code>, <code>graph.instagram.com</code>, or <code>youtube.googleapis.com</code> — nothing related to your token or comments is sent to CommentPull's servers. Our backend only handles account sign-in and plan management.
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Why is it free? What's the catch?
+        What are tokens and how does the limit work?
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        CommentPull is currently in beta. During this period everything is free while we test, gather feedback, and improve the tool. No ads, no subscriptions, no data selling — just an early version being put through its paces.
+        Each comment you extract counts as one token. Free accounts start with <strong style="color:var(--text)">250 tokens</strong> and can extract up to 5 posts. Need more? <strong style="color:var(--text)">Watch a short ad to earn +500 tokens instantly</strong> — up to 10 ads per day. Tokens earned from ads never expire, and no payment is ever required.
       </div>
     </div>
 
@@ -576,7 +1132,7 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        No. Nothing is stored, logged, or sold — ever. There are no accounts, no sign-ups, and no cookies beyond what your browser handles natively. The only analytics on this page is anonymous usage counting via Google Analytics (page views and button clicks), which contains no personal information.
+        No. Your account stores only your email, name, and plan — nothing about the posts or comments you extract. Extracted data is processed entirely in your browser and downloaded directly to your device. We never see it, store it, or sell it.
       </div>
     </div>
 
@@ -592,11 +1148,11 @@
 
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">
-        Can I look at the source code?
+        How do I get support?
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">
-        Absolutely. The full source is on <a href="https://github.com/Arthurdotself/CommentPull" target="_blank">GitHub — github.com/Arthurdotself/CommentPull</a>. It's a single HTML file with no build step, no obfuscation, and no dependencies beyond the XLSX library. Read it, fork it, or contribute.
+        All users can reach us by email and typically get a response within a few business days. CommentPull is completely free — there's no paid plan. Earn extra tokens by watching ads, and use the tool as much as you need.
       </div>
     </div>
 
@@ -606,13 +1162,11 @@
 <footer>
   <span class="footer-left">CommentPull — Built for marketers, giveaways &amp; community managers.</span>
   <div class="footer-right">
-    <a href="https://github.com/Arthurdotself/CommentPull" target="_blank" style="color:var(--text-muted);text-decoration:none;display:flex;align-items:center;gap:5px;" title="View source on GitHub">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-      Open source
-    </a>
+    <a href="/about.html" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--text-dim)'" onmouseout="this.style.color='var(--text-muted)'">About</a>
     <span>·</span>
-    <span class="free-badge">Free Beta</span>
-    <span>· No ads · No data stored · Client-side only</span>
+    <a href="/privacy.html" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--text-dim)'" onmouseout="this.style.color='var(--text-muted)'">Privacy Policy</a>
+    <span>·</span>
+    <span>Extraction is 100% client-side · Free forever</span>
   </div>
 </footer>
 
@@ -629,36 +1183,56 @@ let platform = 'fb';
 function selectPlatform(p) {
   gtag('event', 'platform_selected', { platform: p });
   platform = p;
-  ['fb','ig'].forEach(x => {
+  ['fb','ig','yt'].forEach(x => {
     document.getElementById(`btn-${x}`).classList.remove(`active-${x}`);
     document.getElementById(`ctx-${x}`).classList.remove('visible');
   });
   document.getElementById(`btn-${p}`).classList.add(`active-${p}`);
   document.getElementById(`ctx-${p}`).classList.add('visible');
-  document.getElementById('api-badge').textContent =
-    p === 'ig' ? 'Instagram Graph API v19.0' : 'Facebook Graph API v19.0';
 
-  // Replies option: Instagram doesn't support stream filter the same way
+  const badgeMap = { fb: 'Facebook Graph API v19.0', ig: 'Instagram Graph API v19.0', yt: 'YouTube Data API v3' };
+  document.getElementById('api-badge').textContent = badgeMap[p] || 'Meta Graph API v19.0';
+
+  // Token label / placeholder / tooltip / hint-link swap
+  const labelEl    = document.getElementById('token-label-text');
+  const inputEl    = document.getElementById('token-input');
+  const tooltipEl  = document.getElementById('token-tooltip');
+  const hintLink   = document.getElementById('token-hint-link');
+  const checkBtn   = document.getElementById('btn-check-token');
+  if (p === 'yt') {
+    labelEl.textContent  = '02 — YouTube Data API Key';
+    inputEl.placeholder  = 'AIzaSy…';
+    tooltipEl.textContent = 'Go to console.developers.google.com → Create a project → Enable YouTube Data API v3 → Credentials → Create API key. Your key is only used locally in your browser.';
+    hintLink.textContent = 'Get API key →';
+    hintLink.onclick     = () => window.open('https://console.developers.google.com/','_blank');
+    checkBtn.style.display = 'none';
+  } else {
+    labelEl.textContent  = '02 — Page Access Token';
+    inputEl.placeholder  = 'EAABsbCS4IUA…';
+    tooltipEl.textContent = 'Go to developers.facebook.com → Graph API Explorer. Select your App, then your Page. For Facebook: add pages_read_engagement. For Instagram: also add instagram_basic + instagram_manage_comments. Click Generate Token. Your token never leaves your device.';
+    hintLink.textContent = 'Get token →';
+    hintLink.onclick     = () => window.open('https://developers.facebook.com/tools/explorer/','_blank');
+    checkBtn.style.display = '';
+  }
+
+  // Replies option
   const repliesCard = document.getElementById('opt-replies');
   if (p === 'ig') {
     repliesCard.classList.remove('selected');
     repliesCard.querySelector('.option-sub').textContent = 'Fetched separately (IG)';
+    repliesCard.classList.remove('disabled');
+  } else if (p === 'yt') {
+    repliesCard.querySelector('.option-sub').textContent = 'Nested replies';
+    repliesCard.classList.remove('disabled');
   } else {
     repliesCard.querySelector('.option-sub').textContent = 'Nested comments';
+    repliesCard.classList.remove('disabled');
   }
-  repliesCard.classList.remove('disabled');
-}
 
-// ────────────────────────────────────────────────────────────
-//  EYE TOGGLE
-// ────────────────────────────────────────────────────────────
-document.getElementById('eye-btn').addEventListener('click', () => {
-  const inp = document.getElementById('token-input');
-  const show = inp.type === 'password';
-  inp.type = show ? 'text' : 'password';
-  document.getElementById('eye-show').style.display = show ? 'none' : '';
-  document.getElementById('eye-hide').style.display = show ? '' : 'none';
-});
+  // Clear token health card — permission requirements differ per platform
+  const healthCard = document.getElementById('token-health-card');
+  if (healthCard) healthCard.style.display = 'none';
+}
 
 // ────────────────────────────────────────────────────────────
 //  OPTION TOGGLE
@@ -679,8 +1253,9 @@ function addUrl(pfx) {
   const list = document.getElementById(`${pfx}-url-list`);
   const div = document.createElement('div');
   div.className = 'url-entry';
+  const placeholders = { ig: 'https://www.instagram.com/p/…', yt: 'https://www.youtube.com/watch?v=…', fb: 'https://www.facebook.com/…/posts/…' };
   div.innerHTML = `
-    <input type="url" class="${pfx}-url" placeholder="${pfx === 'ig' ? 'https://www.instagram.com/p/…' : 'https://www.facebook.com/…/posts/…'}">
+    <input type="url" class="${pfx}-url" placeholder="${placeholders[pfx] || 'https://…'}">
     <button class="remove-url" onclick="removeUrl(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -791,7 +1366,7 @@ async function resolveIgUserId(fbPageId, token) {
 // ────────────────────────────────────────────────────────────
 //  FETCH ALL COMMENTS — Facebook
 // ────────────────────────────────────────────────────────────
-async function fetchFbComments(fullPostId, token, filter, onUpdate) {
+async function fetchFbComments(fullPostId, token, filter, onUpdate, maxComments = Infinity) {
   const results = [];
   let url = `${GRAPH}/${fullPostId}/comments?` + new URLSearchParams({
     access_token: token, fields: 'id,from,message,created_time', filter, limit: '100',
@@ -800,6 +1375,7 @@ async function fetchFbComments(fullPostId, token, filter, onUpdate) {
     const data = await gqlRaw(url);
     if (data.error) throw new Error(data.error.message);
     for (const c of (data.data || [])) {
+      if (results.length >= maxComments) break;
       results.push({
         post_id: fullPostId,
         commenter_name: c.from?.name ?? 'Unknown',
@@ -810,6 +1386,7 @@ async function fetchFbComments(fullPostId, token, filter, onUpdate) {
       });
     }
     if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
     url = data.paging?.next ?? null;
   }
   return results;
@@ -818,9 +1395,8 @@ async function fetchFbComments(fullPostId, token, filter, onUpdate) {
 // ────────────────────────────────────────────────────────────
 //  FETCH ALL COMMENTS — Instagram
 // ────────────────────────────────────────────────────────────
-async function fetchIgComments(mediaId, token, includeReplies, onUpdate) {
+async function fetchIgComments(mediaId, token, includeReplies, onUpdate, maxComments = Infinity) {
   const results = [];
-  // Fetch top-level comments
   let url = `${GRAPH}/${mediaId}/comments?` + new URLSearchParams({
     access_token: token,
     fields: 'id,username,text,timestamp,replies{id,username,text,timestamp}',
@@ -830,18 +1406,19 @@ async function fetchIgComments(mediaId, token, includeReplies, onUpdate) {
     const data = await gqlRaw(url);
     if (data.error) throw new Error(data.error.message);
     for (const c of (data.data || [])) {
+      if (results.length >= maxComments) break;
       results.push({
         post_id:        mediaId,
         commenter_name: c.username   ?? 'Unknown',
-        commenter_id:   c.id         ?? '',   // IG comments use id (not a separate user id)
+        commenter_id:   c.id         ?? '',
         comment_text:   c.text       ?? '',
         timestamp:      c.timestamp  ?? '',
         comment_id:     c.id         ?? '',
         reply_to:       '',
       });
-      // Include replies if toggled
       if (includeReplies && c.replies?.data) {
         for (const r of c.replies.data) {
+          if (results.length >= maxComments) break;
           results.push({
             post_id:        mediaId,
             commenter_name: r.username ?? 'Unknown',
@@ -855,8 +1432,82 @@ async function fetchIgComments(mediaId, token, includeReplies, onUpdate) {
       }
     }
     if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
     url = data.paging?.next ?? null;
   }
+  return results;
+}
+
+// ────────────────────────────────────────────────────────────
+//  YOUTUBE — VIDEO ID EXTRACTOR
+// ────────────────────────────────────────────────────────────
+function extractYtVideoId(url) {
+  url = url.trim();
+  // youtu.be/ID
+  let m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  // youtube.com/watch?v=ID
+  m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  // youtube.com/shorts/ID or /embed/ID or /v/ID
+  m = url.match(/youtube\.com\/(?:shorts|embed|v)\/([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  // Bare 11-char ID
+  if (/^[A-Za-z0-9_-]{11}$/.test(url)) return url;
+  return null;
+}
+
+// ────────────────────────────────────────────────────────────
+//  YOUTUBE — FETCH ALL COMMENTS (YouTube Data API v3)
+// ────────────────────────────────────────────────────────────
+async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate, maxComments = Infinity) {
+  const YT = 'https://www.googleapis.com/youtube/v3';
+  const results = [];
+  let pageToken = '';
+  do {
+    const params = new URLSearchParams({
+      part: includeReplies ? 'snippet,replies' : 'snippet',
+      videoId,
+      key: apiKey,
+      maxResults: '100',
+      textFormat: 'plainText',
+    });
+    if (pageToken) params.set('pageToken', pageToken);
+    const res  = await fetch(`${YT}/commentThreads?${params}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    for (const thread of (data.items || [])) {
+      if (results.length >= maxComments) break;
+      const top = thread.snippet.topLevelComment.snippet;
+      results.push({
+        post_id:        videoId,
+        commenter_name: top.authorDisplayName ?? 'Unknown',
+        commenter_id:   top.authorChannelId?.value ?? '',
+        comment_text:   top.textDisplay ?? '',
+        timestamp:      top.publishedAt  ?? '',
+        comment_id:     thread.snippet.topLevelComment.id ?? '',
+        reply_to:       '',
+      });
+      if (includeReplies && thread.replies?.comments) {
+        for (const reply of thread.replies.comments) {
+          if (results.length >= maxComments) break;
+          const rs = reply.snippet;
+          results.push({
+            post_id:        videoId,
+            commenter_name: rs.authorDisplayName ?? 'Unknown',
+            commenter_id:   rs.authorChannelId?.value ?? '',
+            comment_text:   rs.textDisplay ?? '',
+            timestamp:      rs.publishedAt  ?? '',
+            comment_id:     reply.id         ?? '',
+            reply_to:       thread.snippet.topLevelComment.id,
+          });
+        }
+      }
+    }
+    if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
+    pageToken = data.nextPageToken ?? '';
+  } while (pageToken);
   return results;
 }
 
@@ -947,23 +1598,682 @@ function exportJSON(rows) {
 }
 
 // ────────────────────────────────────────────────────────────
+//  TOKEN HEALTH CHECK
+// ────────────────────────────────────────────────────────────
+const REQUIRED_PERMS = {
+  fb: [
+    { perm: 'pages_read_engagement',      label: 'Read page comments' },
+  ],
+  ig: [
+    { perm: 'pages_read_engagement',      label: 'Read page engagement' },
+    { perm: 'instagram_basic',            label: 'Instagram basic access' },
+    { perm: 'instagram_manage_comments',  label: 'Read Instagram comments' },
+  ],
+};
+
+async function checkToken() {
+  const token = document.getElementById('token-input').value.trim();
+  const card  = document.getElementById('token-health-card');
+  const btn   = document.getElementById('btn-check-token');
+  const label = document.getElementById('btn-check-text');
+
+  if (!token) {
+    card.className = 'token-health-card err';
+    card.innerHTML = '<div class="thc-err">Enter your token first.</div>';
+    card.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  label.textContent = 'Checking…';
+  card.style.display = 'none';
+
+  try {
+    // ── 1. Validate token + account name
+    const me = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+
+    // ── 2. Fetch granted permissions (soft-fail — may be empty for some token types)
+    let grantedSet = new Set();
+    let permsLoaded = false;
+    try {
+      const permsData = await gql(`/me/permissions?access_token=${enc(token)}`);
+      (permsData.data || []).forEach(p => { if (p.status === 'granted') grantedSet.add(p.permission); });
+      permsLoaded = grantedSet.size > 0;
+    } catch(_) {}
+
+    // ── 3. Token expiry via debug_token (soft-fail)
+    let expiresAt   = null;
+    let isShortLived = false;
+    try {
+      const debug = await gqlRaw(
+        `${GRAPH}/debug_token?input_token=${enc(token)}&access_token=${enc(token)}`
+      );
+      if (debug.data) {
+        expiresAt    = debug.data.expires_at ?? null;
+        isShortLived = expiresAt > 0 && (expiresAt - Date.now() / 1000) < 3600;
+      }
+    } catch(_) {}
+
+    // ── 4. Check required permissions for current platform
+    const required = REQUIRED_PERMS[platform] || REQUIRED_PERMS.fb;
+    const missing  = permsLoaded ? required.filter(r => !grantedSet.has(r.perm)) : [];
+
+    // ── 5. Determine card state
+    let state = 'ok';
+    if (missing.length > 0) state = 'err';
+    else if (isShortLived)   state = 'warn';
+
+    // ── 6. Build card HTML
+    let html = `<div class="thc-name">${escHtml(me.name)} <span style="color:var(--text-muted);font-weight:400;font-size:11px">· ID ${escHtml(me.id)}</span></div>`;
+
+    if (permsLoaded) {
+      html += '<div class="thc-perms">';
+      for (const { perm, label: desc } of required) {
+        const ok = grantedSet.has(perm);
+        html += `
+          <div class="thc-perm">
+            <span class="thc-perm-dot ${ok ? 'ok' : 'miss'}"></span>
+            <code style="font-size:11px;color:${ok ? 'var(--text-dim)' : '#f07090'}">${perm}</code>
+            <span style="color:var(--text-muted);font-size:10px">— ${desc}</span>
+            <span class="${ok ? 'thc-ok' : 'thc-err'}" style="margin-left:auto;font-size:10px">${ok ? 'granted' : 'MISSING'}</span>
+          </div>`;
+      }
+      html += '</div>';
+    } else {
+      html += `<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Permission details unavailable for Page Access Tokens — this is normal. Your token is valid. Permissions will be validated when you extract.</div>`;
+    }
+
+    // Expiry
+    html += '<div class="thc-expiry">';
+    if (expiresAt === null) {
+      html += `<span style="color:var(--text-muted);font-size:11px">Expiry info unavailable for Page Access Tokens. Page tokens are typically long-lived — re-generate from API Explorer if extraction fails.</span>`;
+    } else if (expiresAt === 0) {
+      html += `<span class="thc-ok">✓ Long-lived token — no expiry</span>`;
+    } else {
+      const secsLeft  = expiresAt - Date.now() / 1000;
+      const hoursLeft = (secsLeft / 3600).toFixed(1);
+      const expiryStr = new Date(expiresAt * 1000).toLocaleString();
+      html += isShortLived
+        ? `<span class="thc-warn">⚠ Expires soon: ${expiryStr} (${hoursLeft}h left) — <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:var(--accent)">refresh token →</a></span>`
+        : `<span class="thc-ok">✓ Expires: ${expiryStr} (${hoursLeft}h remaining)</span>`;
+    }
+    html += '</div>';
+
+    // Action links
+    if (missing.length > 0) {
+      html += `<div class="thc-action">Missing ${missing.length} permission${missing.length > 1 ? 's' : ''} for ${platform === 'ig' ? 'Instagram' : 'Facebook'}. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Re-generate token →</a></div>`;
+    }
+
+    card.className    = `token-health-card ${state}`;
+    card.innerHTML    = html;
+    card.style.display = 'block';
+
+    try { gtag('event', 'token_checked', { platform, status: state }); } catch(_) {}
+
+  } catch(e) {
+    card.className    = 'token-health-card err';
+    card.innerHTML    = `
+      <div class="thc-err" style="font-weight:500;margin-bottom:6px">✕ Token invalid or expired</div>
+      <div style="font-size:11px;color:var(--text-dim)">${escHtml(e.message)}</div>
+      <div class="thc-action"><a href="https://developers.facebook.com/tools/explorer/" target="_blank">Get a new token →</a></div>`;
+    card.style.display = 'block';
+  } finally {
+    btn.disabled      = false;
+    label.textContent = 'Check token health';
+  }
+}
+
+// ────────────────────────────────────────────────────────────
+//  FILTER RULES
+// ────────────────────────────────────────────────────────────
+function toggleFilters() {
+  const section = document.getElementById('filter-section');
+  section.classList.toggle('open');
+}
+
+function onRuleToggle(ruleId) {
+  const checked = document.getElementById(ruleId).checked;
+  const inputs = document.getElementById(`inputs-${ruleId}`);
+  if (inputs) {
+    inputs.style.display = checked ? 'block' : 'none';
+    if (checked) inputs.querySelector('input')?.focus();
+  }
+  updateFilterBadge();
+}
+
+function updateFilterBadge() {
+  const ids = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude'];
+  const active = ids.filter(id => document.getElementById(id).checked).length;
+  const badge = document.getElementById('filter-badge');
+  badge.textContent = active === 0 ? 'No filters' : `${active} rule${active !== 1 ? 's' : ''} active`;
+  badge.className = `filter-badge${active > 0 ? ' active' : ''}`;
+  markFiltersDirty();
+}
+
+// ── Dirty-state tracking for instant filter updates ──
+let _hasExtracted = false;
+let _filtersDirty = false;
+const _filterInputIds = ['filter-keyword','filter-mentions','filter-length','filter-date-from','filter-date-to','filter-exclude'];
+
+document.addEventListener('input', function(e) {
+  if (_filterInputIds.includes(e.target.id)) markFiltersDirty();
+});
+
+function markFiltersDirty() {
+  if (!_hasExtracted || _filtersDirty) return;
+  _filtersDirty = true;
+  const btn = document.getElementById('extract-btn');
+  btn.onclick = null;
+  btn.setAttribute('onclick', 'updatePreview()');
+  btn.querySelector('.btn-icon').innerHTML =
+    '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>' +
+    '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>';
+  btn.querySelector('.btn-label').textContent = 'Update Preview';
+  btn.classList.add('update-mode');
+}
+
+function resetExtractBtn() {
+  _filtersDirty = false;
+  const btn = document.getElementById('extract-btn');
+  btn.onclick = null;
+  btn.setAttribute('onclick', 'handleExtract()');
+  btn.querySelector('.btn-icon').innerHTML =
+    '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>';
+  btn.querySelector('.btn-label').textContent = 'Extract & Preview';
+  btn.classList.remove('update-mode');
+}
+
+function updatePreview() {
+  if (!_hasExtracted || !_previewAll.length) return;
+  const qualified = applyFilters(_previewAll);
+  const filtersActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+  const qualifiedCount = qualified.length;
+  const totalCount = _previewAll.length;
+
+  // Update status panel
+  const panel = document.getElementById('status');
+  panel.className = filtersActive && qualifiedCount === 0 ? 'status-panel error' : 'status-panel success';
+  if (filtersActive && qualifiedCount === 0) {
+    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div>` +
+      `<div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters.</div>`;
+  } else {
+    const filterNote = filtersActive
+      ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — download from the preview below</div>`
+      : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments in the preview below, then download when ready</div>`;
+    panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
+  }
+
+  // Keep report data in sync with current filter results
+  _reportData.totalCount     = totalCount;
+  _reportData.qualifiedCount = qualifiedCount;
+
+  showPreview(_previewAll, qualified, filtersActive);
+  resetExtractBtn();
+}
+
+// ────────────────────────────────────────────────────────────
+//  FILTER PRESET SYSTEM
+// ────────────────────────────────────────────────────────────
+const BUILTIN_PRESETS = [
+  {
+    id: 'standard-giveaway',
+    name: 'Standard Giveaway',
+    desc: 'Dedup + 1 mention + keyword required',
+    config: { dedupOn: true, mentionsOn: true, mentions: 1, keywordOn: true, keyword: '#giveaway' },
+  },
+  {
+    id: 'comment-to-win',
+    name: 'Comment to Win',
+    desc: 'One entry per person only',
+    config: { dedupOn: true },
+  },
+  {
+    id: 'hashtag-campaign',
+    name: 'Hashtag Campaign',
+    desc: 'Must include a specific hashtag',
+    config: { keywordOn: true, keyword: '' },
+  },
+  {
+    id: 'clean-extract',
+    name: 'Clean Extract',
+    desc: 'No filters — all comments included',
+    config: {},
+  },
+];
+
+const LS_PRESETS_KEY = 'commentpull_presets';
+let _presetsOpen = false;
+
+function loadCustomPresets() {
+  try { return JSON.parse(localStorage.getItem(LS_PRESETS_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function savePresetsToStorage(presets) {
+  localStorage.setItem(LS_PRESETS_KEY, JSON.stringify(presets));
+}
+
+function getCurrentFilterState() {
+  return {
+    keywordOn:   document.getElementById('rule-keyword').checked,
+    keyword:     document.getElementById('filter-keyword').value,
+    mentionsOn:  document.getElementById('rule-mentions').checked,
+    mentions:    document.getElementById('filter-mentions').value,
+    lengthOn:    document.getElementById('rule-length').checked,
+    length:      document.getElementById('filter-length').value,
+    dedupOn:     document.getElementById('rule-dedup').checked,
+    daterangeOn: document.getElementById('rule-daterange').checked,
+    dateFrom:    document.getElementById('filter-date-from').value,
+    dateTo:      document.getElementById('filter-date-to').value,
+    excludeOn:   document.getElementById('rule-exclude').checked,
+    exclude:     document.getElementById('filter-exclude').value,
+  };
+}
+
+function applyFilterConfig(config) {
+  const ruleIds = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude'];
+  // Clear all rules first
+  ruleIds.forEach(id => {
+    document.getElementById(id).checked = false;
+    const inputs = document.getElementById(`inputs-${id}`);
+    if (inputs) inputs.style.display = 'none';
+  });
+
+  function enable(id, condition, setup) {
+    if (!condition) return;
+    document.getElementById(id).checked = true;
+    const inputs = document.getElementById(`inputs-${id}`);
+    if (inputs) inputs.style.display = 'block';
+    if (setup) setup();
+  }
+
+  enable('rule-keyword',   config.keywordOn,   () => { document.getElementById('filter-keyword').value  = config.keyword  ?? ''; });
+  enable('rule-mentions',  config.mentionsOn,  () => { document.getElementById('filter-mentions').value = config.mentions ?? 2;  });
+  enable('rule-length',    config.lengthOn,    () => { document.getElementById('filter-length').value   = config.length   ?? 10; });
+  enable('rule-dedup',     config.dedupOn);
+  enable('rule-daterange', config.daterangeOn, () => {
+    document.getElementById('filter-date-from').value = config.dateFrom ?? '';
+    document.getElementById('filter-date-to').value   = config.dateTo   ?? '';
+  });
+  enable('rule-exclude', config.excludeOn, () => { document.getElementById('filter-exclude').value = config.exclude ?? ''; });
+
+  updateFilterBadge();
+}
+
+function _afterPresetApply() {
+  const anyActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+  if (anyActive) document.getElementById('filter-section').classList.add('open');
+  closePresetsMenu();
+}
+
+function applyBuiltinPreset(i) {
+  applyFilterConfig(BUILTIN_PRESETS[i].config);
+  _afterPresetApply();
+}
+
+function applyCustomPreset(i) {
+  const presets = loadCustomPresets();
+  if (!presets[i]) return;
+  applyFilterConfig(presets[i].config);
+  _afterPresetApply();
+}
+
+function deleteCustomPreset(i) {
+  const presets = loadCustomPresets();
+  presets.splice(i, 1);
+  savePresetsToStorage(presets);
+  renderPresetsMenu();
+}
+
+function saveCustomPreset() {
+  const nameInput = document.getElementById('preset-name-input');
+  if (!nameInput) return;
+  const name = nameInput.value.trim();
+  if (!name) { nameInput.focus(); return; }
+
+  const presets = loadCustomPresets();
+  const config  = getCurrentFilterState();
+  const existIdx = presets.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+
+  if (existIdx >= 0) {
+    if (!confirm(`A preset named "${name}" already exists. Overwrite it?`)) return;
+    presets[existIdx].config = config;
+  } else {
+    presets.push({ name, config });
+  }
+
+  savePresetsToStorage(presets);
+  nameInput.value = '';
+  renderPresetsMenu();
+}
+
+function renderPresetsMenu() {
+  const menu    = document.getElementById('presets-menu');
+  const custom  = loadCustomPresets();
+  const delIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+  let html = '<div class="presets-menu-section"><div class="presets-menu-label">Built-in</div>';
+  BUILTIN_PRESETS.forEach((p, i) => {
+    html += `<div class="preset-item" onclick="applyBuiltinPreset(${i})">
+      <div class="preset-item-info">
+        <div class="preset-item-name">${escHtml(p.name)}</div>
+        <div class="preset-item-desc">${escHtml(p.desc)}</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<div class="presets-menu-section"><div class="presets-menu-label">Saved</div>';
+  if (custom.length === 0) {
+    html += '<div class="presets-empty">No saved presets yet.</div>';
+  } else {
+    custom.forEach((p, i) => {
+      html += `<div class="preset-item" onclick="applyCustomPreset(${i})">
+        <div class="preset-item-info"><div class="preset-item-name">${escHtml(p.name)}</div></div>
+        <button class="preset-item-del" onclick="event.stopPropagation(); deleteCustomPreset(${i})" title="Delete">${delIcon}</button>
+      </div>`;
+    });
+  }
+  html += '</div>';
+
+  html += `<div class="presets-menu-section presets-save-area">
+    <div class="presets-menu-label">Save current filters</div>
+    <div class="presets-save-row">
+      <input type="text" id="preset-name-input" placeholder="Preset name…" onkeydown="if(event.key==='Enter') saveCustomPreset()">
+      <button class="btn-preset-save" onclick="saveCustomPreset()">Save</button>
+    </div>
+  </div>`;
+
+  menu.innerHTML = html;
+}
+
+function togglePresetsMenu() {
+  _presetsOpen ? closePresetsMenu() : openPresetsMenu();
+}
+
+function positionPresetsMenu() {
+  const menu = document.getElementById('presets-menu');
+  const btn  = document.getElementById('btn-presets');
+  const rect = btn.getBoundingClientRect();
+  const menuH = menu.offsetHeight;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  if (spaceBelow < menuH + 10 && rect.top > menuH + 10) {
+    menu.style.top    = (rect.top - menuH - 6) + 'px';
+  } else {
+    menu.style.top    = (rect.bottom + 6) + 'px';
+  }
+  menu.style.right = (window.innerWidth - rect.right) + 'px';
+  menu.style.left  = 'auto';
+}
+
+function openPresetsMenu() {
+  _presetsOpen = true;
+  renderPresetsMenu();
+  const menu = document.getElementById('presets-menu');
+  menu.style.display = 'block';
+  positionPresetsMenu();
+  document.getElementById('btn-presets').classList.add('open');
+}
+
+function closePresetsMenu() {
+  _presetsOpen = false;
+  document.getElementById('presets-menu').style.display = 'none';
+  document.getElementById('btn-presets').classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (_presetsOpen && !e.target.closest('#presets-menu') && !e.target.closest('#btn-presets')) closePresetsMenu();
+  if (_dlMenuOpen && !e.target.closest('#dl-menu') && !e.target.closest('#btn-dl-main')) closeDlMenu();
+});
+
+window.addEventListener('scroll', function() {
+  if (_presetsOpen) closePresetsMenu();
+  if (_dlMenuOpen) closeDlMenu();
+}, { passive: true });
+
+let _dlMenuOpen = false;
+function toggleDlMenu() { _dlMenuOpen ? closeDlMenu() : openDlMenu(); }
+function openDlMenu() {
+  _dlMenuOpen = true;
+  document.getElementById('dl-menu').style.display = 'block';
+  document.getElementById('btn-dl-main').classList.add('open');
+}
+function closeDlMenu() {
+  _dlMenuOpen = false;
+  document.getElementById('dl-menu').style.display = 'none';
+  const btn = document.getElementById('btn-dl-main');
+  if (btn) btn.classList.remove('open');
+}
+
+function applyFilters(rows) {
+  const keywordOn  = document.getElementById('rule-keyword').checked;
+  const mentionsOn = document.getElementById('rule-mentions').checked;
+  const lengthOn   = document.getElementById('rule-length').checked;
+  const dedupOn    = document.getElementById('rule-dedup').checked;
+  const dateOn     = document.getElementById('rule-daterange').checked;
+  const excludeOn  = document.getElementById('rule-exclude').checked;
+
+  const anyActive = keywordOn || mentionsOn || lengthOn || dedupOn || dateOn || excludeOn;
+  if (!anyActive) return rows;
+
+  const keyword     = document.getElementById('filter-keyword').value.trim().toLowerCase();
+  const minMentions = parseInt(document.getElementById('filter-mentions').value) || 1;
+  const minLength   = parseInt(document.getElementById('filter-length').value)   || 1;
+  const rawFrom     = document.getElementById('filter-date-from').value;
+  const rawTo       = document.getElementById('filter-date-to').value;
+  const dateFrom    = rawFrom ? new Date(rawFrom + 'T00:00:00') : null;
+  const dateTo      = rawTo   ? new Date(rawTo   + 'T23:59:59') : null;
+  const excludeList = excludeOn
+    ? document.getElementById('filter-exclude').value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+    : [];
+
+  const seen = new Set();
+  const result = [];
+
+  for (const row of rows) {
+    const text = row.comment_text || '';
+    const name = (row.commenter_name || '').toLowerCase();
+    const id   = (row.commenter_id  || '').toLowerCase();
+
+    // Keyword / hashtag
+    if (keywordOn && keyword && !text.toLowerCase().includes(keyword)) continue;
+
+    // @mentions count
+    if (mentionsOn) {
+      const count = (text.match(/@[\w.]+/g) || []).length;
+      if (count < minMentions) continue;
+    }
+
+    // Comment length
+    if (lengthOn && text.trim().length < minLength) continue;
+
+    // Date range
+    if (dateOn) {
+      const ts = new Date(row.timestamp);
+      if (dateFrom && ts < dateFrom) continue;
+      if (dateTo   && ts > dateTo)   continue;
+    }
+
+    // Exclude specific users
+    if (excludeOn && excludeList.length && (excludeList.includes(name) || excludeList.includes(id))) continue;
+
+    // Dedup (runs last — after all other filters, so only unique qualifiers are counted)
+    // Instagram: commenter_id === comment_id (not a real user ID), so fall back to name
+    if (dedupOn) {
+      const key = (id && id !== (row.comment_id || '').toLowerCase()) ? id : name;
+      if (seen.has(key)) continue;
+      seen.add(key);
+    }
+
+    result.push(row);
+  }
+
+  return result;
+}
+
+// ────────────────────────────────────────────────────────────
+//  RESULTS PREVIEW TABLE
+// ────────────────────────────────────────────────────────────
+let _previewAll = [];
+let _previewQualified = [];
+let _qualifiedSet = new Set();
+let _filtersWereActive = false;
+
+function showPreview(allRows, qualifiedRows, filtersActive) {
+  _previewAll = allRows;
+  _previewQualified = qualifiedRows;
+  _qualifiedSet = new Set(qualifiedRows); // object reference lookup
+  _filtersWereActive = filtersActive;
+
+  const panel = document.getElementById('preview-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Reset search
+  document.getElementById('preview-search').value = '';
+
+  // Meta line
+  const meta = document.getElementById('preview-meta');
+  if (filtersActive) {
+    const excl = allRows.length - qualifiedRows.length;
+    meta.innerHTML =
+      `<span class="q-count">${qualifiedRows.length} qualified</span>` +
+      (excl > 0 ? ` &nbsp;·&nbsp; <span class="x-count">${excl} excluded</span>` : '') +
+      ` &nbsp;·&nbsp; ${allRows.length} total`;
+  } else {
+    meta.innerHTML = `${allRows.length} comment${allRows.length !== 1 ? 's' : ''} extracted`;
+  }
+
+  // Download menu descriptions
+  const fmt = document.getElementById('fmt').value.toUpperCase();
+  document.getElementById('dl-qualified-desc').textContent =
+    `${qualifiedRows.length} comment${qualifiedRows.length !== 1 ? 's' : ''} · ${fmt}`;
+  document.getElementById('dl-all-desc').textContent =
+    `${allRows.length} comment${allRows.length !== 1 ? 's' : ''} · ${fmt}`;
+
+  // Legend
+  document.getElementById('preview-legend').style.display = filtersActive ? 'inline' : 'none';
+
+  renderPreview(allRows);
+
+  // Show randomizer below
+  showRandSection();
+}
+
+function formatPreviewDate(ts) {
+  if (!ts) return '—';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
+  } catch { return ts.slice(0, 10); }
+}
+
+function formatPostId(id) {
+  if (!id) return '—';
+  const s = String(id);
+  return s.length > 14 ? '…' + s.slice(-12) : s;
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderPreview(rows) {
+  const tbody = document.getElementById('preview-tbody');
+  const empty = document.getElementById('preview-empty');
+  tbody.innerHTML = '';
+
+  if (rows.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('preview-footer-text').textContent = 'No results.';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const frag = document.createDocumentFragment();
+  rows.forEach((row, i) => {
+    const isQualified = !_filtersWereActive || _qualifiedSet.has(row);
+    const cls = _filtersWereActive ? (isQualified ? 'row-ok' : 'row-out') : '';
+    const dot = _filtersWereActive ? `<span class="status-dot"></span>` : '';
+    const tr = document.createElement('tr');
+    if (cls) tr.className = cls;
+    tr.innerHTML = `
+      <td class="td-num">${i + 1}</td>
+      <td class="td-name">${dot}${escHtml(row.commenter_name)}</td>
+      <td class="td-comment">${escHtml(row.comment_text)}</td>
+      <td class="td-date">${formatPreviewDate(row.timestamp)}</td>
+      <td class="td-post">${formatPostId(row.post_id)}</td>`;
+    frag.appendChild(tr);
+  });
+  tbody.appendChild(frag);
+
+  updatePreviewFooter(rows.length, _previewAll.length);
+}
+
+function updatePreviewFooter(shown, total) {
+  const text = shown === total
+    ? `${total} comment${total !== 1 ? 's' : ''}`
+    : `${shown} of ${total} comments`;
+  document.getElementById('preview-footer-text').textContent = text;
+}
+
+function searchPreview() {
+  const q = document.getElementById('preview-search').value.trim().toLowerCase();
+  if (!q) { renderPreview(_previewAll); return; }
+  const filtered = _previewAll.filter(r =>
+    (r.commenter_name || '').toLowerCase().includes(q) ||
+    (r.comment_text  || '').toLowerCase().includes(q)
+  );
+  renderPreview(filtered);
+}
+
+function reDownload(which) {
+  const rows = which === 'all' ? _previewAll : _previewQualified;
+  if (!rows.length) return;
+  const fmt = document.getElementById('fmt').value;
+  const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
+  if (fmt === 'xlsx')     exportXLSX(rows, includeSummary);
+  else if (fmt === 'csv') exportCSV(rows);
+  else                    exportJSON(rows);
+}
+
+// ────────────────────────────────────────────────────────────
 //  MAIN HANDLER
 // ────────────────────────────────────────────────────────────
 async function handleExtract() {
   const token = document.getElementById('token-input').value.trim();
-  const fmt   = document.getElementById('fmt').value;
   const includeReplies = document.getElementById('opt-replies').classList.contains('selected');
-  const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
 
   gtag('event', 'extract_started', { platform });
 
-  // ── Validate token ──
+  // ── Token balance check (guest or logged-in) ──
+  const isGuest    = !currentUser;
+  const tokenBudgetStart = isGuest ? getGuestTokens() : (currentUser.tokens ?? 0);
+
+  if (tokenBudgetStart <= 0) {
+    if (isGuest) {
+      setStatus('error', 'No free tokens remaining',
+        '<span>You\'ve used your 250 free tokens. ' +
+        '<button onclick="openAuth(\'signup\')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:6px;padding:5px 12px;font-family:var(--mono);font-size:11px;font-weight:500;cursor:pointer;margin-left:6px">Sign up free →</button>' +
+        '</span>');
+    } else {
+      setStatus('error', 'No tokens remaining',
+        'You\'ve used all your tokens. Watch an ad to earn +500 tokens instantly, or wait until tomorrow for your free 250 to refill.');
+      openPricing();
+    }
+    return;
+  }
+
+  // ── Validate API token/key ──
   if (!token) { setStatus('error','Access token required','Please enter your Page Access Token (step 02).'); return; }
 
   const btn = document.getElementById('extract-btn');
   btn.classList.add('loading');
   const all = [];
   let anyError = false;
+  let tokenBudget = tokenBudgetStart; // shared across all posts
 
   try {
     if (platform === 'fb') {
@@ -977,6 +2287,7 @@ async function handleExtract() {
       const filter = includeReplies ? 'stream' : 'toplevel';
 
       for (let i = 0; i < urls.length; i++) {
+        if (tokenBudget <= 0) break;
         const link = urls[i], fullId = buildFullPostId(link, pageId);
         const label = link.length > 44 ? '…'+link.slice(-41) : link;
         const pid = `p${i}`;
@@ -984,10 +2295,45 @@ async function handleExtract() {
         try {
           const comments = await fetchFbComments(fullId, token, filter, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          });
+          }, tokenBudget);
           all.push(...comments);
+          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`); anyError = true; }
+      }
+
+    } else if (platform === 'yt') {
+      // ── YOUTUBE PATH ──
+      const apiKey = document.getElementById('token-input').value.trim();
+      const urls   = [...document.querySelectorAll('.yt-url')].map(i => i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No video URL','Paste at least one YouTube video URL (step 03).'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', 'Connecting to YouTube Data API…', '');
+
+      for (let i = 0; i < urls.length; i++) {
+        if (tokenBudget <= 0) break;
+        const url  = urls[i];
+        const videoId = extractYtVideoId(url);
+        const label   = url.length > 44 ? '…'+url.slice(-41) : url;
+        const pid     = `p${i}`;
+
+        if (!videoId) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Could not extract video ID from URL`);
+          anyError = true; continue;
+        }
+
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
+        try {
+          const comments = await fetchYtComments(videoId, apiKey, includeReplies, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          }, tokenBudget);
+          all.push(...comments);
+          tokenBudget -= comments.length;
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
+          anyError = true;
+        }
       }
 
     } else {
@@ -1011,6 +2357,7 @@ async function handleExtract() {
       }
 
       for (let i = 0; i < urls.length; i++) {
+        if (tokenBudget <= 0) break;
         const url = urls[i];
         const shortcode = extractIgShortcode(url);
         const label = url.length > 44 ? '…'+url.slice(-41) : url;
@@ -1027,8 +2374,9 @@ async function handleExtract() {
           setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
           const comments = await fetchIgComments(mediaId, token, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          });
+          }, tokenBudget);
           all.push(...comments);
+          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
           setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
@@ -1039,6 +2387,20 @@ async function handleExtract() {
   } catch(e) {
     setStatus('error', 'Unexpected error', e.message);
     btn.classList.remove('loading'); return;
+  }
+
+  // ── Deduct tokens ──
+  if (all.length > 0) {
+    if (isGuest) {
+      setGuestTokens(tokenBudgetStart - all.length);
+      updateTokenDisplay();
+    } else {
+      try {
+        const usage = await apiFetch('POST', '/use-tokens.php', { count: all.length });
+        currentUser.tokens = usage.tokens;
+        updateTokenDisplay();
+      } catch (_) { /* non-fatal — extraction already succeeded */ }
+    }
   }
 
   btn.classList.remove('loading');
@@ -1052,26 +2414,1105 @@ async function handleExtract() {
     return;
   }
 
-  // Export
-  try {
-    if (fmt === 'xlsx')     exportXLSX(all, includeSummary);
-    else if (fmt === 'csv') exportCSV(all);
-    else                    exportJSON(all);
+  // Apply filter rules
+  const qualified = applyFilters(all);
+  const totalCount = all.length;
+  const qualifiedCount = qualified.length;
+  const filtersActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
 
+  if (filtersActive && qualifiedCount === 0) {
     const panel = document.getElementById('status');
     const list  = panel.querySelector('.progress-list');
-    panel.className = 'status-panel success';
-    panel.innerHTML = `<div class="status-header">✓ ${all.length} comment${all.length!==1?'s':''} downloaded as ${fmt.toUpperCase()}</div>`;
+    panel.className = 'status-panel error';
+    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div><div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters or check the preview below.</div>`;
     if (list) panel.appendChild(list);
-    gtag('event', 'extract_success', { platform, format: fmt, comment_count: all.length });
-  } catch(e) {
-    gtag('event', 'extract_error', { platform, error_message: e.message });
-    setStatus('error', 'Export failed', e.message);
+    gtag('event', 'extract_error', { platform, error_message: 'no_qualified_comments' });
+    _hasExtracted = true;
+    resetExtractBtn();
+    showPreview(all, qualified, filtersActive);
+    return;
   }
+
+  // Show results in preview
+  const panel = document.getElementById('status');
+  const list  = panel.querySelector('.progress-list');
+  panel.className = 'status-panel success';
+  const cappedByTokens = tokenBudget <= 0;
+  const tokenNote = cappedByTokens
+    ? (isGuest
+        ? `<div style="margin-top:8px;font-size:12px;color:#f09060">⚠ You've used all your free tokens — <button onclick="openAuth('signup')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:6px;padding:4px 12px;font-family:var(--mono);font-size:11px;font-weight:500;cursor:pointer;margin-left:4px">Sign up free to continue →</button></div>`
+        : `<div style="margin-top:6px;font-size:11px;color:#f09060">⚠ Reached your token limit — <span style="cursor:pointer;text-decoration:underline" onclick="openPricing()">watch an ad to earn +500 tokens</span></div>`)
+    : '';
+  const filterNote = filtersActive
+    ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — download from the preview below</div>`
+    : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments in the preview below, then download when ready</div>`;
+  panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${tokenNote}${filterNote}`;
+  if (list) panel.appendChild(list);
+  gtag('event', 'extract_success', { platform, comment_count: qualifiedCount, total_count: totalCount });
+
+  // Store data for the PDF report
+  _reportData.extractedAt    = new Date();
+  _reportData.totalCount     = totalCount;
+  _reportData.qualifiedCount = qualifiedCount;
+
+  // Enable filter dirty-tracking for instant updates
+  _hasExtracted = true;
+  resetExtractBtn();
+
+  // Always show preview after a successful extraction
+  showPreview(all, qualified, filtersActive);
+}
+
+// ────────────────────────────────────────────────────────────
+//  GIVEAWAY REPORT
+// ────────────────────────────────────────────────────────────
+let _reportData = { extractedAt: null, totalCount: 0, qualifiedCount: 0, seed: null, drawnAt: null, poolSize: 0 };
+
+function getActiveFiltersSummary() {
+  const rules = [];
+  if (document.getElementById('rule-keyword').checked) {
+    const kw = document.getElementById('filter-keyword').value.trim();
+    if (kw) rules.push(`Must contain "${kw}"`);
+  }
+  if (document.getElementById('rule-mentions').checked) {
+    const n = document.getElementById('filter-mentions').value;
+    rules.push(`Min. ${n} @mention${n > 1 ? 's' : ''}`);
+  }
+  if (document.getElementById('rule-length').checked) {
+    const n = document.getElementById('filter-length').value;
+    rules.push(`Min. ${n} characters`);
+  }
+  if (document.getElementById('rule-dedup').checked) rules.push('One entry per person');
+  if (document.getElementById('rule-daterange').checked) {
+    const from = document.getElementById('filter-date-from').value;
+    const to   = document.getElementById('filter-date-to').value;
+    const parts = [];
+    if (from) parts.push(`from ${from}`);
+    if (to)   parts.push(`to ${to}`);
+    if (parts.length) rules.push(`Date range: ${parts.join(' ')}`);
+  }
+  if (document.getElementById('rule-exclude').checked) {
+    const ex = document.getElementById('filter-exclude').value.trim();
+    if (ex) rules.push(`Excluded: ${ex}`);
+  }
+  return rules;
+}
+
+function generateReport() {
+  const winners = _drawnWinners.filter(Boolean);
+  if (!_reportData.extractedAt || winners.length === 0) {
+    alert('Draw winners first before generating a report.');
+    return;
+  }
+
+  const plat    = platform === 'ig' ? 'Instagram' : 'Facebook';
+  const urls    = [...document.querySelectorAll(platform === 'fb' ? '.fb-url' : '.ig-url')]
+                    .map(i => i.value.trim()).filter(Boolean);
+  const filters = getActiveFiltersSummary();
+
+  const urlsHtml = urls.length
+    ? `<div class="rp-urls">${urls.map(u => `<span class="rp-url">${escHtml(u)}</span>`).join('')}</div>`
+    : '<span class="rp-notag">—</span>';
+
+  const filtersHtml = filters.length
+    ? `<div class="rp-tags">${filters.map(f => `<span class="rp-tag">${escHtml(f)}</span>`).join('')}</div>`
+    : '<span class="rp-notag">No filters — all comments included</span>';
+
+  const winnersHtml = winners.map((w, i) => `
+    <div class="rp-winner${i === 0 ? ' first' : ''}">
+      <div class="rp-winner-rank">${i + 1}</div>
+      <div class="rp-winner-body">
+        <div class="rp-winner-name">${escHtml(w.row.commenter_name)}</div>
+        <div class="rp-winner-comment">"${escHtml((w.row.comment_text || '').slice(0, 280))}"</div>
+        <div class="rp-winner-meta">${formatPreviewDate(w.row.timestamp)}</div>
+      </div>
+    </div>`).join('');
+
+  const excludeRaw = document.getElementById('rand-exclude').value.trim();
+
+  document.getElementById('report-sheet').innerHTML = `
+    <div class="rp-page">
+      <div class="rp-header">
+        <div class="rp-logo">Comment<span>Pull</span></div>
+        <div class="rp-doc-title">Giveaway Draw Report</div>
+      </div>
+
+      <div class="rp-section">
+        <div class="rp-section-title">Draw Summary</div>
+        <div class="rp-grid">
+          <div class="rp-row"><span class="rp-label">Platform</span><span class="rp-val">${plat}</span></div>
+          <div class="rp-row"><span class="rp-label">Post URL${urls.length > 1 ? 's' : ''}</span><span class="rp-val">${urlsHtml}</span></div>
+          <div class="rp-row"><span class="rp-label">Extracted on</span><span class="rp-val">${_reportData.extractedAt.toLocaleString()}</span></div>
+          <div class="rp-row"><span class="rp-label">Total comments</span><span class="rp-val">${_reportData.totalCount.toLocaleString()}</span></div>
+          <div class="rp-row"><span class="rp-label">Filter rules</span><span class="rp-val">${filtersHtml}</span></div>
+          <div class="rp-row"><span class="rp-label">Qualified</span><span class="rp-val">${_reportData.qualifiedCount.toLocaleString()} entries</span></div>
+          <div class="rp-row"><span class="rp-label">Draw pool</span><span class="rp-val">${_reportData.poolSize.toLocaleString()} eligible${excludeRaw ? ' (after manual exclusions)' : ''}</span></div>
+          <div class="rp-row"><span class="rp-label">Winners drawn</span><span class="rp-val">${winners.length}</span></div>
+        </div>
+      </div>
+
+      <div class="rp-section">
+        <div class="rp-section-title">Winner${winners.length > 1 ? 's' : ''}</div>
+        ${winnersHtml}
+      </div>
+
+      <div class="rp-footer">
+        <div class="rp-foot-row"><span class="rp-foot-label">Random seed</span><strong>${_reportData.seed}</strong></div>
+        <div class="rp-foot-row"><span class="rp-foot-label">Drawn on</span>${_reportData.drawnAt ? _reportData.drawnAt.toLocaleString() : '—'}</div>
+        <div class="rp-foot-row"><span class="rp-foot-label">Algorithm</span>mulberry32 PRNG · Fisher-Yates shuffle · Seed = Date.now() at draw time</div>
+        <div class="rp-foot-brand">Generated by CommentPull — slateblue-mink-718658.hostingersite.com &nbsp;·&nbsp; All draws are client-side, verifiable, and reproducible by seed.</div>
+      </div>
+    </div>`;
+
+  try { gtag('event', 'report_generated', { platform, winner_count: winners.length }); } catch(_) {}
+  window.print();
+}
+
+// ────────────────────────────────────────────────────────────
+//  WINNER RANDOMIZER
+// ────────────────────────────────────────────────────────────
+let _randWinnerCount = 1;
+let _randPool        = [];   // eligible pool for current draw
+let _drawnWinners    = [];   // [{row, poolIdx}] — current winners by position
+let _rerolledIdxs    = new Set(); // pool indices that were re-rolled away
+
+// ── Seeded PRNG (mulberry32) for reproducible, transparent draws
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// ── Build the eligible pool: qualified minus manual draw exclusions
+function buildRandPool() {
+  const raw = (document.getElementById('rand-exclude').value || '').split(',')
+    .map(s => s.trim().toLowerCase()).filter(Boolean);
+  return _previewQualified.filter(r => {
+    const name = (r.commenter_name || '').toLowerCase();
+    const uid  = (r.commenter_id  || '').toLowerCase();
+    return !raw.includes(name) && !raw.includes(uid);
+  });
+}
+
+// ── Stepper
+function adjustWinners(delta) {
+  const max = Math.min(Math.max(_previewQualified.length, 1), 20);
+  _randWinnerCount = Math.max(1, Math.min(max, _randWinnerCount + delta));
+  document.getElementById('rand-winner-count').textContent = _randWinnerCount;
+  document.getElementById('btn-draw-text').textContent =
+    `Draw ${_randWinnerCount} Winner${_randWinnerCount !== 1 ? 's' : ''}`;
+}
+
+// ── Show / hide the randomizer panel (called from showPreview)
+function showRandSection() {
+  const n     = _previewQualified.length;
+  const panel = document.getElementById('rand-panel');
+  if (n === 0) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  document.getElementById('rand-pool-tag').textContent =
+    `${n} eligible entr${n !== 1 ? 'ies' : 'y'}`;
+  // Clamp winner count
+  _randWinnerCount = Math.min(_randWinnerCount, n);
+  document.getElementById('rand-winner-count').textContent = _randWinnerCount;
+  document.getElementById('btn-draw-text').textContent =
+    `Draw ${_randWinnerCount} Winner${_randWinnerCount !== 1 ? 's' : ''}`;
+  resetDraw();
+}
+
+// ── Main draw orchestrator
+async function drawWinners() {
+  const pool = buildRandPool();
+  const n    = _randWinnerCount;
+
+  if (pool.length === 0) {
+    alert('No eligible entries in the pool. Extract comments first, or relax your filter rules.');
+    return;
+  }
+  if (n > pool.length) {
+    alert(`Only ${pool.length} eligible entr${pool.length !== 1 ? 'ies' : 'y'} available — can't draw ${n} unique winners. Reduce the count.`);
+    return;
+  }
+
+  // Setup state
+  _randPool     = pool;
+  _drawnWinners = new Array(n).fill(null);
+  _rerolledIdxs = new Set();
+  document.getElementById('rand-winners').innerHTML = '';
+  document.getElementById('rand-footer').style.display = 'none';
+
+  const btn = document.getElementById('btn-draw');
+  btn.disabled = true;
+
+  // Seed + seeded shuffle (Fisher-Yates on indices)
+  const seed = Date.now();
+  const rng  = mulberry32(seed);
+  const indices = pool.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const pickedIndices = indices.slice(0, n);
+
+  // Show slot stage
+  const stage       = document.getElementById('rand-stage');
+  const winnersEl   = document.getElementById('rand-winners');
+  stage.style.display = 'block';
+  stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Lock re-roll buttons on any cards revealed mid-draw
+  winnersEl.classList.add('drawing');
+
+  const allNames = pool.map(r => r.commenter_name);
+
+  for (let i = 0; i < n; i++) {
+    const poolIdx = pickedIndices[i];
+    const winner  = pool[poolIdx];
+
+    await runSlotMachine(winner.commenter_name, allNames, i + 1, n);
+
+    _drawnWinners[i] = { row: winner, poolIdx };
+    winnersEl.appendChild(buildWinnerCardEl(winner, i, true));
+
+    if (i < n - 1) await new Promise(r => setTimeout(r, 600));
+  }
+
+  stage.style.display = 'none';
+  winnersEl.classList.remove('drawing'); // unlock re-roll buttons
+  btn.disabled = false;
+  showRandFooter(seed, pool.length, n);
+  startConfetti();
+  setTimeout(stopConfetti, 4200);
+  try { gtag('event', 'winner_drawn', { platform, winner_count: n }); } catch(_) {}
+}
+
+// ── Slot machine animation — returns a Promise that resolves when animation ends
+function runSlotMachine(finalName, allNames, winnerNum, totalWinners) {
+  return new Promise(resolve => {
+    const slotName = document.getElementById('slot-name');
+    const slotSub  = document.getElementById('slot-sub');
+    slotSub.textContent = totalWinners > 1
+      ? `Drawing winner ${winnerNum} of ${totalWinners}…`
+      : 'Drawing winner…';
+
+    const DURATION = 2400; // ms total
+    const start    = Date.now();
+    let   interval = 55;   // ms between ticks — starts fast
+
+    function tick() {
+      const elapsed  = Date.now() - start;
+      const progress = Math.min(elapsed / DURATION, 1);
+
+      if (progress >= 1) {
+        slotName.textContent = finalName;
+        resolve();
+        return;
+      }
+
+      // Show a random name from the pool
+      slotName.textContent = allNames[Math.floor(Math.random() * allNames.length)];
+
+      // Ease out: interval grows quadratically so it slows down dramatically near the end
+      interval = 55 + Math.pow(progress, 2.8) * 380;
+      setTimeout(tick, interval);
+    }
+
+    tick();
+  });
+}
+
+// ── Build a winner card DOM element
+function buildWinnerCardEl(row, index, isGold) {
+  const card = document.createElement('div');
+  card.className = `winner-card${isGold ? ' gold' : ''}`;
+  card.id = `winner-card-${index}`;
+
+  const date    = formatPreviewDate(row.timestamp);
+  const rawText = row.comment_text || '';
+  const excerpt = rawText.length > 220 ? rawText.slice(0, 220) + '…' : rawText;
+
+  card.innerHTML = `
+    <div class="winner-rank">${index + 1}</div>
+    <div class="winner-info">
+      <div class="winner-name">${escHtml(row.commenter_name)}</div>
+      <div class="winner-comment">"${escHtml(excerpt)}"</div>
+      <div class="winner-meta">${date}</div>
+    </div>
+    <button class="btn-reroll" onclick="rerollWinner(${index})" title="Replace this winner with a different random pick">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <polyline points="1 4 1 10 7 10"/>
+        <polyline points="23 20 23 14 17 14"/>
+        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+      </svg>
+      Re-roll
+    </button>`;
+
+  return card;
+}
+
+// ── Re-roll a single winner position
+function rerollWinner(index) {
+  if (!_drawnWinners[index]) return;
+
+  // Blacklist the current winner's pool index (they can never be re-picked in this session)
+  _rerolledIdxs.add(_drawnWinners[index].poolIdx);
+
+  // Build the "unavailable" set: current winners + all rerolled
+  const inUse = new Set(_drawnWinners.filter(Boolean).map(d => d.poolIdx));
+  const available = _randPool
+    .map((_, idx) => idx)
+    .filter(idx => !inUse.has(idx) && !_rerolledIdxs.has(idx));
+
+  if (available.length === 0) {
+    alert('No more eligible entries to re-roll from. Everyone in the pool has already been drawn or re-rolled.');
+    return;
+  }
+
+  const newPoolIdx = available[Math.floor(Math.random() * available.length)];
+  const newRow     = _randPool[newPoolIdx];
+  _drawnWinners[index] = { row: newRow, poolIdx: newPoolIdx };
+
+  const oldCard = document.getElementById(`winner-card-${index}`);
+  const newCard = buildWinnerCardEl(newRow, index, true);
+  oldCard.replaceWith(newCard);
+}
+
+// ── Footer: transparency info
+function showRandFooter(seed, poolSize, winnerCount) {
+  const drawn = _drawnWinners.filter(Boolean).length;
+  const now   = new Date();
+
+  // Store for PDF report
+  _reportData.seed     = seed;
+  _reportData.drawnAt  = now;
+  _reportData.poolSize = poolSize;
+
+  document.getElementById('rand-seed-info').innerHTML =
+    `Pool: ${poolSize} eligible &nbsp;·&nbsp; Winners drawn: ${drawn}<br>` +
+    `Seed: <code>${seed}</code> &nbsp;·&nbsp; ${now.toLocaleString()}`;
+  document.getElementById('rand-footer').style.display = 'flex';
+}
+
+// ── Reset to ready state (keeps the panel visible)
+function resetDraw() {
+  _drawnWinners = [];
+  _rerolledIdxs = new Set();
+  _randPool     = [];
+  document.getElementById('rand-winners').innerHTML = '';
+  document.getElementById('rand-stage').style.display  = 'none';
+  document.getElementById('rand-footer').style.display = 'none';
+  const btn = document.getElementById('btn-draw');
+  if (btn) btn.disabled = false;
+}
+
+// ────────────────────────────────────────────────────────────
+//  CONFETTI
+// ────────────────────────────────────────────────────────────
+let _confettiRaf = null;
+
+function startConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx    = canvas.getContext('2d');
+  const colors = ['#f0c060','#f5d080','#7de8a8','#e8e8e8','#e1306c','#60b0f0'];
+
+  const particles = Array.from({ length: 90 }, () => ({
+    x:         Math.random() * canvas.width,
+    y:         -10 - Math.random() * 60,
+    r:         3 + Math.random() * 6,
+    speed:     2.2 + Math.random() * 2.8,
+    color:     colors[Math.floor(Math.random() * colors.length)],
+    tiltAngle: Math.random() * Math.PI * 2,
+    tiltSpeed: 0.04 + Math.random() * 0.08,
+    wobble:    Math.random() * Math.PI * 2,
+    opacity:   1,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+
+    for (const p of particles) {
+      p.tiltAngle += p.tiltSpeed;
+      p.wobble    += 0.05;
+      p.y         += p.speed;
+      p.x         += Math.sin(p.wobble) * 1.2;
+      p.opacity   -= 0.005;
+
+      if (p.opacity > 0 && p.y < canvas.height + 20) alive = true;
+
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle   = p.color;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, p.r, p.r * 0.45, p.tiltAngle, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+    if (alive) _confettiRaf = requestAnimationFrame(draw);
+    else stopConfetti();
+  }
+
+  if (_confettiRaf) cancelAnimationFrame(_confettiRaf);
+  _confettiRaf = requestAnimationFrame(draw);
+}
+
+function stopConfetti() {
+  if (_confettiRaf) { cancelAnimationFrame(_confettiRaf); _confettiRaf = null; }
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function toggleFaq(btn) {
   btn.closest('.faq-item').classList.toggle('open');
+}
+</script>
+<div id="presets-menu" class="presets-menu" style="display:none"></div>
+<div id="report-sheet"></div>
+<canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:block"></canvas>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH & PRICING STYLES
+════════════════════════════════════════════════════════════ -->
+<style>
+  /* Nav right */
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  #nav-auth-guest { display: flex; align-items: center; gap: 8px; }
+  .btn-nav { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border); background: none; color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-nav:hover { border-color: var(--border-active); color: var(--text); }
+  .btn-nav.accent { border-color: rgba(240,192,96,0.4); color: var(--accent); background: var(--accent-glow); }
+  .btn-nav.accent:hover { border-color: var(--accent); background: rgba(240,192,96,0.22); }
+
+  /* User chip */
+  .user-chip { display: flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
+  .user-chip:hover { border-color: var(--border-active); color: var(--text); }
+  .plan-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .plan-dot.free { background: var(--text-muted); }
+  .plan-dot.pro  { background: var(--accent); box-shadow: 0 0 6px rgba(240,192,96,0.5); }
+  #nav-auth-user { position: relative; }
+  .user-dropdown { position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5); z-index: 200; }
+  .dropdown-email { padding: 12px 16px; font-size: 11px; color: var(--text-muted); word-break: break-all; }
+  .dropdown-divider { height: 1px; background: var(--border); }
+  .dropdown-item { width: 100%; padding: 11px 16px; background: none; border: none; color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; text-align: left; transition: all 0.15s; }
+  .dropdown-item:hover { background: var(--surface2); color: var(--text); }
+  .dropdown-item.accent-item { color: var(--accent); }
+  .dropdown-item.accent-item:hover { background: var(--accent-glow); }
+  .dropdown-item.danger:hover { background: rgba(255,80,80,0.08); color: #ff6060; }
+
+  /* Modal overlay */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 420px; overflow: hidden; transform: translateY(12px); transition: transform 0.25s; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header { padding: 24px 28px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+  .modal-title { font-family: var(--serif); font-size: 22px; font-weight: 300; font-style: italic; color: var(--text); }
+  .modal-close { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: none; color: var(--text-dim); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .modal-close:hover { border-color: var(--border-active); color: var(--text); }
+  .modal-body { padding: 24px 28px 28px; }
+
+  /* Auth tabs */
+  .auth-tabs { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+  .auth-tab { flex: 1; padding: 9px; background: none; border: none; color: var(--text-muted); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.15s; }
+  .auth-tab.active { background: var(--surface2); color: var(--text); }
+
+  /* Form */
+  .form-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+  .form-field label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+  .form-field input { padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 13px; outline: none; transition: border-color 0.15s; }
+  .form-field input:focus { border-color: var(--border-active); }
+  .form-field input::placeholder { color: var(--text-muted); }
+  .form-error { font-size: 12px; color: #ff6060; margin-bottom: 14px; min-height: 16px; }
+  .btn-submit { width: 100%; padding: 13px; background: var(--accent); color: #0d0d0d; border: none; border-radius: 8px; font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+  .btn-submit:hover { background: #f5d080; }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .auth-footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px; }
+  .auth-footer a { color: var(--text-dim); cursor: pointer; text-decoration: underline; }
+  .auth-footer a:hover { color: var(--text); }
+  /* OAuth buttons */
+  .oauth-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0 14px; }
+  .oauth-divider::before, .oauth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .oauth-divider span { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  .oauth-buttons { display: flex; flex-direction: column; gap: 8px; }
+  .btn-oauth { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 10px 16px; border-radius: 8px; font-family: var(--mono); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; border: 1px solid var(--border); background: var(--surface2); color: var(--text-dim); }
+  .btn-oauth:hover { border-color: var(--border-active); color: var(--text); background: var(--surface); }
+  .btn-oauth svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Pricing modal */
+  .pricing-modal { max-width: 520px; }
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 540px) { .pricing-grid { grid-template-columns: 1fr; } }
+  .plan-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.2s; background: var(--surface2); }
+  .plan-card:hover { border-color: var(--border-active); }
+  .plan-card.earn-card { border-color: rgba(80,200,120,0.3); background: rgba(80,200,120,0.03); }
+  .plan-card.earn-card:hover { border-color: rgba(80,200,120,0.55); }
+  .plan-badge { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: var(--accent-glow); border: 1px solid rgba(240,192,96,0.25); padding: 3px 8px; border-radius: 20px; display: inline-block; align-self: flex-start; }
+  .plan-badge.green { color: #50c878; background: rgba(80,200,120,0.08); border-color: rgba(80,200,120,0.25); }
+  .plan-name { font-family: var(--serif); font-size: 18px; font-weight: 400; font-style: italic; color: var(--text); }
+  .plan-price { display: flex; align-items: baseline; gap: 4px; }
+  .plan-price-amount { font-size: 28px; font-weight: 500; color: var(--text); }
+  .plan-price-amount.green { color: #50c878; }
+  .plan-price-period { font-size: 12px; color: var(--text-dim); }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .plan-features li { font-size: 12px; color: var(--text-dim); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+  .plan-features li::before { content: '✓'; color: var(--accent); font-size: 11px; margin-top: 1px; flex-shrink: 0; }
+  .plan-features li.dim::before { content: '–'; color: var(--text-muted); }
+  .plan-features li.dim { color: var(--text-muted); }
+  .btn-plan { width: 100%; padding: 11px; border-radius: 8px; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border); background: none; color: var(--text-dim); margin-top: auto; }
+  .btn-plan:hover { border-color: var(--border-active); color: var(--text); }
+  .btn-plan.primary { background: var(--accent); color: #0d0d0d; border-color: var(--accent); font-weight: 500; }
+  .btn-plan.primary:hover { background: #f5d080; }
+  .btn-plan.green { background: rgba(80,200,120,0.12); color: #50c878; border-color: rgba(80,200,120,0.4); font-weight: 500; }
+  .btn-plan.green:hover:not(:disabled) { background: rgba(80,200,120,0.22); border-color: rgba(80,200,120,0.7); }
+  .btn-plan:disabled { opacity: 0.5; cursor: not-allowed; }
+  .ad-countdown { font-size: 12px; color: var(--text-muted); text-align: center; padding: 8px 0 0; font-family: var(--mono); }
+  .ad-countdown span { color: #50c878; font-weight: 600; }
+  .pricing-earn-cta { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 14px; padding: 10px 14px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); line-height: 1.6; }
+  .pricing-token-row { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--text-dim); }
+  .pricing-token-row strong { color: var(--accent); font-size: 14px; }
+  .ads-left-badge { font-size: 10px; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; }
+  .pricing-note { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 12px; }
+  /* Dropdown token row */
+  .dropdown-token-row { display: flex; align-items: center; gap: 6px; padding: 6px 14px 8px; font-size: 12px; color: var(--text-dim); font-family: var(--mono); }
+  .dropdown-token-icon { font-size: 13px; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-family: var(--mono); font-size: 13px; color: var(--text); z-index: 2000; opacity: 0; transition: all 0.3s; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4); pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: rgba(80,200,120,0.4); color: #7de8a8; }
+  .toast.error   { border-color: rgba(255,80,80,0.4);  color: #ff8080; }
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH MODAL
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal" onclick="closeOnBackdrop(event,'auth-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="auth-modal-title">Sign in</span>
+      <button class="modal-close" onclick="closeModal('auth-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign in</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign up</button>
+      </div>
+
+      <!-- OAuth buttons (shared, above both forms) -->
+      <div class="oauth-buttons" style="margin-bottom:4px">
+        <a href="/backend/api/oauth-google.php" class="btn-oauth">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Continue with Google
+        </a>
+        <a href="/backend/api/oauth-github.php" class="btn-oauth">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+          </svg>
+          Continue with GitHub
+        </a>
+      </div>
+
+      <div class="oauth-divider"><span>or use email</span></div>
+
+      <!-- Sign in form -->
+      <form id="form-signin" onsubmit="doSignIn(event)">
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" id="si-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label>Password</label>
+          <input type="password" id="si-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <div class="form-error" id="si-error"></div>
+        <button type="submit" class="btn-submit" id="si-btn">Sign in</button>
+        <p class="auth-footer">No account? <a onclick="switchTab('signup')">Sign up free</a></p>
+      </form>
+
+      <!-- Sign up form -->
+      <form id="form-signup" onsubmit="doSignUp(event)" style="display:none">
+        <div class="form-field">
+          <label>Name</label>
+          <input type="text" id="su-name" placeholder="Your name" required autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" id="su-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label>Password</label>
+          <input type="password" id="su-password" placeholder="Min. 8 characters" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="form-error" id="su-error"></div>
+        <button type="submit" class="btn-submit" id="su-btn">Create account</button>
+        <p class="auth-footer">Already have one? <a onclick="switchTab('signin')">Sign in</a></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PRICING MODAL
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="pricing-modal" onclick="closeOnBackdrop(event,'pricing-modal')">
+  <div class="modal pricing-modal">
+    <div class="modal-header">
+      <span class="modal-title">Plans &amp; Tokens</span>
+      <button class="modal-close" onclick="closeModal('pricing-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pricing-grid">
+
+        <!-- Free Plan -->
+        <div class="plan-card">
+          <span class="plan-badge">🔹 Default</span>
+          <div class="plan-name">Free</div>
+          <div class="plan-price">
+            <span class="plan-price-amount">Free</span>
+            <span class="plan-price-period">forever</span>
+          </div>
+          <ul class="plan-features">
+            <li>250 tokens on signup</li>
+            <li>Up to 5 posts</li>
+            <li>Export CSV &amp; JSON</li>
+            <li>Winner picker</li>
+          </ul>
+          <button class="btn-plan" disabled>Current plan</button>
+        </div>
+
+        <!-- Earn Tokens via Ads -->
+        <div class="plan-card earn-card">
+          <span class="plan-badge green">🎯 Rewarded Ads</span>
+          <div class="plan-name">Watch &amp; Earn</div>
+          <div class="plan-price">
+            <span class="plan-price-amount green">+500</span>
+            <span class="plan-price-period">tokens / ad</span>
+          </div>
+          <ul class="plan-features">
+            <li>Watch 1 short ad → +500 tokens</li>
+            <li>Up to 10 ads per day</li>
+            <li>Tokens never expire</li>
+            <li>Instant reward</li>
+          </ul>
+          <button class="btn-plan green" id="btn-watch-ad" onclick="watchAd()">▶ Watch Ad → +500 tokens</button>
+          <div id="ad-countdown" class="ad-countdown" style="display:none">Ad playing… <span id="ad-timer">5</span>s remaining</div>
+        </div>
+
+      </div>
+
+      <div class="pricing-earn-cta">
+        👉 Need more tokens? Earn them instantly by watching a short ad — no payment needed.
+      </div>
+
+      <div id="pricing-token-row" class="pricing-token-row" style="display:none">
+        <span>Your balance:</span>
+        <strong><span id="pricing-token-count">250</span> tokens</strong>
+        <span id="pricing-ads-left" class="ads-left-badge">10 ads left today</span>
+      </div>
+
+      <p class="pricing-note">1 comment = 1 token · Earned tokens never expire · No credit card needed</p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- BETA gift modal — remove with beta block -->
+<div class="modal-overlay" id="beta-modal" onclick="closeOnBackdrop(event,'beta-modal')">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <div class="modal-body" style="padding:36px 32px 32px">
+      <div style="font-size:48px;margin-bottom:16px">🎁</div>
+      <h2 style="font-family:var(--serif);font-size:24px;font-weight:300;font-style:italic;color:var(--text);margin-bottom:12px">You got a beta gift!</h2>
+      <p style="font-size:13px;color:var(--text-dim);line-height:1.75;margin-bottom:8px">
+        Welcome, <strong id="beta-modal-name" style="color:var(--text)"></strong>!<br>
+        Since CommentPull is in <strong style="color:var(--accent)">beta</strong>, you've been gifted
+        <strong style="color:var(--accent)">unlimited tokens</strong> — completely free.
+      </p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:28px">
+        Extract as many comments as you like while we're in beta.<br>
+        Your feedback helps us build a better product.
+      </p>
+      <button onclick="closeModal('beta-modal')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:8px;padding:12px 32px;font-family:var(--mono);font-size:13px;font-weight:500;cursor:pointer;width:100%;transition:background 0.2s" onmouseover="this.style.background='#f5d080'" onmouseout="this.style.background='var(--accent)'">
+        Start extracting →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH & PAYMENT JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+// ── State ─────────────────────────────────────────────────────────
+const API = '/backend/api';
+let currentUser = null;
+
+// ── Boot: restore session + handle OAuth return ───────────────────
+(async function boot() {
+  const params = new URLSearchParams(location.search);
+
+  // ── OAuth return ──
+  if (params.get('oauth') === 'success') {
+    const oauthToken = params.get('token');
+    const oauthName  = params.get('name') || 'there';
+    const betaGift   = params.get('beta_gift') === '1'; // BETA
+    history.replaceState({}, '', location.pathname);
+    if (oauthToken) {
+      localStorage.setItem('cp_token', oauthToken);
+      try {
+        const res = await apiFetch('GET', '/me.php');
+        if (res.id) {
+          setUser(res);
+          // BETA: show gift modal for new OAuth users, plain toast for returning
+          if (betaGift) {
+            showBetaGiftModal(oauthName);
+          } else {
+            showToast('Welcome back, ' + oauthName + '!', 'success');
+          }
+        }
+      } catch (_) { localStorage.removeItem('cp_token'); }
+    }
+    return;
+  }
+
+  if (params.get('oauth') === 'error') {
+    const msg = params.get('message') || 'Sign-in failed. Please try again.';
+    history.replaceState({}, '', location.pathname);
+    showToast(msg, 'error');
+    return;
+  }
+
+  // ── Regular session restore ──
+  const token = localStorage.getItem('cp_token');
+  if (!token) {
+    // No session — show guest token balance
+    updateTokenDisplay();
+    return;
+  }
+  try {
+    const res = await apiFetch('GET', '/me.php');
+    if (res.id) setUser(res);
+    else updateTokenDisplay(); // failed silently — show guest bar
+  } catch (_) {
+    localStorage.removeItem('cp_token');
+    updateTokenDisplay();
+  }
+})();
+
+// ── API helper ────────────────────────────────────────────────────
+async function apiFetch(method, path, body) {
+  const token = localStorage.getItem('cp_token');
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  };
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  if (body)  opts.body = JSON.stringify(body);
+
+  const res = await fetch(API + path, opts);
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (_) {
+    // Server returned non-JSON (PHP error, 502, etc.)
+    throw new Error('Server error (' + res.status + '). Please try again.');
+  }
+
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+// ── Auth state ────────────────────────────────────────────────────
+function setUser(user) {
+  currentUser = user;
+
+  document.getElementById('nav-auth-guest').style.display = 'none';
+  document.getElementById('nav-auth-user').style.display  = 'flex';
+  document.getElementById('nav-user-name').textContent    = user.name;
+  document.getElementById('nav-user-email').textContent   = user.email;
+
+  const dot = document.getElementById('nav-user-plan');
+  dot.className = 'plan-dot ' + user.plan;
+
+  updateTokenDisplay();
+}
+
+// ── Guest token helpers ───────────────────────────────────────────
+function getGuestTokens() {
+  const stored = localStorage.getItem('cp_guest_tokens');
+  if (stored === null) {
+    localStorage.setItem('cp_guest_tokens', '250');
+    return 250;
+  }
+  return Math.max(0, parseInt(stored, 10) || 0);
+}
+function setGuestTokens(n) {
+  localStorage.setItem('cp_guest_tokens', String(Math.max(0, n)));
+}
+
+function updateTokenDisplay() {
+  const isGuest  = !currentUser;
+  const tokens   = isGuest ? getGuestTokens() : (currentUser.tokens ?? 250);
+  const adsLeft  = isGuest ? null : (currentUser.ads_remaining ?? 10);
+
+  // Nav dropdown token count (logged-in only)
+  const tokEl = document.getElementById('nav-user-tokens');
+  if (tokEl && !isGuest) tokEl.textContent = tokens.toLocaleString() + ' tokens';
+
+  // Budget bar (shown for everyone)
+  const bar     = document.getElementById('token-budget-bar');
+  const tbCount = document.getElementById('tb-count');
+  const tbEarn  = bar?.querySelector('.tb-earn');
+  if (bar) bar.style.display = '';
+  if (tbCount) {
+    tbCount.textContent = tokens.toLocaleString();
+    tbCount.className   = 'tb-count' + (tokens <= 50 ? ' low' : '');
+  }
+  if (tbEarn) {
+    if (isGuest && tokens <= 0) {
+      tbEarn.textContent = 'Sign up free to continue →';
+      tbEarn.onclick     = () => openAuth('signup');
+    } else if (isGuest) {
+      tbEarn.textContent = 'sign up for daily refill →';
+      tbEarn.onclick     = () => openAuth('signup');
+    } else {
+      tbEarn.textContent = 'earn more →';
+      tbEarn.onclick     = () => openPricing();
+    }
+  }
+
+  // Pricing modal token row (logged-in only)
+  const rowEl   = document.getElementById('pricing-token-row');
+  const countEl = document.getElementById('pricing-token-count');
+  const adsEl   = document.getElementById('pricing-ads-left');
+  if (!isGuest) {
+    if (rowEl)   rowEl.style.display   = '';
+    if (countEl) countEl.textContent   = tokens.toLocaleString();
+    if (adsEl)   adsEl.textContent     = adsLeft + ' ad' + (adsLeft === 1 ? '' : 's') + ' left today';
+  }
+
+  // Refresh watch-ad button state (logged-in only)
+  const adBtn = document.getElementById('btn-watch-ad');
+  if (adBtn && !isGuest && !adBtn.disabled) {
+    if (adsLeft <= 0) {
+      adBtn.disabled    = true;
+      adBtn.textContent = 'Come back tomorrow';
+    } else {
+      adBtn.textContent = `▶ Watch Ad → +500 tokens (${adsLeft} left today)`;
+    }
+  }
+}
+
+function clearUser() {
+  currentUser = null;
+  localStorage.removeItem('cp_token');
+  document.getElementById('nav-auth-guest').style.display = 'flex';
+  document.getElementById('nav-auth-user').style.display  = 'none';
+  document.getElementById('user-dropdown').style.display  = 'none';
+  updateTokenDisplay(); // show guest balance in budget bar
+}
+
+// ── Sign in ───────────────────────────────────────────────────────
+async function doSignIn(e) {
+  e.preventDefault();
+  const btn = document.getElementById('si-btn');
+  const err = document.getElementById('si-error');
+  err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try {
+    const data = await apiFetch('POST', '/signin.php', {
+      email:    document.getElementById('si-email').value.trim(),
+      password: document.getElementById('si-password').value,
+    });
+    localStorage.setItem('cp_token', data.token);
+    setUser(data.user);
+    closeModal('auth-modal');
+    showToast('Welcome back, ' + data.user.name + '!', 'success');
+  } catch (ex) {
+    err.textContent = ex.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+}
+
+// ── Sign up ───────────────────────────────────────────────────────
+// BETA: remove this function when beta ends
+function showBetaGiftModal(name) {
+  document.getElementById('beta-modal-name').textContent = name;
+  document.getElementById('beta-modal').style.display = '';
+  openModal('beta-modal');
+}
+
+async function doSignUp(e) {
+  e.preventDefault();
+  const btn = document.getElementById('su-btn');
+  const err = document.getElementById('su-error');
+  err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  try {
+    const data = await apiFetch('POST', '/signup.php', {
+      name:     document.getElementById('su-name').value.trim(),
+      email:    document.getElementById('su-email').value.trim(),
+      password: document.getElementById('su-password').value,
+    });
+    localStorage.setItem('cp_token', data.token);
+    setUser(data.user);
+    closeModal('auth-modal');
+    // BETA: remove the if-block below when beta ends
+    if (data.beta_gift) {
+      showBetaGiftModal(data.user.name);
+    } else {
+      showToast('Account created — welcome!', 'success');
+    }
+  } catch (ex) {
+    err.textContent = ex.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create account';
+  }
+}
+
+// ── Sign out ──────────────────────────────────────────────────────
+async function doSignOut() {
+  document.getElementById('user-dropdown').style.display = 'none';
+  try { await apiFetch('POST', '/signout.php'); } catch (_) {}
+  clearUser();
+  showToast('Signed out.', '');
+}
+
+// ── Checkout ──────────────────────────────────────────────────────
+// ── Watch ad → earn tokens ────────────────────────────────────────
+let _adPlaying = false;
+
+async function watchAd() {
+  if (!currentUser) {
+    closeModal('pricing-modal');
+    openAuth('signup');
+    showToast('Sign in to earn tokens.', '');
+    return;
+  }
+  if (_adPlaying) return;
+  _adPlaying = true;
+
+  const btn       = document.getElementById('btn-watch-ad');
+  const countdown = document.getElementById('ad-countdown');
+  const timerEl   = document.getElementById('ad-timer');
+
+  btn.disabled    = true;
+  btn.textContent = 'Ad loading…';
+  countdown.style.display = '';
+
+  // Simulate rewarded ad (5-second countdown)
+  let secs = 5;
+  timerEl.textContent = secs;
+  await new Promise(resolve => {
+    const iv = setInterval(() => {
+      secs--;
+      timerEl.textContent = secs;
+      if (secs <= 0) { clearInterval(iv); resolve(); }
+    }, 1000);
+  });
+
+  countdown.style.display = 'none';
+  btn.textContent = 'Claiming reward…';
+
+  try {
+    const data = await apiFetch('POST', '/earn-tokens.php');
+    currentUser.tokens            = data.tokens;
+    currentUser.ads_watched_today = data.ads_watched_today;
+    currentUser.ads_remaining     = data.ads_remaining;
+    updateTokenDisplay();
+    showToast(`+${data.reward.toLocaleString()} tokens earned! Balance: ${data.tokens.toLocaleString()} tokens.`, 'success');
+  } catch (ex) {
+    showToast(ex.message, 'error');
+    btn.disabled    = false;
+    btn.textContent = '▶ Watch Ad → +500 tokens';
+  }
+
+  _adPlaying = false;
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────
+function openAuth(tab) {
+  switchTab(tab || 'signin');
+  openModal('auth-modal');
+}
+
+function openPricing() {
+  if (currentUser) updateTokenDisplay();
+  openModal('pricing-modal');
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeOnBackdrop(e, id) {
+  if (e.target === e.currentTarget) closeModal(id);
+}
+
+function switchTab(tab) {
+  const isSignIn = tab === 'signin';
+  document.getElementById('form-signin').style.display = isSignIn ? '' : 'none';
+  document.getElementById('form-signup').style.display = isSignIn ? 'none' : '';
+  document.getElementById('tab-signin').classList.toggle('active', isSignIn);
+  document.getElementById('tab-signup').classList.toggle('active', !isSignIn);
+  document.getElementById('auth-modal-title').textContent = isSignIn ? 'Sign in' : 'Sign up';
+  document.getElementById('si-error').textContent = '';
+  document.getElementById('su-error').textContent = '';
+}
+
+function toggleUserMenu() {
+  const d = document.getElementById('user-dropdown');
+  d.style.display = d.style.display === 'none' ? '' : 'none';
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('nav-auth-user');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('user-dropdown').style.display = 'none';
+  }
+});
+
+// Close modals with Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['auth-modal', 'pricing-modal', 'beta-modal'].forEach(closeModal);
+    document.getElementById('user-dropdown').style.display = 'none';
+  }
+});
+
+// ── Toast ─────────────────────────────────────────────────────────
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent  = msg;
+  t.className    = 'toast ' + (type || '');
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 3500);
 }
 </script>
 </body>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — CommentPull</title>
+<meta name="description" content="CommentPull Privacy Policy — how we handle your data, what we collect, and your rights.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="canonical" href="https://commentpull.com/privacy.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
+    --border: #2a2a2a; --border-active: #444;
+    --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
+    --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
+    --radius: 10px; --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 999; opacity: 0.4; }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: linear-gradient(to bottom, rgba(13,13,13,0.97) 0%, transparent 100%); backdrop-filter: blur(4px); }
+  .logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--text-dim); font-weight: 300; font-style: italic; }
+  .btn-nav { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+  .btn-nav:hover { border-color: var(--border-active); color: var(--text); }
+
+  /* Page */
+  .page { max-width: 720px; margin: 0 auto; padding: 120px 40px 80px; }
+
+  .page-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+  .page-title { font-family: var(--serif); font-size: 40px; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.15; margin-bottom: 10px; }
+  .page-date { font-size: 11px; color: var(--text-muted); margin-bottom: 48px; }
+
+  .prose { display: flex; flex-direction: column; gap: 36px; }
+  .section-title { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--text); margin-bottom: 12px; }
+  .prose p { font-size: 13px; color: var(--text-dim); line-height: 1.85; }
+  .prose p + p { margin-top: 12px; }
+  .prose ul { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .prose ul li { font-size: 13px; color: var(--text-dim); line-height: 1.7; display: flex; align-items: flex-start; gap: 10px; }
+  .prose ul li::before { content: '—'; color: var(--text-muted); flex-shrink: 0; margin-top: 1px; }
+  .prose a { color: var(--accent); text-decoration: none; }
+  .prose a:hover { text-decoration: underline; }
+  strong { color: var(--text); font-weight: 500; }
+
+  .callout { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 16px 20px; font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--border); padding: 32px 40px; max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .footer-left { font-size: 12px; color: var(--text-muted); }
+  .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; }
+  .footer-right a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-right a:hover { color: var(--text-dim); }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .page { padding: 100px 20px 60px; }
+    .page-title { font-size: 30px; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Comment<span>Pull</span></a>
+  <a href="/" class="btn-nav">← Back to app</a>
+</nav>
+
+<div class="page">
+  <p class="page-eyebrow">Legal</p>
+  <h1 class="page-title">Privacy Policy</h1>
+  <p class="page-date">Last updated: April 6, 2025</p>
+
+  <div class="prose">
+
+    <div class="callout">
+      CommentPull is built on a simple principle: <strong>your data stays on your device</strong>. All comment extraction runs entirely in your browser — your access tokens and extracted content never touch our servers.
+    </div>
+
+    <div>
+      <h2 class="section-title">1. Who we are</h2>
+      <p>CommentPull is a web-based tool that lets you extract, filter, and export comments from Facebook, Instagram, and YouTube posts. We are the operator of this service, reachable at the contact details at the bottom of this page.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">2. What we collect</h2>
+      <p>We collect only the minimum information needed to run your account:</p>
+      <ul>
+        <li><strong>Email address</strong> — used to identify your account and for transactional messages (e.g. password reset).</li>
+        <li><strong>Name</strong> — displayed in the app interface.</li>
+        <li><strong>Password</strong> — stored as a bcrypt hash (cost 12). We never store your plain-text password.</li>
+        <li><strong>Token balance &amp; ad activity</strong> — the number of tokens you have and how many rewarded ads you have watched today, to enforce daily limits.</li>
+        <li><strong>Account timestamps</strong> — when your account was created and last updated.</li>
+      </ul>
+      <p style="margin-top:14px">We do <strong>not</strong> collect payment information. No credit card is required to use CommentPull.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">3. What we do NOT collect</h2>
+      <ul>
+        <li>Your Facebook or Instagram <strong>access tokens</strong> — these are entered in your browser and sent directly to Meta's servers. They never pass through ours.</li>
+        <li>The <strong>comments, usernames, or post content</strong> you extract — all processing happens in your browser and the data goes straight to your downloaded file.</li>
+        <li>Your <strong>YouTube API key</strong> — same as above, browser-only.</li>
+        <li><strong>Browsing behaviour</strong>, page interactions, or session recordings beyond basic analytics.</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="section-title">4. How we use your data</h2>
+      <ul>
+        <li>To authenticate you and maintain your session.</li>
+        <li>To track your token balance so the extraction limits work correctly.</li>
+        <li>To enforce the daily rewarded-ad limit (10 ads per day).</li>
+        <li>To reset your token balance to 250 at the start of each day if it has fallen below that.</li>
+      </ul>
+      <p>We do not sell, rent, or share your personal data with third parties for marketing purposes.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">5. Cookies &amp; sessions</h2>
+      <p>We set one HTTP-only, secure cookie (<code>cp_token</code>) when you sign in. It contains a random session token — not your password or any personal data. It expires after 30 days or when you sign out. We do not use advertising cookies or third-party tracking cookies.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">6. Analytics</h2>
+      <p>We use <strong>Google Analytics 4</strong> to understand how the app is used in aggregate (e.g. which platform tab is most popular, how many extractions succeed). This data is anonymised and not linked to your account. You can opt out via browser extensions that block Google Analytics.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">7. Data storage &amp; security</h2>
+      <p>Account data is stored in a MySQL database hosted on Hostinger. We use bcrypt password hashing, cryptographically random session tokens (256-bit entropy), and HTTPS-only delivery. Session tokens expire automatically after 30 days.</p>
+      <p>No extraction data (comments, post content, API keys) is ever written to our database.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">8. Data retention</h2>
+      <p>Your account data is retained for as long as your account is active. You may request deletion at any time by contacting us — we will permanently delete your email, name, password hash, and token history within 7 days.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">9. Your rights</h2>
+      <p>Depending on your location, you may have rights under GDPR, CCPA, or similar laws, including:</p>
+      <ul>
+        <li>The right to <strong>access</strong> the data we hold about you.</li>
+        <li>The right to <strong>correct</strong> inaccurate data.</li>
+        <li>The right to <strong>delete</strong> your account and all associated data.</li>
+        <li>The right to <strong>data portability</strong> — a copy of your data in a machine-readable format.</li>
+        <li>The right to <strong>withdraw consent</strong> at any time.</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at the email below.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">10. Third-party services</h2>
+      <ul>
+        <li><strong>Meta Graph API</strong> — used directly from your browser to fetch Facebook and Instagram comments. Subject to <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta's Privacy Policy</a>.</li>
+        <li><strong>YouTube Data API v3</strong> — used directly from your browser. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
+        <li><strong>Google Analytics</strong> — aggregate usage analytics. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
+        <li><strong>Hostinger</strong> — our hosting provider stores account data in their data centres. Subject to <a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener">Hostinger's Privacy Policy</a>.</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="section-title">11. Changes to this policy</h2>
+      <p>We may update this Privacy Policy occasionally. When we do, we will revise the "Last updated" date at the top. Continued use of CommentPull after changes are posted constitutes your acceptance of the updated policy.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">12. Contact</h2>
+      <p>Questions, data requests, or deletion requests can be sent to:<br>
+      <a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a></p>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <span class="footer-left">© 2025 CommentPull</span>
+  <div class="footer-right">
+    <a href="/about.html">About</a>
+    <a href="/privacy.html">Privacy Policy</a>
+    <a href="/">Back to app</a>
+  </div>
+</footer>
+
+</body>
+</html>

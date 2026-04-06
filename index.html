@@ -93,7 +93,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap">
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap"></noscript>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- XLSX is loaded on demand when the user requests an Excel download -->
 <style>
   :root {
     --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
@@ -1566,7 +1566,19 @@ function setHint(id, type, msg) {
 // ────────────────────────────────────────────────────────────
 //  EXPORT
 // ────────────────────────────────────────────────────────────
-function exportXLSX(rows, includeSummary) {
+function loadXLSX() {
+  if (window.XLSX) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function exportXLSX(rows, includeSummary) {
+  await loadXLSX();
   const wb = XLSX.utils.book_new();
   const headers = ['Post ID','Commenter Name','Commenter ID','Comment','Timestamp','Comment ID'];
   // Add Reply To column for Instagram replies
@@ -2241,12 +2253,12 @@ function searchPreview() {
   renderPreview(filtered);
 }
 
-function reDownload(which) {
+async function reDownload(which) {
   const rows = which === 'all' ? _previewAll : _previewQualified;
   if (!rows.length) return;
   const fmt = document.getElementById('fmt').value;
   const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
-  if (fmt === 'xlsx')     exportXLSX(rows, includeSummary);
+  if (fmt === 'xlsx')     await exportXLSX(rows, includeSummary);
   else if (fmt === 'csv') exportCSV(rows);
   else                    exportJSON(rows);
 }

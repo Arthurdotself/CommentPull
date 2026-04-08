@@ -64,7 +64,16 @@ function find_or_create_oauth_user(string $email, string $name, bool &$isNew = f
     $stmt = db()->prepare('SELECT * FROM users WHERE email = :email LIMIT 1');
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch();
-    if ($user) { $isNew = false; return $user; }
+    if ($user) {
+        $isNew = false;
+        // Update name if it was missing (e.g. user signed up via email/password first)
+        if (empty($user['name']) && $name) {
+            db()->prepare('UPDATE users SET name = :name WHERE id = :id')
+                ->execute([':name' => $name, ':id' => $user['id']]);
+            $user['name'] = $name;
+        }
+        return $user;
+    }
 
     $isNew = true;
     $hash  = password_hash(bin2hex(random_bytes(32)), PASSWORD_BCRYPT, ['cost' => 12]);

@@ -9,6 +9,8 @@
 <meta name="robots" content="index, follow">
 <meta name="author" content="CommentPull">
 <meta name="theme-color" content="#0d0d0d">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9850397255720200"
+     crossorigin="anonymous"></script>
 
 <!-- Favicon — Standard -->
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -215,8 +217,9 @@
   .remove-url { width: 32px; height: 32px; border-radius: 8px; background: none; border: 1px solid var(--border); cursor: pointer; color: var(--text-dim); display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
   .remove-url:hover { border-color: var(--accent-ig); color: var(--accent-ig); background: rgba(225,48,108,0.05); }
   .remove-url svg { width: 14px; height: 14px; }
-  .add-url { background: none; border: 1px dashed var(--border); border-radius: var(--radius); padding: 10px; color: var(--text-dim); cursor: pointer; font-family: var(--mono); font-size: 12px; transition: all 0.2s; display: none; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 4px; }
-  .add-url:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+  .add-url { background: none; border: none; padding: 4px 0; color: var(--text-muted); cursor: pointer; font-family: var(--mono); font-size: 11px; transition: color 0.15s; display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .add-url:hover { color: var(--accent); }
+  .pageid-area { min-height: 0; }
 
   /* Options */
   .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -604,33 +607,56 @@
     </div>
     <div class="card-body">
 
-      <!-- 01 Platform -->
-      <div class="field-group">
-        <label>01 — Platform</label>
-        <div class="platform-select">
-          <button class="platform-btn active-fb" id="btn-fb" onclick="selectPlatform('fb')">
-            <div class="platform-icon fb">
-              <svg viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      <!-- ── FACEBOOK CONTEXT ── -->
+      <div class="ctx-block visible" id="ctx-fb">
+        <div class="field-group">
+          <label>01 — Post URL(s)</label>
+          <div class="url-list" id="fb-url-list">
+            <div class="url-entry">
+              <input type="url" class="fb-url" placeholder="https://www.facebook.com/username/posts/13587975xxxx" oninput="onUrlInput(this)">
             </div>
-            <div><div class="platform-name">Facebook</div><div class="platform-sub">Page posts, multi-post</div></div>
-            <div class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          </div>
+          <button class="add-url" id="fb-add-url" onclick="addUrl('fb')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add another post
           </button>
-          <button class="platform-btn" id="btn-ig" onclick="selectPlatform('ig')">
-            <div class="platform-icon ig">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
-                <circle cx="17.5" cy="6.5" r="1" fill="#e1306c" stroke="none"/>
-              </svg>
+        </div>
+      </div>
+
+      <!-- ── INSTAGRAM CONTEXT ── -->
+      <div class="ctx-block" id="ctx-ig">
+        <div class="callout ig-note">
+          <strong>Requirements:</strong> Your Instagram account must be a <strong>Business or Creator account</strong> linked to a Facebook Page. Your token needs <code>instagram_basic</code> and <code>instagram_manage_comments</code> permissions. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Get token →</a>
+        </div>
+        <div class="field-group">
+          <label>01 — Instagram Post URL(s)</label>
+          <div class="url-list" id="ig-url-list">
+            <div class="url-entry">
+              <input type="url" class="ig-url" placeholder="https://www.instagram.com/p/ABC123def456/" oninput="onUrlInput(this)">
             </div>
-            <div><div class="platform-name">Instagram</div><div class="platform-sub">Business / Creator</div></div>
-            <div class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          </div>
+          <button class="add-url" id="ig-add-url" onclick="addUrl('ig')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add another post
           </button>
-          <button class="platform-btn" id="btn-yt" onclick="selectPlatform('yt')">
-            <div class="platform-icon yt">
-              <svg viewBox="0 0 24 24" fill="#ff2d2d"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.05 0 12 0 12s0 3.95.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.47 20.5 12 20.5 12 20.5s7.53 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.95 24 12 24 12s0-3.95-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
+        </div>
+      </div>
+
+      <!-- ── YOUTUBE CONTEXT ── -->
+      <div class="ctx-block" id="ctx-yt">
+        <div class="callout" style="border-color:rgba(255,45,45,0.2);background:rgba(255,45,45,0.04)">
+          <strong>Requirements:</strong> Any public YouTube video. You need a <strong>YouTube Data API v3 key</strong> — create one free at <a href="https://console.developers.google.com/" target="_blank">Google Cloud Console</a> (enable the YouTube Data API v3). Your API key never leaves your browser.
+        </div>
+        <div class="field-group">
+          <label>01 — Video URL(s)</label>
+          <div class="url-list" id="yt-url-list">
+            <div class="url-entry">
+              <input type="url" class="yt-url" placeholder="https://www.youtube.com/watch?v=…" oninput="onUrlInput(this)">
             </div>
-            <div><div class="platform-name">YouTube</div><div class="platform-sub">Any public video</div></div>
-            <div class="check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          </div>
+          <button class="add-url" id="yt-add-url" onclick="addUrl('yt')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add another video
           </button>
         </div>
       </div>
@@ -646,7 +672,7 @@
           <button class="hint-link" id="token-hint-link" onclick="window.open('https://developers.facebook.com/tools/explorer/','_blank')">Get token →</button>
         </label>
         <div class="input-wrap">
-          <input type="text" id="token-input" placeholder="EAABsbCS4IUA…" autocomplete="off" spellcheck="false">
+          <input type="text" id="token-input" placeholder="EAABsbCS4IUA…" autocomplete="off" spellcheck="false" oninput="onTokenInput()">
         </div>
         <button class="btn-token-check" id="btn-check-token" onclick="checkToken()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -657,114 +683,17 @@
       </div>
       <div class="token-health-card" id="token-health-card" style="display:none"></div>
 
-      <!-- ── FACEBOOK CONTEXT ── -->
-      <div class="ctx-block visible" id="ctx-fb">
-        <!-- FB Page ID -->
-        <div class="field-group">
-          <label>
-            03 — Facebook Page ID
-            <span class="tooltip-wrap">
-              <i class="info-icon">?</i>
-              <span class="tooltip">Your Page's numeric ID. Found on your Page → About → Page ID. Or click Auto-detect.</span>
-            </span>
-          </label>
-          <div class="row2">
-            <div class="field-group" style="gap:4px">
-              <input type="text" id="fb-page-id" placeholder="e.g. 9684410231xxxx" spellcheck="false">
-              <div class="field-hint" id="fb-pageid-hint"></div>
-            </div>
-            <button class="btn-sm" id="btn-fb-auto" onclick="fbAutoDetect()">Auto-Detect →</button>
-          </div>
-        </div>
-
-        <!-- FB Post URLs -->
-        <div class="field-group">
-          <label>04 — Post URL(s)</label>
-          <div class="toggle-row" style="margin-bottom:4px">
-            <div><div class="toggle-label">Multiple posts</div><div class="toggle-sub">Extract from several posts at once</div></div>
-            <label class="toggle"><input type="checkbox" id="fb-multi" onchange="onMultiToggle('fb')"><span class="toggle-track"></span></label>
-          </div>
-          <div class="url-list" id="fb-url-list">
-            <div class="url-entry">
-              <input type="url" class="fb-url" placeholder="https://www.facebook.com/username/posts/13587975xxxx">
-            </div>
-          </div>
-          <button class="add-url" id="fb-add-url" onclick="addUrl('fb')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add another post
-          </button>
+      <!-- Page ID (auto-detected after token entry) -->
+      <div id="pageid-for-fb" style="display:block">
+        <div class="field-hint" id="fb-pageid-hint"></div>
+        <div id="fb-pageid-fallback" style="display:none;margin-top:6px">
+          <input type="text" id="fb-page-id" placeholder="Facebook Page ID — e.g. 9684410231xxxx" spellcheck="false">
         </div>
       </div>
-
-      <!-- ── INSTAGRAM CONTEXT ── -->
-      <div class="ctx-block" id="ctx-ig">
-
-        <!-- IG info callout -->
-        <div class="callout ig-note">
-          <strong>Requirements:</strong> Your Instagram account must be a <strong>Business or Creator account</strong> linked to a Facebook Page. Your token needs <code>instagram_basic</code> and <code>instagram_manage_comments</code> permissions. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Get token →</a>
-        </div>
-
-        <!-- IG: FB Page ID to look up IG account -->
-        <div class="field-group">
-          <label>
-            03 — Facebook Page ID
-            <span class="tooltip-wrap">
-              <i class="info-icon">?</i>
-              <span class="tooltip">The Facebook Page linked to your Instagram account. Required to resolve your Instagram Business Account ID. Click Auto-detect or paste it from your Page → About.</span>
-            </span>
-          </label>
-          <div class="row2">
-            <div class="field-group" style="gap:4px">
-              <input type="text" id="ig-page-id" placeholder="e.g. 9684410231xxxx" spellcheck="false">
-              <div class="field-hint" id="ig-pageid-hint"></div>
-            </div>
-            <button class="btn-sm" id="btn-ig-auto" onclick="igAutoDetect()">Auto-detect →</button>
-          </div>
-        </div>
-
-        <!-- IG Post URLs -->
-        <div class="field-group">
-          <label>04 — Instagram Post URL(s)</label>
-          <div class="toggle-row" style="margin-bottom:4px">
-            <div><div class="toggle-label">Multiple posts</div><div class="toggle-sub">Extract from several posts at once</div></div>
-            <label class="toggle"><input type="checkbox" id="ig-multi" onchange="onMultiToggle('ig')"><span class="toggle-track"></span></label>
-          </div>
-          <div class="url-list" id="ig-url-list">
-            <div class="url-entry">
-              <input type="url" class="ig-url" placeholder="https://www.instagram.com/p/ABC123def456/">
-            </div>
-          </div>
-          <button class="add-url" id="ig-add-url" onclick="addUrl('ig')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add another post
-          </button>
-        </div>
-      </div>
-
-      <!-- ── YOUTUBE CONTEXT ── -->
-      <div class="ctx-block" id="ctx-yt">
-
-        <!-- YT info callout -->
-        <div class="callout" style="border-color:rgba(255,45,45,0.2);background:rgba(255,45,45,0.04)">
-          <strong>Requirements:</strong> Any public YouTube video. You need a <strong>YouTube Data API v3 key</strong> — create one free at <a href="https://console.developers.google.com/" target="_blank">Google Cloud Console</a> (enable the YouTube Data API v3). Your API key never leaves your browser.
-        </div>
-
-        <!-- YT Video URLs -->
-        <div class="field-group">
-          <label>03 — Video URL(s)</label>
-          <div class="toggle-row" style="margin-bottom:4px">
-            <div><div class="toggle-label">Multiple videos</div><div class="toggle-sub">Extract from several videos at once</div></div>
-            <label class="toggle"><input type="checkbox" id="yt-multi" onchange="onMultiToggle('yt')"><span class="toggle-track"></span></label>
-          </div>
-          <div class="url-list" id="yt-url-list">
-            <div class="url-entry">
-              <input type="url" class="yt-url" placeholder="https://www.youtube.com/watch?v=…">
-            </div>
-          </div>
-          <button class="add-url" id="yt-add-url" onclick="addUrl('yt')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add another video
-          </button>
+      <div id="pageid-for-ig" style="display:none">
+        <div class="field-hint" id="ig-pageid-hint"></div>
+        <div id="ig-pageid-fallback" style="display:none;margin-top:6px">
+          <input type="text" id="ig-page-id" placeholder="Facebook Page ID linked to your Instagram — e.g. 9684410231xxxx" spellcheck="false">
         </div>
       </div>
 
@@ -1213,16 +1142,77 @@ const GRAPH = "https://graph.facebook.com/v19.0";
 let platform = 'fb';
 
 // ────────────────────────────────────────────────────────────
+//  URL → PLATFORM AUTO-DETECTION
+// ────────────────────────────────────────────────────────────
+function onUrlInput(input) {
+  const v = input.value.trim();
+  if (!v) return;
+  let p = null;
+  if (/instagram\.com/i.test(v))               p = 'ig';
+  else if (/facebook\.com|fb\.com/i.test(v))   p = 'fb';
+  else if (/youtube\.com|youtu\.be/i.test(v))  p = 'yt';
+  if (p && p !== platform) selectPlatform(p);
+}
+
+// ────────────────────────────────────────────────────────────
+//  TOKEN → AUTO DETECT PAGE ID
+// ────────────────────────────────────────────────────────────
+let _tokenDebounce = null;
+function onTokenInput() {
+  clearTimeout(_tokenDebounce);
+  const token = document.getElementById('token-input').value.trim();
+  if (token.length < 20) return;
+  _tokenDebounce = setTimeout(() => autoDetectPageId(), 700);
+}
+
+async function autoDetectPageId() {
+  if (platform === 'yt') return;
+  const token = document.getElementById('token-input').value.trim();
+  if (!token) return;
+  if (platform === 'fb') await _silentFbDetect(token);
+  else                   await _silentIgDetect(token);
+}
+
+async function _silentFbDetect(token) {
+  const fallback = document.getElementById('fb-pageid-fallback');
+  try {
+    const data = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+    document.getElementById('fb-page-id').value = data.id;
+    setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
+    if (fallback) fallback.style.display = 'none';
+  } catch(e) {
+    setHint('fb-pageid-hint', 'err', 'Could not auto-detect — enter Page ID manually');
+    if (fallback) fallback.style.display = 'block';
+  }
+}
+
+async function _silentIgDetect(token) {
+  const fallback = document.getElementById('ig-pageid-fallback');
+  try {
+    const meData = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+    const fbPageId = meData.id;
+    document.getElementById('ig-page-id').value = fbPageId;
+    const igData = await gql(`/${fbPageId}?fields=instagram_business_account&access_token=${enc(token)}`);
+    const igId = igData.instagram_business_account?.id;
+    if (!igId) throw new Error('No Instagram Business Account linked to this Facebook Page');
+    document.getElementById('ig-page-id').dataset.igUserId = igId;
+    setHint('ig-pageid-hint', 'ok', `✓ ${meData.name} · IG Business ID: ${igId}`);
+    if (fallback) fallback.style.display = 'none';
+  } catch(e) {
+    setHint('ig-pageid-hint', 'err', 'Could not auto-detect — enter Page ID manually');
+    if (fallback) fallback.style.display = 'block';
+  }
+}
+
+// ────────────────────────────────────────────────────────────
 //  PLATFORM SWITCH
 // ────────────────────────────────────────────────────────────
 function selectPlatform(p) {
   gtag('event', 'platform_selected', { platform: p });
   platform = p;
   ['fb','ig','yt'].forEach(x => {
-    document.getElementById(`btn-${x}`).classList.remove(`active-${x}`);
     document.getElementById(`ctx-${x}`).classList.remove('visible');
   });
-  document.getElementById(`btn-${p}`).classList.add(`active-${p}`);
   document.getElementById(`ctx-${p}`).classList.add('visible');
 
   const badgeMap = { fb: 'Facebook Graph API v19.0', ig: 'Instagram Graph API v19.0', yt: 'YouTube Data API v3' };
@@ -1250,6 +1240,12 @@ function selectPlatform(p) {
     checkBtn.style.display = '';
   }
 
+  // Show the correct page ID section
+  const fbPid = document.getElementById('pageid-for-fb');
+  const igPid = document.getElementById('pageid-for-ig');
+  if (fbPid) fbPid.style.display = p === 'fb' ? 'block' : 'none';
+  if (igPid) igPid.style.display = p === 'ig' ? 'block' : 'none';
+
   // Replies option
   const repliesCard = document.getElementById('opt-replies');
   if (p === 'ig') {
@@ -1267,6 +1263,10 @@ function selectPlatform(p) {
   // Clear token health card — permission requirements differ per platform
   const healthCard = document.getElementById('token-health-card');
   if (healthCard) healthCard.style.display = 'none';
+
+  // If a token is already present, re-run page ID detection for the new platform
+  const existingToken = document.getElementById('token-input').value.trim();
+  if (existingToken.length >= 20) autoDetectPageId();
 }
 
 // ────────────────────────────────────────────────────────────
@@ -1275,22 +1275,15 @@ function selectPlatform(p) {
 function toggleOption(card) { card.classList.toggle('selected'); }
 
 // ────────────────────────────────────────────────────────────
-//  MULTI-URL TOGGLE
+//  MULTI-URL ADD / REMOVE
 // ────────────────────────────────────────────────────────────
-function onMultiToggle(pfx) {
-  const on = document.getElementById(`${pfx}-multi`).checked;
-  document.getElementById(`${pfx}-add-url`).style.display = on ? 'flex' : 'none';
-  document.querySelectorAll(`#${pfx}-url-list .remove-url`)
-    .forEach(b => b.style.display = on ? 'flex' : 'none');
-}
-
 function addUrl(pfx) {
   const list = document.getElementById(`${pfx}-url-list`);
   const div = document.createElement('div');
   div.className = 'url-entry';
   const placeholders = { ig: 'https://www.instagram.com/p/…', yt: 'https://www.youtube.com/watch?v=…', fb: 'https://www.facebook.com/…/posts/…' };
   div.innerHTML = `
-    <input type="url" class="${pfx}-url" placeholder="${placeholders[pfx] || 'https://…'}">
+    <input type="url" class="${pfx}-url" placeholder="${placeholders[pfx] || 'https://…'}" oninput="onUrlInput(this)">
     <button class="remove-url" onclick="removeUrl(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -2446,16 +2439,10 @@ async function handleExtract() {
   const panel = document.getElementById('status');
   const list  = panel.querySelector('.progress-list');
   panel.className = 'status-panel success';
-  const cappedByTokens = tokenBudget <= 0;
-  const tokenNote = cappedByTokens
-    ? (isGuest
-        ? `<div style="margin-top:8px;font-size:12px;color:#f09060">⚠ You've used all your free tokens — <button onclick="openAuth('signup')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:6px;padding:4px 12px;font-family:var(--mono);font-size:11px;font-weight:500;cursor:pointer;margin-left:4px">Sign up free to continue →</button></div>`
-        : `<div style="margin-top:6px;font-size:11px;color:#f09060">⚠ Reached your token limit — <span style="cursor:pointer;text-decoration:underline" onclick="openPricing()">watch an ad to earn +500 tokens</span></div>`)
-    : '';
   const filterNote = filtersActive
     ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules — download from the preview below</div>`
     : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments in the preview below, then download when ready</div>`;
-  panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${tokenNote}${filterNote}`;
+  panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
   if (list) panel.appendChild(list);
   gtag('event', 'extract_success', { platform, comment_count: qualifiedCount, total_count: totalCount });
 

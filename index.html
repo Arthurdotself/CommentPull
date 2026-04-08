@@ -235,11 +235,6 @@
 
   /* CTA */
   .cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .token-budget-bar { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); margin-top: 8px; }
-  .token-budget-bar .tb-count { color: var(--accent); font-weight: 600; font-size: 12px; }
-  .token-budget-bar .tb-count.low { color: #f09060; }
-  .token-budget-bar .tb-earn { color: var(--text-dim); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-  .token-budget-bar .tb-earn:hover { color: #50c878; }
   .btn-extract { flex: 1; padding: 16px 24px; background: var(--accent); color: #0d0d0d; border: none; border-radius: var(--radius); font-family: var(--mono); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .btn-extract:hover { background: #f5d080; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,192,96,0.25); }
   .btn-extract:active { transform: translateY(0); }
@@ -583,12 +578,6 @@
       </div>
       <div id="user-dropdown" class="user-dropdown" style="display:none">
         <div class="dropdown-email" id="nav-user-email"></div>
-        <div class="dropdown-token-row">
-          <span class="dropdown-token-icon">🪙</span>
-          <span id="nav-user-tokens">250 tokens</span>
-        </div>
-        <div class="dropdown-divider"></div>
-        <button class="dropdown-item accent-item" onclick="openPricing()">Earn more tokens</button>
         <div class="dropdown-divider"></div>
         <button class="dropdown-item danger" onclick="doSignOut()">Sign out</button>
       </div>
@@ -921,11 +910,6 @@
             <div class="spinner"></div>
             <span class="btn-label">Extract &amp; Preview</span>
           </button>
-        </div>
-        <div id="token-budget-bar" class="token-budget-bar" style="display:none">
-          🪙 <span id="tb-count" class="tb-count">250</span> tokens remaining
-          &nbsp;·&nbsp;
-          <span class="tb-earn" onclick="openPricing()">earn more →</span>
         </div>
         <div class="status-panel" id="status"></div>
       </div>
@@ -2312,24 +2296,6 @@ async function handleExtract() {
 
   gtag('event', 'extract_started', { platform });
 
-  // ── Token balance check (guest or logged-in) ──
-  const isGuest    = !currentUser;
-  const tokenBudgetStart = isGuest ? getGuestTokens() : (currentUser.tokens ?? 0);
-
-  if (tokenBudgetStart <= 0) {
-    if (isGuest) {
-      setStatus('error', 'No free tokens remaining',
-        '<span>You\'ve used your 250 free tokens. ' +
-        '<button onclick="openAuth(\'signup\')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:6px;padding:5px 12px;font-family:var(--mono);font-size:11px;font-weight:500;cursor:pointer;margin-left:6px">Sign up free →</button>' +
-        '</span>');
-    } else {
-      setStatus('error', 'No tokens remaining',
-        'You\'ve used all your tokens. Watch an ad to earn +500 tokens instantly, or wait until tomorrow for your free 250 to refill.');
-      openPricing();
-    }
-    return;
-  }
-
   // ── Validate API token/key ──
   if (!token) { setStatus('error','Access token required','Please enter your Page Access Token (step 02).'); return; }
 
@@ -2337,7 +2303,6 @@ async function handleExtract() {
   btn.classList.add('loading');
   const all = [];
   let anyError = false;
-  let tokenBudget = tokenBudgetStart; // shared across all posts
 
   try {
     if (platform === 'fb') {
@@ -2351,7 +2316,6 @@ async function handleExtract() {
       const filter = includeReplies ? 'stream' : 'toplevel';
 
       for (let i = 0; i < urls.length; i++) {
-        if (tokenBudget <= 0) break;
         const link = urls[i], fullId = buildFullPostId(link, pageId);
         const label = link.length > 44 ? '…'+link.slice(-41) : link;
         const pid = `p${i}`;
@@ -2359,9 +2323,8 @@ async function handleExtract() {
         try {
           const comments = await fetchFbComments(fullId, token, filter, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          }, tokenBudget);
+          });
           all.push(...comments);
-          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`); anyError = true; }
       }
@@ -2375,7 +2338,6 @@ async function handleExtract() {
       setStatus('info', 'Connecting to YouTube Data API…', '');
 
       for (let i = 0; i < urls.length; i++) {
-        if (tokenBudget <= 0) break;
         const url  = urls[i];
         const videoId = extractYtVideoId(url);
         const label   = url.length > 44 ? '…'+url.slice(-41) : url;
@@ -2390,9 +2352,8 @@ async function handleExtract() {
         try {
           const comments = await fetchYtComments(videoId, apiKey, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          }, tokenBudget);
+          });
           all.push(...comments);
-          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
           setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
@@ -2421,7 +2382,6 @@ async function handleExtract() {
       }
 
       for (let i = 0; i < urls.length; i++) {
-        if (tokenBudget <= 0) break;
         const url = urls[i];
         const shortcode = extractIgShortcode(url);
         const label = url.length > 44 ? '…'+url.slice(-41) : url;
@@ -2438,9 +2398,8 @@ async function handleExtract() {
           setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
           const comments = await fetchIgComments(mediaId, token, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
-          }, tokenBudget);
+          });
           all.push(...comments);
-          tokenBudget -= comments.length;
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
           setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
@@ -2451,20 +2410,6 @@ async function handleExtract() {
   } catch(e) {
     setStatus('error', 'Unexpected error', e.message);
     btn.classList.remove('loading'); return;
-  }
-
-  // ── Deduct tokens ──
-  if (all.length > 0) {
-    if (isGuest) {
-      setGuestTokens(tokenBudgetStart - all.length);
-      updateTokenDisplay();
-    } else {
-      try {
-        const usage = await apiFetch('POST', '/use-tokens.php', { count: all.length });
-        currentUser.tokens = usage.tokens;
-        updateTokenDisplay();
-      } catch (_) { /* non-fatal — extraction already succeeded */ }
-    }
   }
 
   btn.classList.remove('loading');
@@ -3007,43 +2952,6 @@ function toggleFaq(btn) {
   .btn-oauth:hover { border-color: var(--border-active); color: var(--text); background: var(--surface); }
   .btn-oauth svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-  /* Pricing modal */
-  .pricing-modal { max-width: 520px; }
-  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 540px) { .pricing-grid { grid-template-columns: 1fr; } }
-  .plan-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; transition: border-color 0.2s; background: var(--surface2); }
-  .plan-card:hover { border-color: var(--border-active); }
-  .plan-card.earn-card { border-color: rgba(80,200,120,0.3); background: rgba(80,200,120,0.03); }
-  .plan-card.earn-card:hover { border-color: rgba(80,200,120,0.55); }
-  .plan-badge { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: var(--accent-glow); border: 1px solid rgba(240,192,96,0.25); padding: 3px 8px; border-radius: 20px; display: inline-block; align-self: flex-start; }
-  .plan-badge.green { color: #50c878; background: rgba(80,200,120,0.08); border-color: rgba(80,200,120,0.25); }
-  .plan-name { font-family: var(--serif); font-size: 18px; font-weight: 400; font-style: italic; color: var(--text); }
-  .plan-price { display: flex; align-items: baseline; gap: 4px; }
-  .plan-price-amount { font-size: 28px; font-weight: 500; color: var(--text); }
-  .plan-price-amount.green { color: #50c878; }
-  .plan-price-period { font-size: 12px; color: var(--text-dim); }
-  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-  .plan-features li { font-size: 12px; color: var(--text-dim); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
-  .plan-features li::before { content: '✓'; color: var(--accent); font-size: 11px; margin-top: 1px; flex-shrink: 0; }
-  .plan-features li.dim::before { content: '–'; color: var(--text-muted); }
-  .plan-features li.dim { color: var(--text-muted); }
-  .btn-plan { width: 100%; padding: 11px; border-radius: 8px; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border); background: none; color: var(--text-dim); margin-top: auto; }
-  .btn-plan:hover { border-color: var(--border-active); color: var(--text); }
-  .btn-plan.primary { background: var(--accent); color: #0d0d0d; border-color: var(--accent); font-weight: 500; }
-  .btn-plan.primary:hover { background: #f5d080; }
-  .btn-plan.green { background: rgba(80,200,120,0.12); color: #50c878; border-color: rgba(80,200,120,0.4); font-weight: 500; }
-  .btn-plan.green:hover:not(:disabled) { background: rgba(80,200,120,0.22); border-color: rgba(80,200,120,0.7); }
-  .btn-plan:disabled { opacity: 0.5; cursor: not-allowed; }
-  .ad-countdown { font-size: 12px; color: var(--text-muted); text-align: center; padding: 8px 0 0; font-family: var(--mono); }
-  .ad-countdown span { color: #50c878; font-weight: 600; }
-  .pricing-earn-cta { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 14px; padding: 10px 14px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); line-height: 1.6; }
-  .pricing-token-row { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--text-dim); }
-  .pricing-token-row strong { color: var(--accent); font-size: 14px; }
-  .ads-left-badge { font-size: 10px; color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; }
-  .pricing-note { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 12px; }
-  /* Dropdown token row */
-  .dropdown-token-row { display: flex; align-items: center; gap: 6px; padding: 6px 14px 8px; font-size: 12px; color: var(--text-dim); font-family: var(--mono); }
-  .dropdown-token-icon { font-size: 13px; }
 
   /* Toast */
   .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; font-family: var(--mono); font-size: 13px; color: var(--text); z-index: 2000; opacity: 0; transition: all 0.3s; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4); pointer-events: none; }
@@ -3125,94 +3033,8 @@ function toggleFaq(btn) {
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     PRICING MODAL
-════════════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="pricing-modal" onclick="closeOnBackdrop(event,'pricing-modal')">
-  <div class="modal pricing-modal">
-    <div class="modal-header">
-      <span class="modal-title">Plans &amp; Tokens</span>
-      <button class="modal-close" onclick="closeModal('pricing-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="pricing-grid">
-
-        <!-- Free Plan -->
-        <div class="plan-card">
-          <span class="plan-badge">🔹 Default</span>
-          <div class="plan-name">Free</div>
-          <div class="plan-price">
-            <span class="plan-price-amount">Free</span>
-            <span class="plan-price-period">forever</span>
-          </div>
-          <ul class="plan-features">
-            <li>250 tokens on signup</li>
-            <li>Up to 5 posts</li>
-            <li>Export CSV &amp; JSON</li>
-            <li>Winner picker</li>
-          </ul>
-          <button class="btn-plan" disabled>Current plan</button>
-        </div>
-
-        <!-- Earn Tokens via Ads -->
-        <div class="plan-card earn-card">
-          <span class="plan-badge green">🎯 Rewarded Ads</span>
-          <div class="plan-name">Watch &amp; Earn</div>
-          <div class="plan-price">
-            <span class="plan-price-amount green">+500</span>
-            <span class="plan-price-period">tokens / ad</span>
-          </div>
-          <ul class="plan-features">
-            <li>Watch 1 short ad → +500 tokens</li>
-            <li>Up to 10 ads per day</li>
-            <li>Tokens never expire</li>
-            <li>Instant reward</li>
-          </ul>
-          <button class="btn-plan green" id="btn-watch-ad" onclick="watchAd()">▶ Watch Ad → +500 tokens</button>
-          <div id="ad-countdown" class="ad-countdown" style="display:none">Ad playing… <span id="ad-timer">5</span>s remaining</div>
-        </div>
-
-      </div>
-
-      <div class="pricing-earn-cta">
-        👉 Need more tokens? Earn them instantly by watching a short ad — no payment needed.
-      </div>
-
-      <div id="pricing-token-row" class="pricing-token-row" style="display:none">
-        <span>Your balance:</span>
-        <strong><span id="pricing-token-count">250</span> tokens</strong>
-        <span id="pricing-ads-left" class="ads-left-badge">10 ads left today</span>
-      </div>
-
-      <p class="pricing-note">1 comment = 1 token · Earned tokens never expire · No credit card needed</p>
-    </div>
-  </div>
-</div>
-
 <!-- Toast notification -->
 <div class="toast" id="toast"></div>
-
-<!-- BETA gift modal — remove with beta block -->
-<div class="modal-overlay" id="beta-modal" onclick="closeOnBackdrop(event,'beta-modal')">
-  <div class="modal" style="max-width:420px;text-align:center">
-    <div class="modal-body" style="padding:36px 32px 32px">
-      <div style="font-size:48px;margin-bottom:16px">🎁</div>
-      <h2 style="font-family:var(--serif);font-size:24px;font-weight:300;font-style:italic;color:var(--text);margin-bottom:12px">You got a beta gift!</h2>
-      <p style="font-size:13px;color:var(--text-dim);line-height:1.75;margin-bottom:8px">
-        Welcome, <strong id="beta-modal-name" style="color:var(--text)"></strong>!<br>
-        Since CommentPull is in <strong style="color:var(--accent)">beta</strong>, you've been gifted
-        <strong style="color:var(--accent)">unlimited tokens</strong> — completely free.
-      </p>
-      <p style="font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:28px">
-        Extract as many comments as you like while we're in beta.<br>
-        Your feedback helps us build a better product.
-      </p>
-      <button onclick="closeModal('beta-modal')" style="background:var(--accent);color:#0d0d0d;border:none;border-radius:8px;padding:12px 32px;font-family:var(--mono);font-size:13px;font-weight:500;cursor:pointer;width:100%;transition:background 0.2s" onmouseover="this.style.background='#f5d080'" onmouseout="this.style.background='var(--accent)'">
-        Start extracting →
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- ═══════════════════════════════════════════════════════════
      AUTH & PAYMENT JAVASCRIPT
@@ -3230,7 +3052,6 @@ let currentUser = null;
   if (params.get('oauth') === 'success') {
     const oauthToken = params.get('token');
     const oauthName  = params.get('name') || 'there';
-    const betaGift   = params.get('beta_gift') === '1'; // BETA
     history.replaceState({}, '', location.pathname);
     if (oauthToken) {
       localStorage.setItem('cp_token', oauthToken);
@@ -3238,12 +3059,7 @@ let currentUser = null;
         const res = await apiFetch('GET', '/me.php');
         if (res.id) {
           setUser(res);
-          // BETA: show gift modal for new OAuth users, plain toast for returning
-          if (betaGift) {
-            showBetaGiftModal(oauthName);
-          } else {
-            showToast('Welcome back, ' + oauthName + '!', 'success');
-          }
+          showToast('Welcome back, ' + oauthName + '!', 'success');
         }
       } catch (_) { localStorage.removeItem('cp_token'); }
     }
@@ -3259,18 +3075,12 @@ let currentUser = null;
 
   // ── Regular session restore ──
   const token = localStorage.getItem('cp_token');
-  if (!token) {
-    // No session — show guest token balance
-    updateTokenDisplay();
-    return;
-  }
+  if (!token) return;
   try {
     const res = await apiFetch('GET', '/me.php');
     if (res.id) setUser(res);
-    else updateTokenDisplay(); // failed silently — show guest bar
   } catch (_) {
     localStorage.removeItem('cp_token');
-    updateTokenDisplay();
   }
 })();
 
@@ -3311,73 +3121,6 @@ function setUser(user) {
   const dot = document.getElementById('nav-user-plan');
   dot.className = 'plan-dot ' + user.plan;
 
-  updateTokenDisplay();
-}
-
-// ── Guest token helpers ───────────────────────────────────────────
-function getGuestTokens() {
-  const stored = localStorage.getItem('cp_guest_tokens');
-  if (stored === null) {
-    localStorage.setItem('cp_guest_tokens', '250');
-    return 250;
-  }
-  return Math.max(0, parseInt(stored, 10) || 0);
-}
-function setGuestTokens(n) {
-  localStorage.setItem('cp_guest_tokens', String(Math.max(0, n)));
-}
-
-function updateTokenDisplay() {
-  const isGuest  = !currentUser;
-  const tokens   = isGuest ? getGuestTokens() : (currentUser.tokens ?? 250);
-  const adsLeft  = isGuest ? null : (currentUser.ads_remaining ?? 10);
-
-  // Nav dropdown token count (logged-in only)
-  const tokEl = document.getElementById('nav-user-tokens');
-  if (tokEl && !isGuest) tokEl.textContent = tokens.toLocaleString() + ' tokens';
-
-  // Budget bar (shown for everyone)
-  const bar     = document.getElementById('token-budget-bar');
-  const tbCount = document.getElementById('tb-count');
-  const tbEarn  = bar?.querySelector('.tb-earn');
-  if (bar) bar.style.display = '';
-  if (tbCount) {
-    tbCount.textContent = tokens.toLocaleString();
-    tbCount.className   = 'tb-count' + (tokens <= 50 ? ' low' : '');
-  }
-  if (tbEarn) {
-    if (isGuest && tokens <= 0) {
-      tbEarn.textContent = 'Sign up free to continue →';
-      tbEarn.onclick     = () => openAuth('signup');
-    } else if (isGuest) {
-      tbEarn.textContent = 'sign up for daily refill →';
-      tbEarn.onclick     = () => openAuth('signup');
-    } else {
-      tbEarn.textContent = 'earn more →';
-      tbEarn.onclick     = () => openPricing();
-    }
-  }
-
-  // Pricing modal token row (logged-in only)
-  const rowEl   = document.getElementById('pricing-token-row');
-  const countEl = document.getElementById('pricing-token-count');
-  const adsEl   = document.getElementById('pricing-ads-left');
-  if (!isGuest) {
-    if (rowEl)   rowEl.style.display   = '';
-    if (countEl) countEl.textContent   = tokens.toLocaleString();
-    if (adsEl)   adsEl.textContent     = adsLeft + ' ad' + (adsLeft === 1 ? '' : 's') + ' left today';
-  }
-
-  // Refresh watch-ad button state (logged-in only)
-  const adBtn = document.getElementById('btn-watch-ad');
-  if (adBtn && !isGuest && !adBtn.disabled) {
-    if (adsLeft <= 0) {
-      adBtn.disabled    = true;
-      adBtn.textContent = 'Come back tomorrow';
-    } else {
-      adBtn.textContent = `▶ Watch Ad → +500 tokens (${adsLeft} left today)`;
-    }
-  }
 }
 
 function clearUser() {
@@ -3386,7 +3129,6 @@ function clearUser() {
   document.getElementById('nav-auth-guest').style.display = 'flex';
   document.getElementById('nav-auth-user').style.display  = 'none';
   document.getElementById('user-dropdown').style.display  = 'none';
-  updateTokenDisplay(); // show guest balance in budget bar
 }
 
 // ── Sign in ───────────────────────────────────────────────────────
@@ -3416,13 +3158,6 @@ async function doSignIn(e) {
 }
 
 // ── Sign up ───────────────────────────────────────────────────────
-// BETA: remove this function when beta ends
-function showBetaGiftModal(name) {
-  document.getElementById('beta-modal-name').textContent = name;
-  document.getElementById('beta-modal').style.display = '';
-  openModal('beta-modal');
-}
-
 async function doSignUp(e) {
   e.preventDefault();
   const btn = document.getElementById('su-btn');
@@ -3440,12 +3175,7 @@ async function doSignUp(e) {
     localStorage.setItem('cp_token', data.token);
     setUser(data.user);
     closeModal('auth-modal');
-    // BETA: remove the if-block below when beta ends
-    if (data.beta_gift) {
-      showBetaGiftModal(data.user.name);
-    } else {
-      showToast('Account created — welcome!', 'success');
-    }
+    showToast('Account created — welcome!', 'success');
   } catch (ex) {
     err.textContent = ex.message;
   } finally {
@@ -3462,67 +3192,10 @@ async function doSignOut() {
   showToast('Signed out.', '');
 }
 
-// ── Checkout ──────────────────────────────────────────────────────
-// ── Watch ad → earn tokens ────────────────────────────────────────
-let _adPlaying = false;
-
-async function watchAd() {
-  if (!currentUser) {
-    closeModal('pricing-modal');
-    openAuth('signup');
-    showToast('Sign in to earn tokens.', '');
-    return;
-  }
-  if (_adPlaying) return;
-  _adPlaying = true;
-
-  const btn       = document.getElementById('btn-watch-ad');
-  const countdown = document.getElementById('ad-countdown');
-  const timerEl   = document.getElementById('ad-timer');
-
-  btn.disabled    = true;
-  btn.textContent = 'Ad loading…';
-  countdown.style.display = '';
-
-  // Simulate rewarded ad (5-second countdown)
-  let secs = 5;
-  timerEl.textContent = secs;
-  await new Promise(resolve => {
-    const iv = setInterval(() => {
-      secs--;
-      timerEl.textContent = secs;
-      if (secs <= 0) { clearInterval(iv); resolve(); }
-    }, 1000);
-  });
-
-  countdown.style.display = 'none';
-  btn.textContent = 'Claiming reward…';
-
-  try {
-    const data = await apiFetch('POST', '/earn-tokens.php');
-    currentUser.tokens            = data.tokens;
-    currentUser.ads_watched_today = data.ads_watched_today;
-    currentUser.ads_remaining     = data.ads_remaining;
-    updateTokenDisplay();
-    showToast(`+${data.reward.toLocaleString()} tokens earned! Balance: ${data.tokens.toLocaleString()} tokens.`, 'success');
-  } catch (ex) {
-    showToast(ex.message, 'error');
-    btn.disabled    = false;
-    btn.textContent = '▶ Watch Ad → +500 tokens';
-  }
-
-  _adPlaying = false;
-}
-
 // ── Modal helpers ─────────────────────────────────────────────────
 function openAuth(tab) {
   switchTab(tab || 'signin');
   openModal('auth-modal');
-}
-
-function openPricing() {
-  if (currentUser) updateTokenDisplay();
-  openModal('pricing-modal');
 }
 
 function openModal(id) {
@@ -3566,7 +3239,7 @@ document.addEventListener('click', e => {
 // Close modals with Escape key
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    ['auth-modal', 'pricing-modal', 'beta-modal'].forEach(closeModal);
+    ['auth-modal'].forEach(closeModal);
     document.getElementById('user-dropdown').style.display = 'none';
   }
 });

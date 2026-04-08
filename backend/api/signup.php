@@ -36,21 +36,17 @@ if ($check->fetch()) {
     json_error(409, 'An account with that email already exists');
 }
 
-// ── BETA: grant unlimited tokens to new signups ──────────────────
-$startingTokens = defined('BETA_MODE') && BETA_MODE ? BETA_TOKENS : FREE_PLAN_TOKENS;
-
 // ── Create user ─────────────────────────────────────────────────
 $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
 $insert = db()->prepare(
-    'INSERT INTO users (email, password_hash, name, plan, tokens)
-     VALUES (:email, :hash, :name, "free", :tokens)'
+    'INSERT INTO users (email, password_hash, name, plan)
+     VALUES (:email, :hash, :name, "free")'
 );
 $insert->execute([
-    ':email'  => $email,
-    ':hash'   => $hash,
-    ':name'   => $name,
-    ':tokens' => $startingTokens,
+    ':email' => $email,
+    ':hash'  => $hash,
+    ':name'  => $name,
 ]);
 $userId = (int) db()->lastInsertId();
 
@@ -77,15 +73,11 @@ setcookie('cp_token', $token, [
 ]);
 
 json_out([
-    'token'      => $token,
-    'beta_gift'  => defined('BETA_MODE') && BETA_MODE, // BETA: remove with beta block
-    'user'       => [
-        'id'                => $userId,
-        'email'             => $email,
-        'name'              => $name,
-        'plan'              => 'free',
-        'tokens'            => $startingTokens,
-        'ads_watched_today' => 0,
-        'ads_remaining'     => AD_DAILY_LIMIT,
+    'token' => $token,
+    'user'  => [
+        'id'    => $userId,
+        'email' => $email,
+        'name'  => $name,
+        'plan'  => 'free',
     ],
 ], 201);

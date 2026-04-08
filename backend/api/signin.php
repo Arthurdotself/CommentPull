@@ -23,7 +23,7 @@ if (!$email || !$password) {
 
 // ── Look up user ────────────────────────────────────────────────
 $stmt = db()->prepare(
-    'SELECT id, email, name, plan, password_hash, tokens, ads_watched_today, ads_last_reset
+    'SELECT id, email, name, plan, password_hash
      FROM users
      WHERE email = :email
      LIMIT 1'
@@ -58,31 +58,12 @@ setcookie('cp_token', $token, [
     'samesite' => 'Lax',
 ]);
 
-// New day: reset ad counter and top up tokens to 250 if below
-$today = date('Y-m-d');
-if ($user['ads_last_reset'] !== $today) {
-    db()->prepare(
-        'UPDATE users
-         SET ads_watched_today = 0,
-             ads_last_reset    = :today,
-             tokens            = GREATEST(tokens, :min)
-         WHERE id = :id'
-    )->execute([':today' => $today, ':min' => FREE_PLAN_TOKENS, ':id' => $user['id']]);
-    $user['ads_watched_today'] = 0;
-    if ((int)$user['tokens'] < FREE_PLAN_TOKENS) {
-        $user['tokens'] = FREE_PLAN_TOKENS;
-    }
-}
-
 json_out([
     'token' => $token,
     'user'  => [
-        'id'                => (int) $user['id'],
-        'email'             => $user['email'],
-        'name'              => $user['name'],
-        'plan'              => $user['plan'],
-        'tokens'            => (int) $user['tokens'],
-        'ads_watched_today' => (int) $user['ads_watched_today'],
-        'ads_remaining'     => max(0, AD_DAILY_LIMIT - (int) $user['ads_watched_today']),
+        'id'    => (int) $user['id'],
+        'email' => $user['email'],
+        'name'  => $user['name'],
+        'plan'  => $user['plan'],
     ],
 ]);

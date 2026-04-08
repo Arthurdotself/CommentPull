@@ -66,19 +66,16 @@ function find_or_create_oauth_user(string $email, string $name, bool &$isNew = f
     $user = $stmt->fetch();
     if ($user) { $isNew = false; return $user; }
 
-    // New user — BETA: grant unlimited tokens if beta mode is on
-    $isNew        = true;
-    $startTokens  = defined('BETA_MODE') && BETA_MODE ? BETA_TOKENS : FREE_PLAN_TOKENS;
-    $hash         = password_hash(bin2hex(random_bytes(32)), PASSWORD_BCRYPT, ['cost' => 12]);
-    $ins          = db()->prepare(
-        'INSERT INTO users (email, password_hash, name, plan, tokens)
-         VALUES (:email, :hash, :name, "free", :tokens)'
+    $isNew = true;
+    $hash  = password_hash(bin2hex(random_bytes(32)), PASSWORD_BCRYPT, ['cost' => 12]);
+    $ins   = db()->prepare(
+        'INSERT INTO users (email, password_hash, name, plan)
+         VALUES (:email, :hash, :name, "free")'
     );
     $ins->execute([
-        ':email'  => $email,
-        ':hash'   => $hash,
-        ':name'   => $name ?: explode('@', $email)[0],
-        ':tokens' => $startTokens,
+        ':email' => $email,
+        ':hash'  => $hash,
+        ':name'  => $name ?: explode('@', $email)[0],
     ]);
     $id = (int) db()->lastInsertId();
     $row = db()->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');

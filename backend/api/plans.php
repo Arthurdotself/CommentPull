@@ -19,16 +19,12 @@ json_out([
             'name'     => 'Free',
             'price'    => 0,
             'features' => [
-                '250 tokens on signup',
+                'Unlimited extractions',
                 'Up to 5 posts per extraction',
                 'Facebook, Instagram & YouTube',
                 'Export to CSV & JSON',
                 'Winner picker',
             ],
         ],
-    ],
-    'ad_reward' => [
-        'tokens_per_ad' => AD_TOKENS_REWARD,
-        'daily_limit'   => AD_DAILY_LIMIT,
     ],
 ]);

@@ -23,7 +23,7 @@ if (!$email || !$password) {
 
 // ── Look up user ────────────────────────────────────────────────
 $stmt = db()->prepare(
-    'SELECT id, email, name, plan, password_hash
+    'SELECT id, email, name, password_hash
      FROM users
      WHERE email = :email
      LIMIT 1'
@@ -64,6 +64,5 @@ json_out([
         'id'    => (int) $user['id'],
         'email' => $user['email'],
         'name'  => $user['name'],
-        'plan'  => $user['plan'],
     ],
 ]);

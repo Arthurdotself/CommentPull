@@ -69,8 +69,8 @@ function find_or_create_oauth_user(string $email, string $name, bool &$isNew = f
     $isNew = true;
     $hash  = password_hash(bin2hex(random_bytes(32)), PASSWORD_BCRYPT, ['cost' => 12]);
     $ins   = db()->prepare(
-        'INSERT INTO users (email, password_hash, name, plan)
-         VALUES (:email, :hash, :name, "free")'
+        'INSERT INTO users (email, password_hash, name)
+         VALUES (:email, :hash, :name)'
     );
     $ins->execute([
         ':email' => $email,

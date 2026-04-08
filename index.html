@@ -572,7 +572,6 @@
     </div>
     <div id="nav-auth-user" style="display:none">
       <div class="user-chip" onclick="toggleUserMenu()">
-        <span id="nav-user-plan" class="plan-dot free"></span>
         <span id="nav-user-name"></span>
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
@@ -2899,9 +2898,6 @@ function toggleFaq(btn) {
   /* User chip */
   .user-chip { display: flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
   .user-chip:hover { border-color: var(--border-active); color: var(--text); }
-  .plan-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .plan-dot.free { background: var(--text-muted); }
-  .plan-dot.pro  { background: var(--accent); box-shadow: 0 0 6px rgba(240,192,96,0.5); }
   #nav-auth-user { position: relative; }
   .user-dropdown { position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5); z-index: 200; }
   .dropdown-email { padding: 12px 16px; font-size: 11px; color: var(--text-muted); word-break: break-all; }
@@ -3117,9 +3113,6 @@ function setUser(user) {
   document.getElementById('nav-auth-user').style.display  = 'flex';
   document.getElementById('nav-user-name').textContent    = user.name;
   document.getElementById('nav-user-email').textContent   = user.email;
-
-  const dot = document.getElementById('nav-user-plan');
-  dot.className = 'plan-dot ' + user.plan;
 
 }
 

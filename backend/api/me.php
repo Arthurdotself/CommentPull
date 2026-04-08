@@ -19,6 +19,5 @@ json_out([
     'id'         => (int) $user['id'],
     'email'      => $user['email'],
     'name'       => $user['name'],
-    'plan'       => $user['plan'],
     'created_at' => $user['created_at'],
 ]);

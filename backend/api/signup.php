@@ -40,8 +40,8 @@ if ($check->fetch()) {
 $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
 $insert = db()->prepare(
-    'INSERT INTO users (email, password_hash, name, plan)
-     VALUES (:email, :hash, :name, "free")'
+    'INSERT INTO users (email, password_hash, name)
+     VALUES (:email, :hash, :name)'
 );
 $insert->execute([
     ':email' => $email,
@@ -78,6 +78,5 @@ json_out([
         'id'    => $userId,
         'email' => $email,
         'name'  => $name,
-        'plan'  => 'free',
     ],
 ], 201);

@@ -7,25 +7,25 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://commentpull.com/about.html</loc>
+    <loc>https://commentpull.com/about</loc>
     <lastmod>2026-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://commentpull.com/contact.html</loc>
+    <loc>https://commentpull.com/contact</loc>
     <lastmod>2026-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://commentpull.com/support.html</loc>
+    <loc>https://commentpull.com/support</loc>
     <lastmod>2026-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://commentpull.com/privacy.html</loc>
+    <loc>https://commentpull.com/privacy</loc>
     <lastmod>2026-04-06</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>

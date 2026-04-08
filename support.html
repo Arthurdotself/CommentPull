@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Support — CommentPull</title>
-<meta name="description" content="Get help with CommentPull. Find answers to common questions about extracting Facebook, Instagram, and YouTube comments.">
+<title>Support — CommentPull Comment Download &amp; Export Help</title>
+<meta name="description" content="Get help downloading and exporting Facebook, Instagram, and YouTube comments with CommentPull. How to export comments to Excel or CSV, use the giveaway winner picker, and more.">
 <meta name="robots" content="index, follow">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="canonical" href="https://commentpull.com/support.html">
@@ -83,6 +83,78 @@
     .btn-secondary { margin-left: 0; margin-top: 10px; }
   }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I download Facebook comments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Select Facebook as your platform on CommentPull, enter your Page Access Token, enter your Page ID, then paste your post URL and click Extract & Preview. Once comments load, choose Excel, CSV, or JSON and click Download."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I download Instagram comments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your Instagram account must be a Business or Creator account linked to a Facebook Page. Select Instagram on CommentPull, enter your Page Access Token with instagram_basic and instagram_manage_comments permissions, enter your Facebook Page ID, then paste your Instagram post URL. Click Extract & Preview, then download as Excel or CSV."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I export comments to Excel or CSV?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "After extracting comments on CommentPull, use the format selector (Excel, CSV, or JSON) and click Download. Excel exports include a summary sheet with comment counts per post. CSV exports are compatible with Google Sheets and any spreadsheet tool."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use CommentPull as a giveaway comment picker?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. After extracting comments, the Winner Randomizer panel appears automatically. Set the number of winners, optionally apply filter rules, then click Draw Winners. The draw uses a seeded random algorithm for full transparency and you can generate a printable PDF report."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I back up comments before deleting a post?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Extract comments while the post is still live, then export to Excel or CSV. You will have a permanent local copy of every comment, username, and timestamp even after the post is deleted."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I download YouTube comments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Select YouTube on CommentPull and enter a free YouTube Data API v3 key from Google Cloud Console. Paste your video URL and click Extract. Works with any public YouTube video."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a limit on how many comments I can extract?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There is no hard cap — CommentPull paginates through the full API response. Very large extractions may take longer due to API rate limits imposed by Meta or Google."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does CommentPull store my comments or access token?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. All extraction happens directly in your browser — comment data and your access token never touch CommentPull's servers. Your token goes directly from your browser to Facebook, Instagram, or YouTube's API."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -95,11 +167,72 @@
 
   <p class="page-eyebrow">Support</p>
   <h1 class="page-title">How can we<br>help you?</h1>
-  <p class="page-lead">Find answers to common questions below. If you can't find what you're looking for, reach out via the contact page — we typically respond within one business day.</p>
+  <p class="page-lead">Find answers to common questions about downloading and exporting Facebook, Instagram, and YouTube comments below. If you can't find what you're looking for, reach out via the contact page — we typically respond within one business day.</p>
 
   <div class="search-hint">
     <span>💡</span>
     <span>Can't find an answer? <strong><a href="/contact.html" style="color:var(--accent);text-decoration:none">Contact us directly →</a></strong></span>
+  </div>
+
+  <!-- Downloading & Exporting -->
+  <div class="faq-section">
+    <h2 class="section-title">Downloading &amp; exporting comments</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          How do I download Facebook comments?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Select Facebook as your platform, enter your Page Access Token, enter your Page ID (or click Auto-detect), then paste your post URL and click <strong>Extract &amp; Preview</strong>. Once the comments load in the preview table, choose Excel, CSV, or JSON from the dropdown and click <strong>Download</strong>.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          How do I download Instagram comments?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Your Instagram account must be a <strong>Business or Creator account</strong> linked to a Facebook Page. Select Instagram, enter your Page Access Token with <code>instagram_basic</code> and <code>instagram_manage_comments</code> permissions, enter your Facebook Page ID, then paste your Instagram post URL (<code>/p/</code>, <code>/reel/</code>, or <code>/tv/</code> links are supported). Click Extract &amp; Preview, then download as Excel or CSV.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          How do I export comments to Excel or CSV?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>After extracting comments, the results appear in the preview table. Use the format selector (Excel, CSV, or JSON) and click <strong>Download</strong>. The Excel export includes a summary sheet with comment counts per post. CSV exports are compatible with Google Sheets, Excel, and any spreadsheet tool.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          Can I use CommentPull as a giveaway comment picker?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Yes. After extracting comments, the <strong>Winner Randomizer</strong> panel appears automatically. Set the number of winners, optionally apply filter rules (keyword required, one entry per person, etc.), then click <strong>Draw Winners</strong>. The draw uses a seeded random algorithm for full transparency and you can generate a printable PDF report of the results.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          Can I back up comments before deleting a post?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Yes — backing up comments before deleting a post is one of the most common uses for CommentPull. Extract comments while the post is still live, then export to Excel or CSV. You'll have a permanent local copy of every comment, username, and timestamp even after the post is deleted.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggle(this)">
+          How do I download YouTube comments?
+          <span class="chevron">▾</span>
+        </button>
+        <div class="faq-a">
+          <p>Select YouTube as your platform and enter a free <strong>YouTube Data API v3 key</strong> (create one at <a href="https://console.developers.google.com/" target="_blank">Google Cloud Console</a> — enable the YouTube Data API v3, then go to Credentials and create an API key). Paste your video URL and click Extract. Works with any public video.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Getting Started -->

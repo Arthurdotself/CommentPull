@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support — commentpull</title>
+  <meta name="description" content="Get help with commentpull. Send us a message and we'll get back to you.">
+  <link rel="canonical" href="https://commentpull.com/support.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    .input-field {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 13px 16px; font-size: 14px; color: #fff;
+      outline: none; box-sizing: border-box; transition: border-color 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .input-field:focus { border-color: rgba(99,102,241,0.6); background: rgba(255,255,255,0.07); }
+    .input-field::placeholder { color: #6b7280; }
+    textarea.input-field { resize: vertical; min-height: 140px; }
+    .btn-primary {
+      background: #6366f1; color: #fff; border: none;
+      border-radius: 12px; padding: 13px 28px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .btn-primary:hover { background: #4f52d1; }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="index.html#how-it-works" class="hover:text-white transition-colors">How it Works</a>
+        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="signin.html" class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium">Sign In</a>
+        <a href="signup.html" class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">Sign Up</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow pt-20">
+    <div class="max-w-2xl mx-auto px-6 py-24">
+
+      <!-- Page heading -->
+      <div class="mb-12">
+        <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4">Support</span>
+        <h1 class="text-4xl font-semibold text-white mb-4">How can we help?</h1>
+        <p class="text-gray-400 text-lg leading-relaxed">
+          Fill in the form below and we'll get back to you as soon as possible.
+        </p>
+      </div>
+
+      <!-- Support form -->
+      <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-8">
+        <form action="https://formspree.io/f/mgoprbkp" method="POST" class="flex flex-col gap-5">
+          <div>
+            <label class="block text-sm text-gray-300 mb-2" for="email">Your email</label>
+            <input type="email" id="email" name="email" class="input-field" placeholder="you@example.com" required>
+          </div>
+          <div>
+            <label class="block text-sm text-gray-300 mb-2" for="message">Your message</label>
+            <textarea id="message" name="message" class="input-field" placeholder="Describe your issue or question..." required></textarea>
+          </div>
+          <div>
+            <button type="submit" class="btn-primary">Send message</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
+    <div class="max-w-[1440px] mx-auto px-6">
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <p>&copy; 2026 commentpull. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="about.html" class="hover:text-white transition-colors">About</a>
+          <a href="privacy.html" class="hover:text-white transition-colors">Privacy</a>
+          <a href="support.html" class="hover:text-white transition-colors">Support</a>
+          <a href="contact.html" class="hover:text-white transition-colors">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

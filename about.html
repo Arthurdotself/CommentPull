@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — commentpull</title>
+  <meta name="description" content="Learn about commentpull — the fastest way to extract, analyze, and export social media comments.">
+  <link rel="canonical" href="https://commentpull.com/about.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="index.html#how-it-works" class="hover:text-white transition-colors">How it Works</a>
+        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="signin.html" class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium">Sign In</a>
+        <a href="signup.html" class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">Sign Up</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow pt-20">
+    <div class="max-w-3xl mx-auto px-6 py-24">
+
+      <!-- Page heading -->
+      <div class="mb-16">
+        <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4">About</span>
+        <h1 class="text-4xl md:text-5xl font-semibold leading-tight text-white mb-6">Built for marketers,<br>researchers, and creators</h1>
+        <p class="text-gray-400 text-lg leading-relaxed">
+          commentpull is a tool that lets you extract, filter, and export comments from Facebook, Instagram, and YouTube posts — so you can stop copying comments manually and start focusing on what the data tells you.
+        </p>
+      </div>
+
+      <!-- Divider -->
+      <hr class="border-white/10 mb-16">
+
+      <!-- Story -->
+      <div class="mb-16">
+        <h2 class="text-2xl font-semibold text-white mb-4">Why we built this</h2>
+        <p class="text-gray-400 leading-relaxed mb-4">
+          Social media comment sections are goldmines of customer feedback, sentiment, and leads — but accessing that data at scale has always been tedious. Copying comments one by one, screenshotting, or wrestling with raw API responses isn't a workflow.
+        </p>
+        <p class="text-gray-400 leading-relaxed">
+          We built commentpull to make extraction fast, structured, and useful. Paste a URL, apply filters, and download clean CSV or Excel data in seconds.
+        </p>
+      </div>
+
+      <!-- What we support -->
+      <div class="mb-16">
+        <h2 class="text-2xl font-semibold text-white mb-6">What we support</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+            <i class="fa-brands fa-facebook text-blue-400 text-2xl mb-3"></i>
+            <h3 class="text-white font-medium mb-1">Facebook</h3>
+            <p class="text-gray-500 text-sm">Posts, pages, and public group comments including replies.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+            <i class="fa-brands fa-instagram text-pink-400 text-2xl mb-3"></i>
+            <h3 class="text-white font-medium mb-1">Instagram</h3>
+            <p class="text-gray-500 text-sm">Business and creator account post comments via the Graph API.</p>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+            <i class="fa-brands fa-youtube text-red-400 text-2xl mb-3"></i>
+            <h3 class="text-white font-medium mb-1">YouTube</h3>
+            <p class="text-gray-500 text-sm">Video comments and replies using the YouTube Data API.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-8 text-center">
+        <h2 class="text-xl font-semibold text-white mb-2">Ready to try it?</h2>
+        <p class="text-gray-400 text-sm mb-6">No credit card required to get started.</p>
+        <a href="signup.html" class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-medium px-6 py-3 rounded-xl transition-colors text-sm">Create a free account</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
+    <div class="max-w-[1440px] mx-auto px-6">
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <p>&copy; 2026 commentpull. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="about.html" class="hover:text-white transition-colors">About</a>
+          <a href="privacy.html" class="hover:text-white transition-colors">Privacy</a>
+          <a href="support.html" class="hover:text-white transition-colors">Support</a>
+          <a href="contact.html" class="hover:text-white transition-colors">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

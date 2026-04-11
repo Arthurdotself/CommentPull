@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — commentpull</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://commentpull.com/signin.html">
+  <link rel="alternate" hreflang="en" href="https://commentpull.com/signin.html">
+  <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/signin.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { dark: '#0F1115', accent: '#6366f1', border: '#2E3038', muted: '#A1A1AA' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    .input-field {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 13px 16px; font-size: 14px; color: #fff;
+      outline: none; box-sizing: border-box; transition: border-color 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .input-field:focus { border-color: rgba(99,102,241,0.6); background: rgba(255,255,255,0.07); }
+    .input-field::placeholder { color: #6b7280; }
+    .btn-primary {
+      width: 100%; background: #6366f1; color: #fff; border: none;
+      border-radius: 12px; padding: 13px 16px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .btn-primary:hover { background: #4f52d1; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-google {
+      width: 100%; background: rgba(255,255,255,0.06); color: #fff;
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
+      padding: 13px 16px; font-size: 14px; font-weight: 500; cursor: pointer;
+      transition: background 0.2s, border-color 0.2s; display: flex; align-items: center;
+      justify-content: center; gap: 10px; font-family: 'Inter', sans-serif; text-decoration: none;
+    }
+    .btn-google:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+    .divider { display: flex; align-items: center; gap: 12px; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+    .error-msg { display: none; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #fca5a5; }
+    .error-msg.show { display: block; }
+    .success-msg { display: none; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #6ee7b7; }
+    .success-msg.show { display: block; }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
+      <div class="flex items-center gap-4 text-sm">
+        <span class="text-gray-400">Don't have an account?</span>
+        <a href="signup.html" class="bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">Sign Up</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow flex items-center justify-center px-4 pt-16">
+    <div class="w-full max-w-md py-16">
+
+      <!-- Card -->
+      <div class="glass-panel rounded-2xl p-8 border border-white/10">
+
+        <!-- Logo mark -->
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 mb-4">
+            <i class="fa-solid fa-comment-dots text-indigo-400 text-xl"></i>
+          </div>
+          <h1 class="text-2xl font-semibold text-white">Welcome back</h1>
+          <p class="text-gray-400 text-sm mt-2">Sign in to your commentpull account</p>
+        </div>
+
+        <!-- Google OAuth button -->
+        <a href="/backend/api/oauth-google.php" class="btn-google mb-6">
+          <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+            <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
+          Continue with Google
+        </a>
+
+        <!-- Divider -->
+        <div class="divider mb-6">
+          <span class="text-gray-500 text-xs">or sign in with email</span>
+        </div>
+
+        <!-- Error / success messages -->
+        <div id="error-msg" class="error-msg mb-4"></div>
+        <div id="success-msg" class="success-msg mb-4"></div>
+
+        <!-- Form -->
+        <form id="signin-form" onsubmit="handleSignIn(event)" class="flex flex-col gap-4">
+          <div>
+            <label class="block text-sm text-gray-300 mb-2" for="email">Email address</label>
+            <input type="email" id="email" name="email" class="input-field" placeholder="you@example.com" required autocomplete="email">
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-sm text-gray-300" for="password">Password</label>
+              <a href="#" class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">Forgot password?</a>
+            </div>
+            <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <button type="submit" id="submit-btn" class="btn-primary mt-2">
+            <span id="btn-text">Sign In</span>
+            <span id="btn-spinner" style="display:none"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Signing in...</span>
+          </button>
+        </form>
+
+        <!-- Footer link -->
+        <p class="text-center text-sm text-gray-400 mt-6">
+          Don't have an account?
+          <a href="signup.html" class="text-indigo-400 hover:text-indigo-300 transition-colors font-medium">Create one free</a>
+        </p>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Handle OAuth redirect result
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('oauth') === 'error') {
+        const msg = params.get('message') || 'Google sign-in failed. Please try again.';
+        showError(msg);
+        history.replaceState({}, '', window.location.pathname);
+      }
+      if (params.get('oauth') === 'success') {
+        const token = params.get('token');
+        const name  = params.get('name');
+        if (token) {
+          localStorage.setItem('cp_token', token);
+          if (name) localStorage.setItem('cp_name', name);
+        }
+        history.replaceState({}, '', window.location.pathname);
+        window.location.href = 'index.html';
+      }
+    })();
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.classList.add('show');
+      document.getElementById('success-msg').classList.remove('show');
+    }
+
+    function showSuccess(msg) {
+      const el = document.getElementById('success-msg');
+      el.textContent = msg;
+      el.classList.add('show');
+      document.getElementById('error-msg').classList.remove('show');
+    }
+
+    async function handleSignIn(e) {
+      e.preventDefault();
+      document.getElementById('error-msg').classList.remove('show');
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('submit-btn');
+      const btnText  = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+
+      btn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline';
+
+      try {
+        const res = await fetch('/backend/api/signin.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showError(data.error || 'Sign in failed. Please try again.');
+          return;
+        }
+
+        if (data.token) {
+          localStorage.setItem('cp_token', data.token);
+          if (data.user?.name) localStorage.setItem('cp_name', data.user.name);
+        }
+
+        showSuccess('Signed in! Redirecting...');
+        setTimeout(() => { window.location.href = 'index.html'; }, 800);
+
+      } catch (err) {
+        showError('Network error. Please check your connection and try again.');
+      } finally {
+        btn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

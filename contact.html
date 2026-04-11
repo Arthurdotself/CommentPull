@@ -1,18 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9850397255720200"
-     crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact CommentPull — Get Help with Comment Download &amp; Export</title>
-<meta name="description" content="Contact the CommentPull team for help with downloading or exporting Facebook, Instagram, and YouTube comments. Support for token issues, bugs, and feature requests. Reply within one business day.">
+<title>Contact — CommentPull</title>
+<meta name="description" content="Get in touch with the CommentPull team. We typically respond within one business day.">
 <meta name="robots" content="index, follow">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="canonical" href="https://commentpull.com/contact">
+<link rel="canonical" href="https://commentpull.com/contact.html">
+<link rel="alternate" hreflang="en" href="https://commentpull.com/contact.html">
+<link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/contact.html">
+<link rel="alternate" hreflang="x-default" href="https://commentpull.com/contact.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Arabic / RTL overrides ── */
+  body.lang-ar { font-family: 'Cairo', sans-serif; }
+  body.lang-ar .page-title, body.lang-ar .form-title { font-family: 'Cairo', sans-serif; font-style: normal; }
+  [dir="rtl"] .footer-right { flex-direction: row-reverse; }
+  [dir="rtl"] .contact-options { direction: rtl; }
+  [dir="rtl"] .form-row { direction: rtl; }
+  [dir="rtl"] .form-group label { direction: rtl; }
+  [dir="rtl"] .form-group input, [dir="rtl"] .form-group textarea, [dir="rtl"] .form-group select { text-align: right; }
+  [dir="rtl"] .response-note { flex-direction: row-reverse; }
+</style>
 <style>
   :root {
     --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
@@ -102,85 +114,88 @@
 
 <nav>
   <a href="/" class="logo">Comment<span>Pull</span></a>
-  <a href="/" class="btn-nav">← Back to app</a>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button id="lang-toggle" onclick="toggleLang()" class="btn-nav">العربية</button>
+    <a href="/" class="btn-nav" data-i18n="nav.back">← Back to app</a>
+  </div>
 </nav>
 
 <div class="page">
 
-  <p class="page-eyebrow">Contact</p>
-  <h1 class="page-title">We're here<br>if you need us.</h1>
-  <p class="page-lead">Have a question, found a bug, or just want to say hello? Drop us a message and we'll get back to you within one business day.</p>
+  <p class="page-eyebrow" data-i18n="contact.eyebrow">Contact</p>
+  <h1 class="page-title" data-i18n-html="contact.title">We're here<br>if you need us.</h1>
+  <p class="page-lead" data-i18n="contact.lead">Have a question, found a bug, or just want to say hello? Drop us a message and we'll get back to you within one business day.</p>
 
   <!-- Contact options -->
   <div class="contact-options">
     <div class="contact-card">
       <div class="contact-card-icon">🛠️</div>
-      <div class="contact-card-title">Technical support</div>
-      <div class="contact-card-desc">Extraction errors, URL problems, or anything not working as expected.</div>
-      <a href="#contact-form" class="contact-card-link">Send a message →</a>
+      <div class="contact-card-title" data-i18n="contact.c1.title">Technical support</div>
+      <div class="contact-card-desc" data-i18n="contact.c1.desc">Extraction errors, token issues, URL problems, or anything not working as expected.</div>
+      <a href="#contact-form" class="contact-card-link" data-i18n="contact.c1.link">Send a message →</a>
     </div>
     <div class="contact-card">
       <div class="contact-card-icon">📖</div>
-      <div class="contact-card-title">Help & docs</div>
-      <div class="contact-card-desc">Check the support page first — most common questions are answered there.</div>
-      <a href="/support" class="contact-card-link">View support →</a>
+      <div class="contact-card-title" data-i18n-html="contact.c2.title">Help &amp; docs</div>
+      <div class="contact-card-desc" data-i18n="contact.c2.desc">Check the support page first — most common questions are answered there.</div>
+      <a href="/support.html" class="contact-card-link" data-i18n="contact.c2.link">View support →</a>
     </div>
     <div class="contact-card">
       <div class="contact-card-icon">💡</div>
-      <div class="contact-card-title">Feature requests</div>
-      <div class="contact-card-desc">Have an idea for something we should add? We'd love to hear it.</div>
-      <a href="#contact-form" class="contact-card-link">Tell us →</a>
+      <div class="contact-card-title" data-i18n="contact.c3.title">Feature requests</div>
+      <div class="contact-card-desc" data-i18n="contact.c3.desc">Have an idea for something we should add? We'd love to hear it.</div>
+      <a href="#contact-form" class="contact-card-link" data-i18n="contact.c3.link">Tell us →</a>
     </div>
     <div class="contact-card">
       <div class="contact-card-icon">🔐</div>
-      <div class="contact-card-title">Privacy & legal</div>
-      <div class="contact-card-desc">Data requests, compliance questions, or anything related to our privacy policy.</div>
-      <a href="#contact-form" class="contact-card-link">Get in touch →</a>
+      <div class="contact-card-title" data-i18n-html="contact.c4.title">Privacy &amp; legal</div>
+      <div class="contact-card-desc" data-i18n="contact.c4.desc">Data requests, compliance questions, or anything related to our privacy policy.</div>
+      <a href="#contact-form" class="contact-card-link" data-i18n="contact.c4.link">Get in touch →</a>
     </div>
   </div>
 
   <!-- Response time -->
   <div class="response-note">
     <span>⏱️</span>
-    <span><strong>Response time:</strong> We typically reply within one business day (Monday–Friday). Messages sent over weekends will be answered on Monday.</span>
+    <span data-i18n-html="contact.response"><strong>Response time:</strong> We typically reply within one business day (Monday–Friday). Messages sent over weekends will be answered on Monday.</span>
   </div>
 
   <!-- Form -->
   <div class="form-wrap" id="contact-form">
-    <div class="form-title">Send us a message</div>
-    <p class="form-subtitle">Fill in the form below and we'll get back to you as soon as possible.</p>
+    <div class="form-title" data-i18n="contact.form.title">Send us a message</div>
+    <p class="form-subtitle" data-i18n="contact.form.subtitle">Fill in the form below and we'll get back to you as soon as possible.</p>
 
     <form id="cf" onsubmit="submitForm(event)" novalidate>
       <div class="form-row">
         <div class="form-group">
-          <label for="cf-name">Name</label>
-          <input type="text" id="cf-name" name="name" placeholder="Your name" required>
+          <label for="cf-name" data-i18n="contact.form.name">Name</label>
+          <input type="text" id="cf-name" name="name" data-i18n-placeholder="contact.form.name.placeholder" placeholder="Your name" required>
         </div>
         <div class="form-group">
-          <label for="cf-email">Email</label>
-          <input type="email" id="cf-email" name="email" placeholder="you@example.com" required>
+          <label for="cf-email" data-i18n="contact.form.email">Email</label>
+          <input type="email" id="cf-email" name="email" data-i18n-placeholder="contact.form.email.placeholder" placeholder="you@example.com" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="cf-subject">Subject</label>
+        <label for="cf-subject" data-i18n="contact.form.subject">Subject</label>
         <select id="cf-subject" name="subject" required>
-          <option value="" disabled selected>Select a topic…</option>
-          <option value="Technical support">Technical support</option>
-          <option value="Account issue">Account issue</option>
-          <option value="Feature request">Feature request</option>
-          <option value="Bug report">Bug report</option>
-          <option value="Privacy / data request">Privacy / data request</option>
-          <option value="Other">Other</option>
+          <option value="" disabled selected data-i18n="contact.form.subject.placeholder">Select a topic…</option>
+          <option value="Technical support" data-i18n="contact.form.subject.tech">Technical support</option>
+          <option value="Token / account issue" data-i18n="contact.form.subject.token">Token / account issue</option>
+          <option value="Feature request" data-i18n="contact.form.subject.feature">Feature request</option>
+          <option value="Bug report" data-i18n="contact.form.subject.bug">Bug report</option>
+          <option value="Privacy / data request" data-i18n="contact.form.subject.privacy">Privacy / data request</option>
+          <option value="Other" data-i18n="contact.form.subject.other">Other</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="cf-message">Message</label>
-        <textarea id="cf-message" name="message" placeholder="Describe your question or issue in as much detail as you can. If it's a bug, include the URL you were using and what happened." required></textarea>
+        <label for="cf-message" data-i18n="contact.form.message">Message</label>
+        <textarea id="cf-message" name="message" data-i18n-placeholder="contact.form.message.placeholder" placeholder="Describe your question or issue in as much detail as you can. If it's a bug, include the URL you were using and what happened." required></textarea>
       </div>
 
-      <button type="submit" class="btn-submit" id="cf-submit">Send message</button>
+      <button type="submit" class="btn-submit" id="cf-submit" data-i18n="contact.form.submit">Send message</button>
 
       <div class="form-notice" id="cf-notice"></div>
     </form>
@@ -189,13 +204,13 @@
 </div>
 
 <footer>
-  <span class="footer-left">© 2025 CommentPull</span>
+  <span class="footer-left" data-i18n="footer.copyright">© 2025 CommentPull</span>
   <div class="footer-right">
-    <a href="/about">About</a>
-    <a href="/support">Support</a>
-    <a href="/contact">Contact</a>
-    <a href="/privacy">Privacy Policy</a>
-    <a href="/">Back to app</a>
+    <a href="/about.html" data-i18n="footer.about">About</a>
+    <a href="/support.html" data-i18n="footer.support">Support</a>
+    <a href="/contact.html" data-i18n="footer.contact">Contact</a>
+    <a href="/privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+    <a href="/" data-i18n="footer.back">Back to app</a>
   </div>
 </footer>
 
@@ -205,6 +220,7 @@ async function submitForm(e) {
   const form = document.getElementById('cf');
   const btn = document.getElementById('cf-submit');
   const notice = document.getElementById('cf-notice');
+  const i18n = window.I18n || { t: function(k) { return k; } };
 
   const name = document.getElementById('cf-name').value.trim();
   const email = document.getElementById('cf-email').value.trim();
@@ -216,19 +232,19 @@ async function submitForm(e) {
 
   if (!name || !email || !subject || !message) {
     notice.className = 'form-notice error';
-    notice.textContent = 'Please fill in all fields before sending.';
+    notice.textContent = i18n.t('contact.form.error.fields');
     return;
   }
 
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRe.test(email)) {
     notice.className = 'form-notice error';
-    notice.textContent = 'Please enter a valid email address.';
+    notice.textContent = i18n.t('contact.form.error.email');
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = 'Sending…';
+  btn.textContent = i18n.t('contact.form.sending');
 
   try {
     const res = await fetch('https://formspree.io/f/mgoprbkp', {
@@ -240,19 +256,20 @@ async function submitForm(e) {
     if (res.ok) {
       form.reset();
       notice.className = 'form-notice success';
-      notice.textContent = 'Message sent! We\'ll get back to you within one business day.';
-      btn.textContent = 'Message sent';
+      notice.textContent = i18n.t('contact.form.success');
+      btn.textContent = i18n.t('contact.form.sent');
     } else {
       throw new Error('server error');
     }
   } catch {
     notice.className = 'form-notice error';
-    notice.textContent = 'Something went wrong. Please try again or email us directly.';
+    notice.textContent = i18n.t('contact.form.error.server');
     btn.disabled = false;
-    btn.textContent = 'Send message';
+    btn.textContent = i18n.t('contact.form.submit');
   }
 }
 </script>
+<script src="/lang.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حول — CommentPull</title>
+<meta name="description" content="CommentPull — مصممة للمسوّقين ومديري المجتمعات ومنظمي المسابقات الذين يحتاجون إلى بيانات تعليقات سريعة ونظيفة دون كتابة سطر كود واحد.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="canonical" href="https://commentpull.com/ar/about.html">
+<link rel="alternate" hreflang="en" href="https://commentpull.com/about.html">
+<link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/about.html">
+<link rel="alternate" hreflang="x-default" href="https://commentpull.com/about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
+    --border: #2a2a2a; --border-active: #444;
+    --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
+    --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
+    --radius: 10px; --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; font-size: 14px; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 999; opacity: 0.4; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: linear-gradient(to bottom, rgba(13,13,13,0.97) 0%, transparent 100%); backdrop-filter: blur(4px); }
+  .logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--text-dim); font-weight: 300; font-style: italic; }
+  .btn-nav { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: 'Cairo', sans-serif; font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+  .btn-nav:hover { border-color: var(--border-active); color: var(--text); }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 120px 40px 80px; }
+
+  .page-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+  .page-title { font-family: 'Cairo', sans-serif; font-size: 48px; font-weight: 700; color: var(--text); line-height: 1.1; margin-bottom: 24px; }
+  .page-lead { font-size: 15px; color: var(--text-dim); line-height: 1.8; max-width: 560px; margin-bottom: 64px; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 64px; direction: rtl; }
+  .stat { background: var(--surface2); padding: 28px 24px; }
+  .stat-number { font-family: 'Cairo', sans-serif; font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+  .stat-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .prose { display: flex; flex-direction: column; gap: 48px; }
+  .section-title { font-family: 'Cairo', sans-serif; font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+  .prose p { font-size: 13px; color: var(--text-dim); line-height: 1.85; }
+  .prose p + p { margin-top: 12px; }
+  strong { color: var(--text); font-weight: 500; }
+
+  .values { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; direction: rtl; }
+  .value-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .value-icon { font-size: 20px; margin-bottom: 10px; }
+  .value-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 6px; }
+  .value-desc { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 20px; flex-direction: row-reverse; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 16px; flex-shrink: 0; margin-top: 4px; }
+  .tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .tl-line { flex: 1; width: 1px; background: var(--border); margin: 4px 0; min-height: 24px; }
+  .tl-item:last-child .tl-line { display: none; }
+  .tl-right { padding-bottom: 28px; text-align: right; }
+  .tl-date { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+  .tl-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+  .tl-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  .cta-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 40px; text-align: center; }
+  .cta-title { font-family: 'Cairo', sans-serif; font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+  .cta-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.7; }
+  .btn-cta { display: inline-block; background: var(--accent); color: #0d0d0d; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 500; padding: 13px 32px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+  .btn-cta:hover { background: #f5d080; }
+
+  footer { border-top: 1px solid var(--border); padding: 32px 40px; max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .footer-left { font-size: 12px; color: var(--text-muted); }
+  .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; flex-direction: row-reverse; }
+  .footer-right a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-right a:hover { color: var(--text-dim); }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .page { padding: 100px 20px 60px; }
+    .page-title { font-size: 34px; }
+    .stats { grid-template-columns: 1fr; }
+    .values { grid-template-columns: 1fr; }
+    footer { padding: 24px 20px; flex-direction: column; gap: 10px; }
+  }
+</style>
+</head>
+<body class="lang-ar">
+
+<nav>
+  <a href="/" class="logo">Comment<span>Pull</span></a>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button id="lang-toggle" onclick="toggleLang()" class="btn-nav">English</button>
+    <a href="/ar/" class="btn-nav">→ العودة للتطبيق</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <p class="page-eyebrow">حول</p>
+  <h1 class="page-title">مصمَّم للأشخاص<br>الذين يديرون التعليقات.</h1>
+  <p class="page-lead">وُجدت CommentPull لأن نسخ التعليقات يدوياً طريقة سيئة لقضاء وقتك. بنينا الأداة التي كنا نتمنى وجودها — سريعة وخاصة ومجانية.</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-number">3</div>
+      <div class="stat-label">منصة مدعومة</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">0</div>
+      <div class="stat-label">بايت مخزَّن من عمليات الاستخراج</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">مجاني</div>
+      <div class="stat-label">دائماً، للجميع</div>
+    </div>
+  </div>
+
+  <div class="prose">
+
+    <div>
+      <h2 class="section-title">القصة</h2>
+      <p>بدأ الأمر بمسابقة هدايا. احتاج أحدهم لاستخراج أسماء المعلقين من منشور فيسبوك لاختيار فائز عادل — فاكتشف أن الخيارات إما (أ) النسخ واللصق يدوياً، أو (ب) دفع ثمن أداة مؤسسية باهظة، أو (ج) تعلُّم Graph API بنفسه.</p>
+      <p>CommentPull هو الخيار (د): افتح الأداة، الصق الرابط، احصل على ملف نظيف. لا تحتاج لمعرفة API. لا اشتراك. لا بيانات ترسل لأي مكان دون إذنك.</p>
+      <p>أضفنا إنستغرام، ثم يوتيوب، ثم المرشحات ومنتقي الفائز وتصدير Excel — لأن الأداة يجب أن تكون في متناول الجميع، من المبدع الفردي إلى فريق العلامة التجارية.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">كيف يعمل فعلياً</h2>
+      <p>عندما تنقر على استخراج، يقوم متصفحك بإجراء استدعاءات API مباشرة إلى فيسبوك أو إنستغرام أو يوتيوب — <strong>وليس إلى خوادمنا</strong>. يسافر رمز الوصول من جهازك إلى Meta أو Google فحسب. تعود التعليقات إلى متصفحك، وتُعالَج في الذاكرة، وتُحفظ في ملف على جهازك.</p>
+      <p>لا يتولى الخادم الخلفي لدينا سوى أمرين: حسابك (البريد الإلكتروني + كلمة المرور المشفرة) وجلستك. هذا كل شيء. بنينا نظاماً لا نستطيع فيه رؤية بياناتك حتى لو أردنا ذلك.</p>
+    </div>
+
+    <div>
+      <h2 class="section-title">ما نهتم به</h2>
+      <div class="values">
+        <div class="value-card">
+          <div class="value-icon">🔒</div>
+          <div class="value-title">الخصوصية من التصميم</div>
+          <div class="value-desc">بيانات الاستخراج لا تلمس خوادمنا أبداً. صممنا البنية بحيث ليس لدينا ما نكشفه.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">⚡</div>
+          <div class="value-title">السرعة قبل التعقيد</div>
+          <div class="value-desc">لا تدفقات إعداد. لا لوحات تحكم للضبط. الصق رابطاً، احصل على التعليقات. هذا هو المنتج بأكمله.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🆓</div>
+          <div class="value-title">مجاني حقاً</div>
+          <div class="value-desc">لا ميزات مقفلة. لا بطاقة ائتمانية، أبداً.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🔧</div>
+          <div class="value-title">يتقن شيئاً واحداً</div>
+          <div class="value-desc">لن نضيف CRM أو جدولاً أو كاتب محتوى بالذكاء الاصطناعي. CommentPull تستخرج التعليقات. هذه هي المهمة.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="section-title">الجدول الزمني</h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2024 — البناء الأولي</div>
+            <div class="tl-title">استخراج تعليقات فيسبوك</div>
+            <div class="tl-desc">الإصدار الأول: منشورات فيسبوك فقط، تصدير CSV، بدون حساب.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2024 — التوسع</div>
+            <div class="tl-title">إضافة إنستغرام ويوتيوب</div>
+            <div class="tl-desc">دعم متعدد المنصات، تسلسل الردود، تصدير Excel مع ورقة ملخص.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2024 — الميزات</div>
+            <div class="tl-title">المرشحات ومنتقي الفائز</div>
+            <div class="tl-desc">مرشحات الكلمات المفتاحية وإلغاء التكرار والنطاق الزمني وقواعد الإشارة ومنتقي عشوائي عادل للفائز.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-right">
+            <div class="tl-date">2025 — الحسابات</div>
+            <div class="tl-title">حسابات مجانية ومدعومة بالإعلانات</div>
+            <div class="tl-desc">حسابات مجانية مع استخراجات غير محدودة، مدعومة بإعلانات اختيارية — لا اشتراك مطلوب.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <div class="cta-title">هل أنت مستعد لاستخراج التعليقات؟</div>
+      <p class="cta-desc">حساب مجاني. استخراجات غير محدودة.<br>بدون بطاقة ائتمانية، ولا فترة تجريبية، ولا شروط خفية.</p>
+      <a href="/ar/" class="btn-cta">ابدأ الاستخراج ←</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <span class="footer-left">© 2025 CommentPull</span>
+  <div class="footer-right">
+    <a href="/ar/about.html">حول</a>
+    <a href="/ar/support.html">الدعم</a>
+    <a href="/ar/contact.html">تواصل معنا</a>
+    <a href="/ar/privacy.html">سياسة الخصوصية</a>
+    <a href="/ar/">العودة للتطبيق</a>
+  </div>
+</footer>
+
+<script src="/lang.js"></script>
+</body>
+</html>

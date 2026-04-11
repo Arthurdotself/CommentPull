@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9850397255720200"
-     crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Support — CommentPull Comment Download &amp; Export Help</title>
-<meta name="description" content="Get help downloading and exporting Facebook, Instagram, and YouTube comments with CommentPull. How to export comments to Excel or CSV, use the giveaway winner picker, and more.">
+<title>Support — CommentPull</title>
+<meta name="description" content="Get help with CommentPull. Find answers to common questions about extracting Facebook, Instagram, and YouTube comments.">
 <meta name="robots" content="index, follow">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="canonical" href="https://commentpull.com/support">
+<link rel="canonical" href="https://commentpull.com/support.html">
+<link rel="alternate" hreflang="en" href="https://commentpull.com/support.html">
+<link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/support.html">
+<link rel="alternate" hreflang="x-default" href="https://commentpull.com/support.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Arabic / RTL overrides ── */
+  body.lang-ar { font-family: 'Cairo', sans-serif; }
+  body.lang-ar .page-title, body.lang-ar .section-title, body.lang-ar .cta-title { font-family: 'Cairo', sans-serif; font-style: normal; }
+  [dir="rtl"] .footer-right { flex-direction: row-reverse; }
+  [dir="rtl"] .faq-q { text-align: right; flex-direction: row-reverse; }
+  [dir="rtl"] .search-hint { flex-direction: row-reverse; }
+</style>
 <style>
   :root {
     --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
@@ -85,204 +94,74 @@
     .btn-secondary { margin-left: 0; margin-top: 10px; }
   }
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I download Facebook comments?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Select Facebook as your platform on CommentPull, enter your Page Access Token, enter your Page ID, then paste your post URL and click Extract & Preview. Once comments load, choose Excel, CSV, or JSON and click Download."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How do I download Instagram comments?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Your Instagram account must be a Business or Creator account linked to a Facebook Page. Select Instagram on CommentPull, enter your Page Access Token with instagram_basic and instagram_manage_comments permissions, enter your Facebook Page ID, then paste your Instagram post URL. Click Extract & Preview, then download as Excel or CSV."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How do I export comments to Excel or CSV?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "After extracting comments on CommentPull, use the format selector (Excel, CSV, or JSON) and click Download. Excel exports include a summary sheet with comment counts per post. CSV exports are compatible with Google Sheets and any spreadsheet tool."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I use CommentPull as a giveaway comment picker?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. After extracting comments, the Winner Randomizer panel appears automatically. Set the number of winners, optionally apply filter rules, then click Draw Winners. The draw uses a seeded random algorithm for full transparency and you can generate a printable PDF report."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I back up comments before deleting a post?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Extract comments while the post is still live, then export to Excel or CSV. You will have a permanent local copy of every comment, username, and timestamp even after the post is deleted."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How do I download YouTube comments?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Select YouTube on CommentPull and enter a free YouTube Data API v3 key from Google Cloud Console. Paste your video URL and click Extract. Works with any public YouTube video."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is there a limit on how many comments I can extract?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "There is no hard cap — CommentPull paginates through the full API response. Very large extractions may take longer due to API rate limits imposed by Meta or Google."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Does CommentPull store my comments or access token?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. All extraction happens directly in your browser — comment data and your access token never touch CommentPull's servers. Your token goes directly from your browser to Facebook, Instagram, or YouTube's API."
-      }
-    }
-  ]
-}
-</script>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo">Comment<span>Pull</span></a>
-  <a href="/" class="btn-nav">← Back to app</a>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button id="lang-toggle" onclick="toggleLang()" class="btn-nav">العربية</button>
+    <a href="/" class="btn-nav" data-i18n="nav.back">← Back to app</a>
+  </div>
 </nav>
 
 <div class="page">
 
-  <p class="page-eyebrow">Support</p>
-  <h1 class="page-title">How can we<br>help you?</h1>
-  <p class="page-lead">Find answers to common questions about downloading and exporting Facebook, Instagram, and YouTube comments below. If you can't find what you're looking for, reach out via the contact page — we typically respond within one business day.</p>
+  <p class="page-eyebrow" data-i18n="support.eyebrow">Support</p>
+  <h1 class="page-title" data-i18n-html="support.title">How can we<br>help you?</h1>
+  <p class="page-lead" data-i18n="support.lead">Find answers to common questions below. If you can't find what you're looking for, reach out via the contact page — we typically respond within one business day.</p>
 
   <div class="search-hint">
     <span>💡</span>
-    <span>Can't find an answer? <strong><a href="/contact" style="color:var(--accent);text-decoration:none">Contact us directly →</a></strong></span>
-  </div>
-
-  <!-- Downloading & Exporting -->
-  <div class="faq-section">
-    <h2 class="section-title">Downloading &amp; exporting comments</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          How do I download Facebook comments?
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>Select Facebook as your platform, enter your Page Access Token, enter your Page ID (or click Auto-detect), then paste your post URL and click <strong>Extract &amp; Preview</strong>. Once the comments load in the preview table, choose Excel, CSV, or JSON from the dropdown and click <strong>Download</strong>.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          How do I download Instagram comments?
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>Your Instagram account must be a <strong>Business or Creator account</strong> linked to a Facebook Page. Select Instagram, enter your Page Access Token with <code>instagram_basic</code> and <code>instagram_manage_comments</code> permissions, enter your Facebook Page ID, then paste your Instagram post URL (<code>/p/</code>, <code>/reel/</code>, or <code>/tv/</code> links are supported). Click Extract &amp; Preview, then download as Excel or CSV.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          How do I export comments to Excel or CSV?
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>After extracting comments, the results appear in the preview table. Use the format selector (Excel, CSV, or JSON) and click <strong>Download</strong>. The Excel export includes a summary sheet with comment counts per post. CSV exports are compatible with Google Sheets, Excel, and any spreadsheet tool.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          Can I use CommentPull as a giveaway comment picker?
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>Yes. After extracting comments, the <strong>Winner Randomizer</strong> panel appears automatically. Set the number of winners, optionally apply filter rules (keyword required, one entry per person, etc.), then click <strong>Draw Winners</strong>. The draw uses a seeded random algorithm for full transparency and you can generate a printable PDF report of the results.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          Can I back up comments before deleting a post?
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>Yes — backing up comments before deleting a post is one of the most common uses for CommentPull. Extract comments while the post is still live, then export to Excel or CSV. You'll have a permanent local copy of every comment, username, and timestamp even after the post is deleted.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          How do I download YouTube comments?
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>Select YouTube as your platform and enter a free <strong>YouTube Data API v3 key</strong> (create one at <a href="https://console.developers.google.com/" target="_blank">Google Cloud Console</a> — enable the YouTube Data API v3, then go to Credentials and create an API key). Paste your video URL and click Extract. Works with any public video.</p>
-        </div>
-      </div>
-    </div>
+    <span data-i18n-html="support.hint">Can't find an answer? <strong><a href="/contact.html" style="color:var(--accent);text-decoration:none">Contact us directly →</a></strong></span>
   </div>
 
   <!-- Getting Started -->
   <div class="faq-section">
-    <h2 class="section-title">Getting started</h2>
+    <h2 class="section-title" data-i18n="support.s1.title">Getting started</h2>
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          What is CommentPull and how does it work?
+          <span data-i18n="support.q1.q">What is CommentPull and how does it work?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q1.a">
           <p>CommentPull is a browser-based tool that extracts comments from Facebook, Instagram, and YouTube posts. You paste a post URL, and the tool makes API calls directly from your browser to retrieve the comments — nothing passes through our servers.</p>
           <p>The extracted comments are processed entirely in your browser's memory and exported as an Excel, CSV, or JSON file directly to your device.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Do I need to create an account?
+          <span data-i18n="support.q2.q">Do I need to create an account?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
-          <p>A free account gives you unlimited access to all features including filters, deduplication, date ranges, and the winner picker. You can sign up with just an email address — no credit card required.</p>
+        <div class="faq-a" data-i18n-html="support.q2.a">
+          <p>A free account gives you access to all features including filters, deduplication, date ranges, and the winner picker. You can sign up with just an email address — no credit card required.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Which platforms are supported?
+          <span data-i18n="support.q3.q">Which platforms are supported?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q3.a">
           <p>CommentPull supports <strong>Facebook</strong>, <strong>Instagram</strong>, and <strong>YouTube</strong>. Each platform requires providing an access token so your browser can authenticate with the respective API.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Access Tokens -->
+  <!-- API Access -->
   <div class="faq-section">
-    <h2 class="section-title">API access tokens</h2>
+    <h2 class="section-title" data-i18n="support.s2.title">API access</h2>
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Where do I get a Facebook or Instagram access token?
+          <span data-i18n="support.q4.q">Where do I get a Facebook or Instagram access token?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
-          <p>The tool includes a step-by-step guide for generating tokens directly from Meta's Graph API Explorer. You'll need a Meta developer account (free) and a Facebook app with the appropriate permissions. The in-app guide walks you through each step.</p>
+        <div class="faq-a" data-i18n-html="support.q4.a">
+          <p>The tool includes a step-by-step guide for generating access tokens directly from Meta's Graph API Explorer. You'll need a Meta developer account (free) and a Facebook app with the appropriate permissions. The in-app guide walks you through each step.</p>
         </div>
       </div>
     </div>
@@ -290,41 +169,41 @@
 
   <!-- Extraction -->
   <div class="faq-section">
-    <h2 class="section-title">Extraction & exports</h2>
+    <h2 class="section-title" data-i18n-html="support.s3.title">Extraction &amp; exports</h2>
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          What URL formats are supported?
+          <span data-i18n="support.q5.q">What URL formats are supported?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q5.a">
           <p>Facebook supports standard post URLs and <code>pfbid</code> encoded URLs. Instagram supports <code>/p/</code>, <code>/reel/</code>, and <code>/tv/</code> links. YouTube supports standard watch URLs (<code>watch?v=</code>) and shortened <code>youtu.be</code> links.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          What export formats are available?
+          <span data-i18n="support.q6.q">What export formats are available?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q6.a">
           <p>You can export comments as <strong>Excel (.xlsx)</strong> with a summary sheet, <strong>CSV</strong>, or <strong>JSON</strong>. Excel exports include metadata like total comment count, extraction date, and platform.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Is there a limit on how many comments I can extract?
+          <span data-i18n="support.q7.q">Is there a limit on how many comments I can extract?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q7.a">
           <p>There is no hard cap on the number of comments per extraction — CommentPull will paginate through the full API response. Very large extractions (tens of thousands of comments) may take longer due to API rate limits imposed by Meta or Google.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Can I extract comments from multiple posts at once?
+          <span data-i18n="support.q8.q">Can I extract comments from multiple posts at once?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q8.a">
           <p>Yes. Toggle multi-URL mode in the input area to paste multiple post URLs. They will be queued and extracted sequentially, with results merged into a single export file.</p>
         </div>
       </div>
@@ -333,32 +212,32 @@
 
   <!-- Privacy & Security -->
   <div class="faq-section">
-    <h2 class="section-title">Privacy & security</h2>
+    <h2 class="section-title" data-i18n-html="support.s4.title">Privacy &amp; security</h2>
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Is my data safe? Do you store my comments?
+          <span data-i18n="support.q9.q">Is my data safe? Do you store my comments?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
-          <p>No. All extraction happens directly in your browser — comment data never touches our servers. We only store three things on our backend: your account email (hashed), your token balance, and your session. We have deliberately architected the system so we cannot see your extracted data even if we wanted to.</p>
+        <div class="faq-a" data-i18n-html="support.q9.a">
+          <p>No. All extraction happens directly in your browser — comment data never touches our servers. We only store your account (email + hashed password) and your session on our backend. We have deliberately architected the system so we cannot see your extracted data even if we wanted to.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Where does my access token go?
+          <span data-i18n="support.q10.q">Where does my access token go?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q10.a">
           <p>Your access token travels from your browser directly to Meta or Google's API endpoint — it never passes through CommentPull's servers. Treat access tokens like passwords: regenerate them if you believe they've been compromised, and use tokens with the minimum permissions required.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          Does CommentPull comply with Meta's Terms of Service?
+          <span data-i18n="support.q11.q">Does CommentPull comply with Meta's Terms of Service?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q11.a">
           <p>CommentPull uses the official Meta Graph API and requires you to authenticate with your own access token. This means you are accessing data that is already accessible to your account through Meta's official channels. You are responsible for ensuring your use of the extracted data complies with Meta's Platform Terms and applicable laws.</p>
         </div>
       </div>
@@ -367,33 +246,33 @@
 
   <!-- Troubleshooting -->
   <div class="faq-section">
-    <h2 class="section-title">Troubleshooting</h2>
+    <h2 class="section-title" data-i18n="support.s5.title">Troubleshooting</h2>
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          I'm getting an "invalid token" error. What should I do?
+          <span data-i18n="support.q12.q">I'm getting an "invalid token" error. What should I do?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q12.a">
           <p>Access tokens expire. Short-lived tokens last around 1–2 hours; long-lived tokens last up to 60 days. Generate a fresh token from Meta's Graph API Explorer and paste it into the token field. Make sure the token has the correct permissions (<code>pages_read_engagement</code> for Facebook pages, <code>instagram_basic</code> for Instagram).</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          The extraction stops partway through. Why?
+          <span data-i18n="support.q13.q">The extraction stops partway through. Why?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
+        <div class="faq-a" data-i18n-html="support.q13.a">
           <p>This is usually caused by an API rate limit from Meta or Google. The tool will display the partial results already fetched. Try again after a few minutes. Very large posts may require multiple extraction sessions.</p>
         </div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggle(this)">
-          My post URL isn't being recognised. What formats work?
+          <span data-i18n="support.q14.q">My post URL isn't being recognised. What formats work?</span>
           <span class="chevron">▾</span>
         </button>
-        <div class="faq-a">
-          <p>Make sure you are copying the full URL from your browser's address bar, not from a share link or the mobile app. Instagram posts must include <code>/p/</code>, <code>/reel/</code>, or <code>/tv/</code> in the URL. If you're still having trouble, <a href="/contact">contact us</a> with the URL format (you can redact the post ID) and we'll investigate.</p>
+        <div class="faq-a" data-i18n-html="support.q14.a">
+          <p>Make sure you are copying the full URL from your browser's address bar, not from a share link or the mobile app. Instagram posts must include <code>/p/</code>, <code>/reel/</code>, or <code>/tv/</code> in the URL. If you're still having trouble, <a href="/contact.html">contact us</a> with the URL format (you can redact the post ID) and we'll investigate.</p>
         </div>
       </div>
     </div>
@@ -401,22 +280,22 @@
 
   <!-- Still need help -->
   <div class="cta-block">
-    <div class="cta-title">Still need help?</div>
-    <p class="cta-desc">Can't find your answer here? Send us a message and we'll get back to you within one business day.</p>
-    <a href="/contact" class="btn-cta">Contact us →</a>
-    <a href="/" class="btn-secondary">Back to app</a>
+    <div class="cta-title" data-i18n="support.cta.title">Still need help?</div>
+    <p class="cta-desc" data-i18n="support.cta.desc">Can't find your answer here? Send us a message and we'll get back to you within one business day.</p>
+    <a href="/contact.html" class="btn-cta" data-i18n="support.cta.btn">Contact us →</a>
+    <a href="/" class="btn-secondary" data-i18n="support.cta.back">Back to app</a>
   </div>
 
 </div>
 
 <footer>
-  <span class="footer-left">© 2025 CommentPull</span>
+  <span class="footer-left" data-i18n="footer.copyright">© 2025 CommentPull</span>
   <div class="footer-right">
-    <a href="/about">About</a>
-    <a href="/support">Support</a>
-    <a href="/contact">Contact</a>
-    <a href="/privacy">Privacy Policy</a>
-    <a href="/">Back to app</a>
+    <a href="/about.html" data-i18n="footer.about">About</a>
+    <a href="/support.html" data-i18n="footer.support">Support</a>
+    <a href="/contact.html" data-i18n="footer.contact">Contact</a>
+    <a href="/privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+    <a href="/" data-i18n="footer.back">Back to app</a>
   </div>
 </footer>
 
@@ -426,6 +305,7 @@ function toggle(btn) {
   item.classList.toggle('open');
 }
 </script>
+<script src="/lang.js"></script>
 
 </body>
 </html>

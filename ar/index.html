@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استخراج تعليقات وسائل التواصل الاجتماعي — CommentPull</title>
+  <meta name="description" content="استخرج تعليقات فيسبوك وإنستغرام ويوتيوب في ثوانٍ. أداة مجانية تعمل في المتصفح — بياناتك تبقى على جهازك.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://commentpull.com/ar/">
+  <link rel="alternate" hreflang="en" href="https://commentpull.com/">
+  <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/">
+  <link rel="alternate" hreflang="x-default" href="https://commentpull.com/">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { dark: '#0F1115', light: '#F8F9FA', accent: '#FF4C60', border: '#2E3038', muted: '#A1A1AA' }
+          },
+          backgroundImage: {
+            'hero-glow': 'radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 17, 21, 0) 50%)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* ── Arabic / RTL overrides ── */
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3, body.lang-ar h4 { font-family: 'Cairo', sans-serif; }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] #header nav { flex-direction: row-reverse; }
+    [dir="rtl"] .filter-rule label { flex-direction: row-reverse; }
+    [dir="rtl"] input, [dir="rtl"] textarea { text-align: right; }
+  </style>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+
+    /* Platform context blocks (hidden; referenced by selectPlatform) */
+    .ctx-block { display: none; }
+    .ctx-block.visible { display: block; }
+
+    /* Status panel */
+    .status-panel { display: none; }
+    .status-panel.success { display: block; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 14px; padding: 14px 18px; margin-top: 12px; font-size: 13px; text-align: left; }
+    .status-panel.error   { display: block; background: rgba(239,68,68,0.08);  border: 1px solid rgba(239,68,68,0.2);  border-radius: 14px; padding: 14px 18px; margin-top: 12px; font-size: 13px; text-align: left; }
+    .status-panel.info    { display: block; background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); border-radius: 14px; padding: 14px 18px; margin-top: 12px; font-size: 13px; text-align: left; }
+    .status-header { font-weight: 600; margin-bottom: 4px; }
+    .progress-list { margin-top: 8px; display: flex; flex-direction: column; gap: 3px; }
+    .prog-item { font-size: 11px; opacity: 0.8; }
+    .prog-item.active { opacity: 1; color: #818cf8; }
+    .prog-item.done   { opacity: 0.65; color: #6ee7b7; }
+    .prog-item.err    { opacity: 1; color: #fca5a5; }
+
+    /* Extract button loading state */
+    .spinner { display: none; }
+    .btn-extract.loading .spinner   { display: inline; }
+    .btn-extract.loading .btn-icon  { display: none; }
+    .btn-extract.loading { opacity: 0.75; cursor: wait; pointer-events: none; }
+
+    /* Filter section */
+    .filter-rules { display: none; }
+    .filter-section.open .filter-rules { display: flex; flex-direction: column; gap: 10px; }
+    .filter-rule { display: flex; flex-direction: column; gap: 6px; }
+    .filter-rule label { font-size: 13px; color: #d1d5db; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .filter-rule input[type="checkbox"] { cursor: pointer; accent-color: #818cf8; width: 15px; height: 15px; flex-shrink: 0; }
+    .filter-rule > div input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #fff; outline: none; box-sizing: border-box; }
+    .filter-rule > div input:focus { border-color: rgba(129,140,248,0.5); }
+    .filter-rule > div input[type="text"] { width: 100%; }
+    .filter-rule > div input[type="number"] { width: 64px; }
+    .filter-rule > div input[type="date"]   { width: auto; color-scheme: dark; }
+    .filter-badge { color: #9ca3af; transition: color 0.2s; }
+    .filter-badge.active { color: #818cf8; }
+
+    /* Token health card */
+    .token-health-card { border-radius: 14px; font-size: 12px; margin-top: 8px; padding: 14px 16px; text-align: left; }
+    .token-health-card.ok   { background: rgba(34,197,94,0.06);  border: 1px solid rgba(34,197,94,0.15); }
+    .token-health-card.warn { background: rgba(234,179,8,0.06);  border: 1px solid rgba(234,179,8,0.15); }
+    .token-health-card.err  { background: rgba(239,68,68,0.06);  border: 1px solid rgba(239,68,68,0.15); }
+    .thc-name   { font-weight: 600; margin-bottom: 8px; font-size: 13px; }
+    .thc-perms  { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+    .thc-perm   { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .thc-perm-dot      { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .thc-perm-dot.ok   { background: #4ade80; }
+    .thc-perm-dot.miss { background: #f87171; }
+    .thc-ok    { color: #4ade80; }
+    .thc-warn  { color: #facc15; }
+    .thc-err   { color: #f87171; }
+    .thc-expiry { margin-bottom: 6px; font-size: 11px; }
+    .thc-action { margin-top: 6px; font-size: 11px; }
+    .thc-action a { color: #818cf8; }
+
+    /* Field hints */
+    .field-hint { font-size: 11px; margin-top: 2px; }
+    .field-hint.ok   { color: #4ade80; }
+    .field-hint.err  { color: #f87171; }
+    .field-hint.info { color: #818cf8; }
+
+    /* Platform detection badges */
+    .badge-fb { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .badge-ig { background: rgba(244,114,182,0.12); color: #f472b6; border: 1px solid rgba(244,114,182,0.2); }
+    .badge-yt { background: rgba(239,68,68,0.12);   color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+    /* Preview table */
+    .td-num     { padding: 12px 8px 12px 16px; color: #6b7280; font-size: 11px; width: 32px; }
+    .td-name    { padding: 12px 16px; font-weight: 500; color: #fff; min-width: 100px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+    .td-comment { padding: 12px 16px; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #d1d5db; }
+    .td-date    { padding: 12px 16px; color: #9ca3af; font-size: 12px; white-space: nowrap; }
+    .td-post    { padding: 12px 16px; color: #6b7280; font-size: 11px; font-family: monospace; white-space: nowrap; }
+    .status-dot { display: none; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+    #preview-tbody tr.row-ok .status-dot   { display: inline-block; background: #4ade80; }
+    #preview-tbody tr.row-out .status-dot  { display: inline-block; background: #6b7280; }
+    #preview-tbody tr.row-out { opacity: 0.35; }
+
+    /* Winner randomizer */
+    .winner-card { display: flex; align-items: flex-start; gap: 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 20px; margin-bottom: 12px; }
+    .winner-card.gold { border-color: rgba(250,204,21,0.3); background: rgba(250,204,21,0.03); }
+    .winner-rank { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .winner-card.gold .winner-rank { background: rgba(250,204,21,0.2); color: #facc15; }
+    .winner-info    { flex: 1; min-width: 0; }
+    .winner-name    { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .winner-comment { font-size: 12px; color: #9ca3af; margin-bottom: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .winner-meta    { font-size: 11px; color: #6b7280; }
+    .btn-reroll { background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 12px; font-size: 11px; color: #9ca3af; cursor: pointer; display: flex; align-items: center; gap: 5px; flex-shrink: 0; transition: all 0.15s; }
+    .btn-reroll:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+    .btn-reroll svg { width: 12px; height: 12px; }
+    .drawing .btn-reroll { opacity: 0; pointer-events: none; }
+    #rand-stage { text-align: center; padding: 28px; background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.15); border-radius: 16px; margin-top: 16px; }
+    #slot-name { font-size: 26px; font-weight: 700; display: block; margin-bottom: 8px; }
+    #slot-sub  { font-size: 13px; color: #818cf8; }
+    #rand-seed-info code { background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 11px; }
+
+    /* Print: giveaway report */
+    @media print {
+      body > *:not(#report-sheet) { display: none !important; }
+      #report-sheet { display: block !important; }
+      .rp-page { font-family: Arial, sans-serif; padding: 40px; max-width: 700px; margin: 0 auto; color: #111; }
+      .rp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; padding-bottom: 14px; border-bottom: 2px solid #eee; }
+      .rp-logo { font-size: 20px; font-weight: 800; }
+      .rp-logo span { color: #6366f1; }
+      .rp-doc-title { font-size: 13px; color: #666; }
+      .rp-section { margin-bottom: 24px; }
+      .rp-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 10px; }
+      .rp-row { display: flex; gap: 12px; font-size: 12px; margin-bottom: 6px; }
+      .rp-label { width: 140px; color: #666; flex-shrink: 0; }
+      .rp-winner { display: flex; gap: 12px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; }
+      .rp-winner.first { border-color: #f0c060; background: #fffdf0; }
+      .rp-winner-rank { width: 28px; height: 28px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+      .rp-winner.first .rp-winner-rank { background: #fcd34d; }
+      .rp-winner-name    { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+      .rp-winner-comment { font-size: 11px; color: #666; font-style: italic; }
+      .rp-winner-meta    { font-size: 10px; color: #999; margin-top: 2px; }
+      .rp-footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; font-size: 10px; color: #666; }
+      .rp-foot-row   { display: flex; gap: 8px; margin-bottom: 3px; }
+      .rp-foot-label { width: 120px; }
+      .rp-foot-brand { margin-top: 6px; color: #999; }
+      .rp-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+      .rp-tag  { background: #f3f4f6; padding: 1px 7px; border-radius: 4px; font-size: 10px; }
+      .rp-notag { color: #999; }
+      .rp-urls { font-size: 10px; color: #444; font-family: monospace; }
+      .rp-url  { display: block; }
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+  <!-- ─── Header ─── -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded bg-brand-accent flex items-center justify-center text-white font-bold">C</div>
+        <span class="text-xl font-semibold tracking-tight">extractcomments</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
+        <a href="#preview" class="hover:text-white transition-colors" data-i18n="nav.results">Results</a>
+      </nav>
+      <div class="flex items-center gap-4">
+        <button id="lang-toggle" onclick="toggleLang()"
+          class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">
+          العربية
+        </button>
+        <button onclick="document.getElementById('hero-url').focus(); window.scrollTo({top:0,behavior:'smooth'})"
+          class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" data-i18n="nav.start">
+          Start Extracting
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow pt-20">
+
+    <!-- ─── Hero / Tool Section ─── -->
+    <section id="hero" class="relative pt-32 pb-24 overflow-hidden min-h-[800px] flex items-center">
+      <div class="absolute inset-0 bg-hero-glow pointer-events-none"></div>
+      <div class="max-w-[1000px] mx-auto px-6 relative z-10 text-center w-full">
+
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel text-sm text-gray-300 mb-8 border border-white/10">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span>
+          <span data-i18n="index.hero.badge">Supports Facebook · Instagram · YouTube</span>
+        </div>
+
+        <h1 class="text-6xl md:text-7xl font-semibold tracking-tight mb-6 leading-[1.1]" data-i18n-html="index.hero.h1">
+          اسحب الفائز.<br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">بنقرة واحدة.</span>
+        </h1>
+
+        <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto" data-i18n="index.hero.subtitle">
+          من تعليقات الفيسبوك أو الإنستغرام أو اليوتيوب — بدون تعقيد، بدون تحيّز، بدون جهد.
+        </p>
+
+        <!-- ── Tool container ── -->
+        <div id="tool-container" class="max-w-3xl mx-auto">
+          <div class="bg-white/5 p-2 rounded-[24px] border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+
+            <!-- Row 1: URL input (always visible) -->
+            <div class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2">
+              <div class="pl-4 text-gray-400 flex-shrink-0">
+                <i class="fa-solid fa-link"></i>
+              </div>
+              <input type="text" id="hero-url"
+                data-i18n-placeholder="index.url.placeholder"
+                placeholder="Paste your Facebook, Instagram or YouTube URL here..."
+                oninput="onHeroUrlInput()"
+                class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-base px-2 py-3 min-w-0">
+              <span id="platform-badge" style="display:none"
+                class="px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0">
+                <span id="platform-badge-dot" class="w-2 h-2 rounded-full flex-shrink-0"></span>
+                <span id="platform-badge-text">Detected</span>
+              </span>
+            </div>
+
+            <!-- Row 2: Token input (hidden until URL entered) -->
+            <div id="hero-token-row" style="display:none"
+              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
+              <div class="pl-4 text-gray-400 flex-shrink-0">
+                <i class="fa-solid fa-key"></i>
+              </div>
+              <input type="text" id="token-input"
+                placeholder="EAABsbCS4IUA… (Page Access Token)"
+                autocomplete="off" spellcheck="false"
+                class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
+              <button id="btn-check-token" onclick="checkToken()"
+                class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0">
+                <span id="btn-check-text" data-i18n="index.token.check">Check token</span>
+              </button>
+              <a id="token-hint-link" href="#"
+                onclick="window.open('https://developers.facebook.com/tools/explorer/','_blank'); return false;"
+                class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors whitespace-nowrap pr-2 flex-shrink-0" data-i18n="index.token.get">
+                Get token →
+              </a>
+            </div>
+
+            <!-- Row 3: Page ID (hidden until URL entered; hidden for YouTube) -->
+            <div id="hero-pageid-row" style="display:none"
+              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
+              <div class="pl-4 text-gray-400 flex-shrink-0">
+                <i class="fa-solid fa-hashtag"></i>
+              </div>
+              <input type="text" id="fb-page-id"
+                placeholder="Facebook Page ID (e.g. 968441023XXXX)"
+                spellcheck="false"
+                class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
+              <input type="text" id="ig-page-id"
+                placeholder="Facebook Page ID (linked to your Instagram)"
+                spellcheck="false" style="display:none"
+                class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
+              <button id="btn-fb-auto" onclick="fbAutoDetect()"
+                class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0" data-i18n="index.btn.autodetect.fb">
+                Auto-detect →
+              </button>
+              <button id="btn-ig-auto" onclick="igAutoDetect()" style="display:none"
+                class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0" data-i18n="index.btn.autodetect.ig">
+                Auto-detect →
+              </button>
+            </div>
+            <!-- Page ID hints -->
+            <div id="fb-pageid-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
+            <div id="ig-pageid-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
+
+            <!-- Row 4: Filters + Extract button (hidden until URL entered) -->
+            <div id="hero-action-row" style="display:none"
+              class="flex items-center justify-between px-2 pt-2 pb-1">
+              <button onclick="toggleFilters()"
+                class="text-xs text-gray-400 hover:text-white px-4 py-2.5 rounded-xl border border-white/10 hover:border-white/20 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-xs"></i>
+                <span id="filter-badge" class="filter-badge" data-i18n="index.btn.filters">Filters</span>
+              </button>
+              <button id="extract-btn" class="btn-extract bg-white text-black px-6 py-2.5 rounded-xl font-medium hover:bg-gray-100 transition-all flex items-center gap-2 shadow-lg" onclick="handleExtract()">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <span class="spinner">⏳</span>
+                <span class="btn-label" data-i18n="index.btn.extract">Extract Comments</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Token health card -->
+          <div id="token-health-card" style="display:none" class="token-health-card"></div>
+
+          <!-- Status / progress panel -->
+          <div id="status" class="status-panel"></div>
+
+          <!-- Filter rules (collapsible panel) -->
+          <div id="filter-section" class="filter-section" style="display:none">
+            <div class="mt-2 bg-white/5 rounded-[20px] border border-white/10 p-5 text-left">
+              <div class="flex items-center justify-between mb-3 cursor-pointer" onclick="toggleFilters()">
+                <span class="text-sm font-medium text-gray-300" data-i18n="filter.title">Filter Rules</span>
+                <span class="text-xs text-gray-500" data-i18n="filter.collapse">click to collapse ↑</span>
+              </div>
+              <div id="filter-rules" class="filter-rules">
+                <div class="filter-rule">
+                  <label><input type="checkbox" id="rule-keyword" onchange="onRuleToggle('rule-keyword')"> <span data-i18n="filter.keyword">Must contain keyword or hashtag</span></label>
+                  <div id="inputs-rule-keyword" style="display:none">
+                    <input type="text" id="filter-keyword" data-i18n-placeholder="filter.keyword.placeholder" placeholder="e.g. #giveaway">
+                  </div>
+                </div>
+                <div class="filter-rule">
+                  <label><input type="checkbox" id="rule-mentions" onchange="onRuleToggle('rule-mentions')"> <span data-i18n="filter.mentions">Minimum @mentions</span></label>
+                  <div id="inputs-rule-mentions" style="display:none" class="flex items-center gap-2">
+                    <input type="number" id="filter-mentions" value="2" min="1" max="20">
+                    <span class="text-xs text-gray-500" data-i18n="filter.mentions.suffix">or more @mentions required</span>
+                  </div>
+                </div>
+                <div class="filter-rule">
+                  <label><input type="checkbox" id="rule-length" onchange="onRuleToggle('rule-length')"> <span data-i18n="filter.length">Minimum comment length</span></label>
+                  <div id="inputs-rule-length" style="display:none" class="flex items-center gap-2">
+                    <input type="number" id="filter-length" value="10" min="1" max="500">
+                    <span class="text-xs text-gray-500" data-i18n="filter.length.suffix">characters minimum</span>
+                  </div>
+                </div>
+                <div class="filter-rule">
+                  <label><input type="checkbox" id="rule-dedup" onchange="onRuleToggle('rule-dedup')"> <span data-i18n="filter.dedup">One entry per person</span></label>
+                </div>
+                <div class="filter-rule">
+                  <label><input type="checkbox" id="rule-daterange" onchange="onRuleToggle('rule-daterange')"> <span data-i18n="filter.daterange">Date range</span></label>
+                  <div id="inputs-rule-daterange" style="display:none" class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs text-gray-500" data-i18n="filter.daterange.from">From</span>
+                    <input type="date" id="filter-date-from" style="width:auto">
+                    <span class="text-xs text-gray-500" data-i18n="filter.daterange.to">To</span>
+                    <input type="date" id="filter-date-to" style="width:auto">
+                  </div>
+                </div>
+                <div class="filter-rule">
+                  <label><input type="checkbox" id="rule-exclude" onchange="onRuleToggle('rule-exclude')"> <span data-i18n="filter.exclude">Exclude specific users</span></label>
+                  <div id="inputs-rule-exclude" style="display:none">
+                    <input type="text" id="filter-exclude" data-i18n-placeholder="filter.exclude.placeholder" placeholder="username1, username2, …">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trusted by -->
+        <div class="mt-20 pt-12 border-t border-white/5">
+          <p class="text-sm text-gray-500 mb-8 uppercase tracking-wider font-medium" data-i18n="index.hero.trusted">Trusted by social media managers at</p>
+          <div class="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+            <div class="flex items-center gap-2 text-xl font-bold"><i class="fa-brands fa-hubspot"></i> HubSpot</div>
+            <div class="flex items-center gap-2 text-xl font-bold"><i class="fa-brands fa-buffer"></i> Buffer</div>
+            <div class="flex items-center gap-2 text-xl font-bold"><i class="fa-brands fa-hootsuite"></i> Hootsuite</div>
+            <div class="flex items-center gap-2 text-xl font-bold"><i class="fa-brands fa-mailchimp"></i> Mailchimp</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── How it Works ─── -->
+    <section id="how-it-works" class="py-24 bg-[#F8F9FA] text-black relative overflow-hidden">
+      <div class="max-w-[1440px] mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-semibold tracking-tight mb-4" data-i18n="how.title">How it works</h2>
+          <p class="text-gray-500 text-lg max-w-2xl mx-auto" data-i18n="how.subtitle">Three simple steps to get your data ready for analysis.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white p-8 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group hover:-translate-y-1 transition-transform duration-300">
+            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-paste"></i></div>
+            <h3 class="text-xl font-semibold mb-3" data-i18n="how.1.title">1. Paste URL</h3>
+            <p class="text-gray-500 leading-relaxed" data-i18n="how.1.desc">Paste any Facebook post, Instagram photo/reel, or YouTube video URL. Platform is detected automatically.</p>
+          </div>
+          <div class="bg-white p-8 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group hover:-translate-y-1 transition-transform duration-300">
+            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-bolt"></i></div>
+            <h3 class="text-xl font-semibold mb-3" data-i18n="how.2.title">2. Extract</h3>
+            <p class="text-gray-500 leading-relaxed" data-i18n="how.2.desc">Add your API token and click Extract. All comments, replies, usernames, and timestamps are fetched in real-time.</p>
+          </div>
+          <div class="bg-white p-8 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group hover:-translate-y-1 transition-transform duration-300">
+            <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-download"></i></div>
+            <h3 class="text-xl font-semibold mb-3" data-i18n="how.3.title">3. Export</h3>
+            <p class="text-gray-500 leading-relaxed" data-i18n="how.3.desc">Download your clean data in CSV, Excel, or JSON format — ready for sentiment analysis, reporting, or giveaway draws.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Results / Preview Section ─── -->
+    <section id="preview" class="py-24 bg-[#0F1115] relative border-t border-white/5">
+      <div class="max-w-[1440px] mx-auto px-6">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+          <div>
+            <h2 class="text-4xl font-semibold tracking-tight mb-4" data-i18n="preview.title">Clean, structured data</h2>
+            <p class="text-gray-400 text-lg" data-i18n="preview.subtitle">Preview exactly what you'll get before exporting.</p>
+          </div>
+          <div class="flex gap-3 mt-6 md:mt-0">
+            <button onclick="setFmtAndDownload('csv')"
+              class="px-4 py-2 rounded-lg glass-panel text-sm font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-file-csv text-green-400"></i> CSV
+            </button>
+            <button onclick="setFmtAndDownload('xlsx')"
+              class="px-4 py-2 rounded-lg glass-panel text-sm font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-file-excel text-green-600"></i> Excel
+            </button>
+            <button onclick="setFmtAndDownload('json')"
+              class="px-4 py-2 rounded-lg glass-panel text-sm font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-code text-blue-400"></i> JSON
+            </button>
+          </div>
+        </div>
+
+        <!-- Functional preview panel (hidden until first extraction) -->
+        <div id="preview-panel" style="display:none">
+          <!-- Search + meta + download controls -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+            <span id="preview-meta" class="text-gray-400 text-sm"></span>
+            <div class="flex items-center gap-2 flex-wrap">
+              <input type="text" id="preview-search"
+                data-i18n-placeholder="preview.search.placeholder"
+                placeholder="Search name or comment…"
+                oninput="searchPreview()"
+                class="bg-[#1A1C23] border border-white/10 rounded-xl px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/20 w-44">
+              <select id="fmt"
+                class="bg-[#1A1C23] border border-white/10 rounded-xl text-sm text-gray-300 px-2 py-1.5 focus:outline-none cursor-pointer">
+                <option value="xlsx">Excel (.xlsx)</option>
+                <option value="csv">CSV (.csv)</option>
+                <option value="json">JSON (.json)</option>
+              </select>
+              <div class="relative">
+                <button id="btn-dl-main"
+                  onclick="event.stopPropagation(); toggleDlMenu()"
+                  class="bg-white text-black px-4 py-1.5 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors">
+                  Download ▾
+                </button>
+                <div id="dl-menu" style="display:none"
+                  class="absolute right-0 top-full mt-1.5 glass-panel rounded-xl border border-white/10 z-20 overflow-hidden min-w-[220px]">
+                  <button onclick="reDownload('qualified'); closeDlMenu()"
+                    class="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 transition-colors border-b border-white/5">
+                    Filtered results — <span id="dl-qualified-desc" class="text-gray-500 text-xs"></span>
+                  </button>
+                  <button onclick="reDownload('all'); closeDlMenu()"
+                    class="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-white/5 transition-colors">
+                    All results — <span id="dl-all-desc" class="text-gray-500 text-xs"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results table -->
+          <div class="glass-panel rounded-[24px] overflow-hidden border border-white/10 shadow-2xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-gray-300">
+                <thead class="bg-white/5 text-xs uppercase font-semibold text-gray-400 border-b border-white/10">
+                  <tr>
+                    <th class="px-4 py-4 w-10">#</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.name">Name</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.comment">Comment</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.date">Date</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.post">Post</th>
+                  </tr>
+                </thead>
+                <tbody id="preview-tbody" class="divide-y divide-white/5"></tbody>
+              </table>
+            </div>
+            <div id="preview-empty" style="display:none" class="text-center py-16 text-gray-500 text-sm" data-i18n="preview.no-match">
+              No comments match your search.
+            </div>
+            <div class="bg-white/5 px-6 py-4 border-t border-white/10 flex justify-between items-center text-sm text-gray-400">
+              <span id="preview-footer-text"></span>
+              <span id="preview-legend" style="display:none" class="text-xs flex items-center gap-3">
+                <span><span class="text-green-400">●</span> Qualified</span>
+                <span><span class="text-gray-500">●</span> Excluded</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample placeholder (visible before any extraction) -->
+        <div id="preview-placeholder" class="glass-panel rounded-[24px] overflow-hidden border border-white/10 shadow-2xl">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-gray-300">
+              <thead class="bg-white/5 text-xs uppercase font-semibold text-gray-400 border-b border-white/10">
+                <tr>
+                  <th class="px-6 py-4" data-i18n="preview.col.username">Username</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.text">Comment Text</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.likes">Likes</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.date">Date</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.status">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                  <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" class="w-8 h-8 rounded-full" alt="avatar">
+                    @sarah_designs
+                  </td>
+                  <td class="px-6 py-4 max-w-md truncate">This is exactly what I needed for our Q3 report! amazing tool.</td>
+                  <td class="px-6 py-4">245</td>
+                  <td class="px-6 py-4">2 hours ago</td>
+                  <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-medium border border-green-500/20">Verified</span></td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                  <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full" alt="avatar">
+                    @mark_tech
+                  </td>
+                  <td class="px-6 py-4 max-w-md truncate">Can we integrate this via API? Would love to automate the flow.</td>
+                  <td class="px-6 py-4">12</td>
+                  <td class="px-6 py-4">5 hours ago</td>
+                  <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20">Question</span></td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                  <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" class="w-8 h-8 rounded-full" alt="avatar">
+                    @jessica_mktg
+                  </td>
+                  <td class="px-6 py-4 max-w-md truncate">Love the new JSON export feature. Saves me so much time parsing.</td>
+                  <td class="px-6 py-4">89</td>
+                  <td class="px-6 py-4">1 day ago</td>
+                  <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-medium border border-green-500/20">Verified</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bg-white/5 px-6 py-4 border-t border-white/10 flex justify-between items-center text-sm text-gray-400">
+            <span data-i18n="preview.placeholder">Paste a URL above to extract real comments</span>
+            <button onclick="document.getElementById('hero-url').focus(); window.scrollTo({top:0,behavior:'smooth'})"
+              class="text-white hover:text-indigo-400 transition-colors" data-i18n="preview.try">
+              Try it now →
+            </button>
+          </div>
+        </div>
+
+        <!-- ── Winner Randomizer (shown after extraction) ── -->
+        <div id="rand-panel" style="display:none" class="mt-12 pt-12 border-t border-white/5">
+          <div class="flex items-start justify-between mb-8 flex-wrap gap-4">
+            <div>
+              <h2 class="text-3xl font-semibold tracking-tight mb-2" data-i18n="winner.title">Winner Randomizer</h2>
+              <p class="text-gray-400 text-sm"><span id="rand-pool-tag"></span></p>
+            </div>
+          </div>
+
+          <div class="glass-panel rounded-[24px] border border-white/10 p-8">
+            <div class="flex flex-wrap items-center gap-6 mb-6">
+              <div class="flex items-center gap-3">
+                <span class="text-gray-300 text-sm" data-i18n="winner.winners">Winners:</span>
+                <button onclick="adjustWinners(-1)"
+                  class="w-8 h-8 rounded-lg border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-colors flex items-center justify-center text-lg font-medium">−</button>
+                <span id="rand-winner-count" class="text-xl font-semibold w-8 text-center">1</span>
+                <button onclick="adjustWinners(1)"
+                  class="w-8 h-8 rounded-lg border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-colors flex items-center justify-center text-lg font-medium">+</button>
+              </div>
+              <div class="flex-1 min-w-[200px]">
+                <input type="text" id="rand-exclude"
+                  data-i18n-placeholder="winner.exclude.placeholder"
+                  placeholder="Exclude from draw: username1, username2, …"
+                  class="w-full bg-[#1A1C23] border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/20">
+              </div>
+              <button id="btn-draw" onclick="drawWinners()"
+                class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-7 py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity flex items-center gap-2 shadow-lg">
+                <i class="fa-solid fa-dice"></i>
+                <span id="btn-draw-text">Draw 1 Winner</span>
+              </button>
+            </div>
+
+            <div id="rand-stage" style="display:none">
+              <strong id="slot-name">—</strong>
+              <span id="slot-sub">preparing…</span>
+            </div>
+
+            <div id="rand-winners"></div>
+
+            <div id="rand-footer" style="display:none"
+              class="mt-6 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <small id="rand-seed-info" class="text-xs text-gray-500 leading-relaxed"></small>
+              <div class="flex items-center gap-3">
+                <button onclick="resetDraw()"
+                  class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-1.5" data-i18n="winner.again">
+                  ↺ Draw again
+                </button>
+                <button onclick="generateReport()"
+                  class="text-sm bg-white/5 hover:bg-white/10 text-gray-300 px-4 py-1.5 rounded-lg border border-white/10 transition-colors" data-i18n="winner.report">
+                  Generate Report
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── Footer ─── -->
+  <footer id="footer" class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
+    <div class="max-w-[1440px] mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div class="col-span-1 md:col-span-1">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded bg-brand-accent flex items-center justify-center text-white font-bold">C</div>
+            <span class="text-xl font-semibold tracking-tight">extractcomments</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-6">
+            The fastest way to extract, analyze, and export social media comments for marketers and researchers.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4" data-i18n="footer.product">Product</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li><a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="footer.how">How it Works</a></li>
+            <li><a href="#preview" class="hover:text-white transition-colors" data-i18n="footer.preview">Results Preview</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4" data-i18n="footer.platforms">Platforms</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li class="flex items-center gap-2"><i class="fa-brands fa-facebook text-blue-400"></i> Facebook</li>
+            <li class="flex items-center gap-2"><i class="fa-brands fa-instagram text-pink-400"></i> Instagram</li>
+            <li class="flex items-center gap-2"><i class="fa-brands fa-youtube text-red-400"></i> YouTube</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4" data-i18n="footer.exports">Export Formats</h4>
+          <ul class="space-y-3 text-sm text-gray-400">
+            <li>Excel (.xlsx)</li>
+            <li>CSV (.csv)</li>
+            <li>JSON (.json)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <p data-i18n="footer.index.copyright">&copy; 2026 extractcomments. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter text-lg"></i></a>
+          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
+          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-lg"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- Hidden DOM elements required by the extraction engine      -->
+  <!-- These are never shown but must exist for the JS to work    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div style="display:none" aria-hidden="true">
+    <!-- Platform toggle buttons (needed by selectPlatform) -->
+    <button id="btn-fb"></button>
+    <button id="btn-ig"></button>
+    <button id="btn-yt"></button>
+    <!-- Labels & tooltips updated by selectPlatform / checkToken -->
+    <span id="api-badge"></span>
+    <span id="token-label-text">Page Access Token</span>
+    <span id="token-tooltip"></span>
+    <!-- Platform URL containers — handleExtract reads .fb-url/.ig-url/.yt-url -->
+    <div class="ctx-block visible" id="ctx-fb">
+      <div class="url-list" id="fb-url-list">
+        <div class="url-entry"><input type="url" class="fb-url"></div>
+      </div>
+      <input type="checkbox" id="fb-multi">
+      <button id="fb-add-url" onclick="addUrl('fb')"></button>
+    </div>
+    <div class="ctx-block" id="ctx-ig">
+      <div class="url-list" id="ig-url-list">
+        <div class="url-entry"><input type="url" class="ig-url"></div>
+      </div>
+      <input type="checkbox" id="ig-multi">
+      <button id="ig-add-url" onclick="addUrl('ig')"></button>
+    </div>
+    <div class="ctx-block" id="ctx-yt">
+      <div class="url-list" id="yt-url-list">
+        <div class="url-entry"><input type="url" class="yt-url"></div>
+      </div>
+      <input type="checkbox" id="yt-multi">
+      <button id="yt-add-url" onclick="addUrl('yt')"></button>
+    </div>
+    <!-- Export option toggles (selected = included in export) -->
+    <span id="opt-comments" class="option-card selected">Comments</span>
+    <span id="opt-ids" class="option-card selected">User IDs</span>
+    <span id="opt-replies" class="option-card"><span class="option-sub">Nested comments</span></span>
+    <span id="opt-summary" class="option-card selected">Summary sheet</span>
+    <!-- Presets button (referenced by closePresetsMenu) -->
+    <button id="btn-presets" onclick="togglePresetsMenu()"></button>
+    <!-- Misc required elements -->
+    <hr id="rand-hr">
+    <div id="presets-menu"></div>
+    <div id="report-sheet"></div>
+  </div>
+
+  <!-- Confetti canvas (full-screen overlay, pointer-events off) -->
+  <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:998;display:block"></canvas>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- Extraction engine (ported verbatim from lol.html)          -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <script>
+    window.gtag = function() {};
+  </script>
+  <script>
+// ────────────────────────────────────────────────────────────
+//  CONSTANTS
+// ────────────────────────────────────────────────────────────
+const GRAPH = "https://graph.facebook.com/v19.0";
+let platform = 'fb';
+
+// ────────────────────────────────────────────────────────────
+//  PLATFORM SWITCH
+// ────────────────────────────────────────────────────────────
+function selectPlatform(p) {
+  gtag('event', 'platform_selected', { platform: p });
+  platform = p;
+  ['fb','ig','yt'].forEach(x => {
+    document.getElementById(`btn-${x}`).classList.remove(`active-${x}`);
+    document.getElementById(`ctx-${x}`).classList.remove('visible');
+  });
+  document.getElementById(`btn-${p}`).classList.add(`active-${p}`);
+  document.getElementById(`ctx-${p}`).classList.add('visible');
+
+  const badgeMap = { fb: 'Facebook Graph API v19.0', ig: 'Instagram Graph API v19.0', yt: 'YouTube Data API v3' };
+  document.getElementById('api-badge').textContent = badgeMap[p] || 'Meta Graph API v19.0';
+
+  const labelEl   = document.getElementById('token-label-text');
+  const inputEl   = document.getElementById('token-input');
+  const tooltipEl = document.getElementById('token-tooltip');
+  const hintLink  = document.getElementById('token-hint-link');
+  const checkBtn  = document.getElementById('btn-check-token');
+  if (p === 'yt') {
+    labelEl.textContent   = '02 — YouTube Data API Key';
+    inputEl.placeholder   = 'AIzaSy…';
+    tooltipEl.textContent = 'Go to console.developers.google.com → Create a project → Enable YouTube Data API v3 → Credentials → Create API key.';
+    hintLink.textContent  = 'Get API key →';
+    hintLink.onclick      = () => window.open('https://console.developers.google.com/','_blank');
+    checkBtn.style.display = 'none';
+  } else {
+    labelEl.textContent   = '02 — Page Access Token';
+    inputEl.placeholder   = 'EAABsbCS4IUA…';
+    tooltipEl.textContent = 'Go to developers.facebook.com → Graph API Explorer. Select your App, then your Page.';
+    hintLink.textContent  = 'Get token →';
+    hintLink.onclick      = () => window.open('https://developers.facebook.com/tools/explorer/','_blank');
+    checkBtn.style.display = '';
+  }
+
+  const repliesCard = document.getElementById('opt-replies');
+  if (p === 'ig') {
+    repliesCard.classList.remove('selected');
+    repliesCard.querySelector('.option-sub').textContent = 'Fetched separately (IG)';
+    repliesCard.classList.remove('disabled');
+  } else if (p === 'yt') {
+    repliesCard.querySelector('.option-sub').textContent = 'Nested replies';
+    repliesCard.classList.remove('disabled');
+  } else {
+    repliesCard.querySelector('.option-sub').textContent = 'Nested comments';
+    repliesCard.classList.remove('disabled');
+  }
+
+  const healthCard = document.getElementById('token-health-card');
+  if (healthCard) healthCard.style.display = 'none';
+}
+
+// ────────────────────────────────────────────────────────────
+//  OPTION TOGGLE
+// ────────────────────────────────────────────────────────────
+function toggleOption(card) { card.classList.toggle('selected'); }
+
+// ────────────────────────────────────────────────────────────
+//  MULTI-URL TOGGLE
+// ────────────────────────────────────────────────────────────
+function onMultiToggle(pfx) {
+  const on = document.getElementById(`${pfx}-multi`).checked;
+  document.getElementById(`${pfx}-add-url`).style.display = on ? 'flex' : 'none';
+  document.querySelectorAll(`#${pfx}-url-list .remove-url`)
+    .forEach(b => b.style.display = on ? 'flex' : 'none');
+}
+
+function addUrl(pfx) {
+  const list = document.getElementById(`${pfx}-url-list`);
+  const div = document.createElement('div');
+  div.className = 'url-entry';
+  const placeholders = { ig: 'https://www.instagram.com/p/…', yt: 'https://www.youtube.com/watch?v=…', fb: 'https://www.facebook.com/…/posts/…' };
+  div.innerHTML = `
+    <input type="url" class="${pfx}-url" placeholder="${placeholders[pfx] || 'https://…'}">
+    <button class="remove-url" onclick="removeUrl(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>`;
+  list.appendChild(div);
+  div.querySelector('input').focus();
+}
+
+function removeUrl(btn) {
+  const list = btn.closest('.url-list');
+  if (list.querySelectorAll('.url-entry').length > 1) btn.closest('.url-entry').remove();
+}
+
+// ────────────────────────────────────────────────────────────
+//  FACEBOOK — AUTO DETECT PAGE ID
+// ────────────────────────────────────────────────────────────
+async function fbAutoDetect() {
+  const token = document.getElementById('token-input').value.trim();
+  if (!token) { setHint('fb-pageid-hint', 'err', 'Enter your token first.'); return; }
+  const btn = document.getElementById('btn-fb-auto');
+  btn.textContent = 'Detecting…'; btn.disabled = true;
+  try {
+    const data = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+    document.getElementById('fb-page-id').value = data.id;
+    setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
+  } catch(e) { setHint('fb-pageid-hint', 'err', `✕ ${e.message}`); }
+  finally { btn.textContent = 'Auto-detect →'; btn.disabled = false; }
+}
+
+// ────────────────────────────────────────────────────────────
+//  INSTAGRAM — AUTO DETECT
+// ────────────────────────────────────────────────────────────
+async function igAutoDetect() {
+  const token = document.getElementById('token-input').value.trim();
+  if (!token) { setHint('ig-pageid-hint', 'err', 'Enter your token first.'); return; }
+  const btn = document.getElementById('btn-ig-auto');
+  btn.textContent = 'Detecting…'; btn.disabled = true;
+  try {
+    const meData = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+    const fbPageId = meData.id;
+    document.getElementById('ig-page-id').value = fbPageId;
+    setHint('ig-pageid-hint', 'info', `→ Facebook Page: ${meData.name} (${fbPageId}) — checking linked Instagram…`);
+    const igData = await gql(`/${fbPageId}?fields=instagram_business_account&access_token=${enc(token)}`);
+    const igId = igData.instagram_business_account?.id;
+    if (!igId) throw new Error('No Instagram Business Account linked to this Facebook Page.');
+    setHint('ig-pageid-hint', 'ok', `✓ Facebook Page: ${meData.name} · Instagram Business ID: ${igId}`);
+    document.getElementById('ig-page-id').dataset.igUserId = igId;
+  } catch(e) { setHint('ig-pageid-hint', 'err', `✕ ${e.message}`); }
+  finally { btn.textContent = 'Auto-detect →'; btn.disabled = false; }
+}
+
+// ────────────────────────────────────────────────────────────
+//  FACEBOOK — POST ID PARSER
+// ────────────────────────────────────────────────────────────
+function buildFullPostId(link, pageId) {
+  link = link.trim();
+  if (!link.startsWith('http') && link.includes('_')) return link;
+  const pfbid = link.match(/(pfbid[A-Za-z0-9]+)/);
+  if (pfbid) return `${pageId}_${pfbid[1]}`;
+  const patterns = [/\/posts\/(\d+)/, /story_fbid=(\d+)/, /fbid=(\d+)/, /\/videos\/(\d+)/, /\/photos\/[^/]+\/(\d+)/, /\/(\d{10,})/];
+  for (const pat of patterns) {
+    const m = link.match(pat);
+    if (m) { const r = m[1]; return r.startsWith(pageId) ? r : `${pageId}_${r}`; }
+  }
+  if (/^\d+$/.test(link)) return `${pageId}_${link}`;
+  return link;
+}
+
+// ────────────────────────────────────────────────────────────
+//  INSTAGRAM — SHORTCODE + MEDIA ID
+// ────────────────────────────────────────────────────────────
+function extractIgShortcode(url) {
+  const m = url.match(/instagram\.com\/(?:p|reel|tv|reels)\/([A-Za-z0-9_-]+)/);
+  return m ? m[1] : null;
+}
+
+async function resolveIgMediaId(shortcode, igUserId, token) {
+  let url = `${GRAPH}/${igUserId}/media?fields=id,shortcode,permalink&limit=50&access_token=${enc(token)}`;
+  while (url) {
+    const data = await gqlRaw(url);
+    for (const item of (data.data || [])) {
+      if (item.shortcode === shortcode || (item.permalink && item.permalink.includes(`/${shortcode}/`))) {
+        return item.id;
+      }
+    }
+    url = data.paging?.next || null;
+  }
+  throw new Error(`Could not find media with shortcode "${shortcode}" in your Instagram account's posts.`);
+}
+
+async function resolveIgUserId(fbPageId, token) {
+  const stored = document.getElementById('ig-page-id').dataset.igUserId;
+  if (stored) return stored;
+  const data = await gql(`/${fbPageId}?fields=instagram_business_account&access_token=${enc(token)}`);
+  const igId = data.instagram_business_account?.id;
+  if (!igId) throw new Error('No Instagram Business Account found linked to this Facebook Page.');
+  document.getElementById('ig-page-id').dataset.igUserId = igId;
+  return igId;
+}
+
+// ────────────────────────────────────────────────────────────
+//  FETCH ALL COMMENTS — Facebook
+// ────────────────────────────────────────────────────────────
+async function fetchFbComments(fullPostId, token, filter, onUpdate, maxComments = Infinity) {
+  const results = [];
+  let url = `${GRAPH}/${fullPostId}/comments?` + new URLSearchParams({
+    access_token: token, fields: 'id,from,message,created_time', filter, limit: '100',
+  });
+  while (url) {
+    const data = await gqlRaw(url);
+    if (data.error) throw new Error(data.error.message);
+    for (const c of (data.data || [])) {
+      if (results.length >= maxComments) break;
+      results.push({
+        post_id: fullPostId,
+        commenter_name: c.from?.name ?? 'Unknown',
+        commenter_id:   c.from?.id   ?? '',
+        comment_text:   c.message    ?? '',
+        timestamp:      c.created_time ?? '',
+        comment_id:     c.id         ?? '',
+      });
+    }
+    if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
+    url = data.paging?.next ?? null;
+  }
+  return results;
+}
+
+// ────────────────────────────────────────────────────────────
+//  FETCH ALL COMMENTS — Instagram
+// ────────────────────────────────────────────────────────────
+async function fetchIgComments(mediaId, token, includeReplies, onUpdate, maxComments = Infinity) {
+  const results = [];
+  let url = `${GRAPH}/${mediaId}/comments?` + new URLSearchParams({
+    access_token: token,
+    fields: 'id,username,text,timestamp,replies{id,username,text,timestamp}',
+    limit: '100',
+  });
+  while (url) {
+    const data = await gqlRaw(url);
+    if (data.error) throw new Error(data.error.message);
+    for (const c of (data.data || [])) {
+      if (results.length >= maxComments) break;
+      results.push({
+        post_id: mediaId, commenter_name: c.username ?? 'Unknown', commenter_id: c.id ?? '',
+        comment_text: c.text ?? '', timestamp: c.timestamp ?? '', comment_id: c.id ?? '', reply_to: '',
+      });
+      if (includeReplies && c.replies?.data) {
+        for (const r of c.replies.data) {
+          if (results.length >= maxComments) break;
+          results.push({
+            post_id: mediaId, commenter_name: r.username ?? 'Unknown', commenter_id: r.id ?? '',
+            comment_text: r.text ?? '', timestamp: r.timestamp ?? '', comment_id: r.id ?? '', reply_to: c.id,
+          });
+        }
+      }
+    }
+    if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
+    url = data.paging?.next ?? null;
+  }
+  return results;
+}
+
+// ────────────────────────────────────────────────────────────
+//  YOUTUBE — VIDEO ID + FETCH COMMENTS
+// ────────────────────────────────────────────────────────────
+function extractYtVideoId(url) {
+  url = url.trim();
+  let m = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  m = url.match(/youtube\.com\/(?:shorts|embed|v)\/([A-Za-z0-9_-]{11})/);
+  if (m) return m[1];
+  if (/^[A-Za-z0-9_-]{11}$/.test(url)) return url;
+  return null;
+}
+
+async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate, maxComments = Infinity) {
+  const YT = 'https://www.googleapis.com/youtube/v3';
+  const results = [];
+  let pageToken = '';
+  do {
+    const params = new URLSearchParams({
+      part: includeReplies ? 'snippet,replies' : 'snippet',
+      videoId, key: apiKey, maxResults: '100', textFormat: 'plainText',
+    });
+    if (pageToken) params.set('pageToken', pageToken);
+    const res  = await fetch(`${YT}/commentThreads?${params}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    for (const thread of (data.items || [])) {
+      if (results.length >= maxComments) break;
+      const top = thread.snippet.topLevelComment.snippet;
+      results.push({
+        post_id: videoId, commenter_name: top.authorDisplayName ?? 'Unknown',
+        commenter_id: top.authorChannelId?.value ?? '', comment_text: top.textDisplay ?? '',
+        timestamp: top.publishedAt ?? '', comment_id: thread.snippet.topLevelComment.id ?? '', reply_to: '',
+      });
+      if (includeReplies && thread.replies?.comments) {
+        for (const reply of thread.replies.comments) {
+          if (results.length >= maxComments) break;
+          const rs = reply.snippet;
+          results.push({
+            post_id: videoId, commenter_name: rs.authorDisplayName ?? 'Unknown',
+            commenter_id: rs.authorChannelId?.value ?? '', comment_text: rs.textDisplay ?? '',
+            timestamp: rs.publishedAt ?? '', comment_id: reply.id ?? '',
+            reply_to: thread.snippet.topLevelComment.id,
+          });
+        }
+      }
+    }
+    if (onUpdate) onUpdate(results.length);
+    if (results.length >= maxComments) break;
+    pageToken = data.nextPageToken ?? '';
+  } while (pageToken);
+  return results;
+}
+
+// ────────────────────────────────────────────────────────────
+//  GRAPH API HELPERS
+// ────────────────────────────────────────────────────────────
+async function gql(path) { return gqlRaw(`${GRAPH}${path}`); }
+async function gqlRaw(url) {
+  const res = await fetch(url);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  return data;
+}
+function enc(s) { return encodeURIComponent(s); }
+
+// ────────────────────────────────────────────────────────────
+//  STATUS / PROGRESS HELPERS
+// ────────────────────────────────────────────────────────────
+function setStatus(type, title, body = '') {
+  const el = document.getElementById('status');
+  const icon = { success: '✓', error: '✕', info: '›' }[type] || '›';
+  el.className = `status-panel ${type}`;
+  el.innerHTML = `<div class="status-header">${icon} ${title}</div>${body}`;
+}
+function getProgList() {
+  const el = document.getElementById('status');
+  let list = el.querySelector('.progress-list');
+  if (!list) { list = document.createElement('div'); list.className = 'progress-list'; el.appendChild(list); }
+  return list;
+}
+function setProgItem(id, state, text) {
+  const list = getProgList();
+  let item = document.getElementById(id);
+  if (!item) { item = document.createElement('div'); item.id = id; list.appendChild(item); }
+  item.className = `prog-item ${state}`;
+  item.textContent = `${{ done:'✓', err:'✕', active:'›' }[state]||'›'} ${text}`;
+}
+function setHint(id, type, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = `field-hint ${type}`;
+  el.textContent = msg;
+}
+
+// ────────────────────────────────────────────────────────────
+//  EXPORT
+// ────────────────────────────────────────────────────────────
+function loadXLSX() {
+  if (window.XLSX) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function exportXLSX(rows, includeSummary) {
+  await loadXLSX();
+  const wb = XLSX.utils.book_new();
+  const headers = ['Post ID','Commenter Name','Commenter ID','Comment','Timestamp','Comment ID'];
+  const hasReplies = rows.some(r => r.reply_to !== undefined);
+  if (hasReplies) headers.push('Reply To');
+  const data = [headers, ...rows.map(r => {
+    const row = [r.post_id, r.commenter_name, r.commenter_id, r.comment_text, r.timestamp, r.comment_id];
+    if (hasReplies) row.push(r.reply_to || '');
+    return row;
+  })];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [{wch:28},{wch:28},{wch:20},{wch:55},{wch:22},{wch:22},{wch:22}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Comments');
+  if (includeSummary) {
+    const counts = {};
+    rows.forEach(r => { counts[r.post_id] = (counts[r.post_id] || 0) + 1; });
+    const total = Object.values(counts).reduce((a,b)=>a+b,0);
+    const sd = [['Post ID','Comment Count'], ...Object.entries(counts), ['TOTAL', total]];
+    const ws2 = XLSX.utils.aoa_to_sheet(sd);
+    ws2['!cols'] = [{wch:30},{wch:16}];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+  }
+  const ts = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  XLSX.writeFile(wb, `commentpull_${platform}_${ts}.xlsx`);
+}
+
+function exportCSV(rows) {
+  const keys = ['post_id','commenter_name','commenter_id','comment_text','timestamp','comment_id'];
+  const hasReplies = rows.some(r => r.reply_to !== undefined);
+  if (hasReplies) keys.push('reply_to');
+  const lines = [keys.join(','), ...rows.map(r => keys.map(k => `"${String(r[k]||'').replace(/"/g,'""')}"`).join(','))];
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `commentpull_${platform}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+}
+
+function exportJSON(rows) {
+  const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `commentpull_${platform}_${new Date().toISOString().slice(0,10)}.json`; a.click();
+}
+
+// ────────────────────────────────────────────────────────────
+//  TOKEN HEALTH CHECK
+// ────────────────────────────────────────────────────────────
+const REQUIRED_PERMS = {
+  fb: [{ perm: 'pages_read_engagement', label: 'Read page comments' }],
+  ig: [
+    { perm: 'pages_read_engagement',     label: 'Read page engagement' },
+    { perm: 'instagram_basic',           label: 'Instagram basic access' },
+    { perm: 'instagram_manage_comments', label: 'Read Instagram comments' },
+  ],
+};
+
+async function checkToken() {
+  const token = document.getElementById('token-input').value.trim();
+  const card  = document.getElementById('token-health-card');
+  const btn   = document.getElementById('btn-check-token');
+  const label = document.getElementById('btn-check-text');
+
+  if (!token) {
+    card.className = 'token-health-card err';
+    card.innerHTML = '<div class="thc-err">Enter your token first.</div>';
+    card.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  label.textContent = 'Checking…';
+  card.style.display = 'none';
+
+  try {
+    const me = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
+
+    let grantedSet = new Set();
+    let permsLoaded = false;
+    try {
+      const permsData = await gql(`/me/permissions?access_token=${enc(token)}`);
+      (permsData.data || []).forEach(p => { if (p.status === 'granted') grantedSet.add(p.permission); });
+      permsLoaded = grantedSet.size > 0;
+    } catch(_) {}
+
+    let expiresAt = null;
+    let isShortLived = false;
+    try {
+      const debug = await gqlRaw(`${GRAPH}/debug_token?input_token=${enc(token)}&access_token=${enc(token)}`);
+      if (debug.data) {
+        expiresAt    = debug.data.expires_at ?? null;
+        isShortLived = expiresAt > 0 && (expiresAt - Date.now() / 1000) < 3600;
+      }
+    } catch(_) {}
+
+    const required = REQUIRED_PERMS[platform] || REQUIRED_PERMS.fb;
+    const missing  = permsLoaded ? required.filter(r => !grantedSet.has(r.perm)) : [];
+
+    let state = 'ok';
+    if (missing.length > 0) state = 'err';
+    else if (isShortLived)  state = 'warn';
+
+    let html = `<div class="thc-name">${escHtml(me.name)} <span style="color:#6b7280;font-weight:400;font-size:11px">· ID ${escHtml(me.id)}</span></div>`;
+
+    if (permsLoaded) {
+      html += '<div class="thc-perms">';
+      for (const { perm, label: desc } of required) {
+        const ok = grantedSet.has(perm);
+        html += `<div class="thc-perm">
+          <span class="thc-perm-dot ${ok ? 'ok' : 'miss'}"></span>
+          <code style="font-size:11px">${perm}</code>
+          <span style="color:#6b7280;font-size:10px">— ${desc}</span>
+          <span class="${ok ? 'thc-ok' : 'thc-err'}" style="margin-left:auto;font-size:10px">${ok ? 'granted' : 'MISSING'}</span>
+        </div>`;
+      }
+      html += '</div>';
+    } else {
+      html += `<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Permission details unavailable for Page Access Tokens — this is normal. Your token is valid.</div>`;
+    }
+
+    html += '<div class="thc-expiry">';
+    if (expiresAt === null) {
+      html += `<span style="color:#9ca3af;font-size:11px">Expiry info unavailable for Page Access Tokens. Page tokens are typically long-lived.</span>`;
+    } else if (expiresAt === 0) {
+      html += `<span class="thc-ok">✓ Long-lived token — no expiry</span>`;
+    } else {
+      const secsLeft  = expiresAt - Date.now() / 1000;
+      const hoursLeft = (secsLeft / 3600).toFixed(1);
+      const expiryStr = new Date(expiresAt * 1000).toLocaleString();
+      html += isShortLived
+        ? `<span class="thc-warn">⚠ Expires soon: ${expiryStr} (${hoursLeft}h left)</span>`
+        : `<span class="thc-ok">✓ Expires: ${expiryStr} (${hoursLeft}h remaining)</span>`;
+    }
+    html += '</div>';
+
+    if (missing.length > 0) {
+      html += `<div class="thc-action">Missing ${missing.length} permission${missing.length > 1 ? 's' : ''}. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Re-generate token →</a></div>`;
+    }
+
+    card.className    = `token-health-card ${state}`;
+    card.innerHTML    = html;
+    card.style.display = 'block';
+
+  } catch(e) {
+    card.className    = 'token-health-card err';
+    card.innerHTML    = `
+      <div class="thc-err" style="font-weight:500;margin-bottom:6px">✕ Token invalid or expired</div>
+      <div style="font-size:11px;color:#d1d5db">${escHtml(e.message)}</div>
+      <div class="thc-action"><a href="https://developers.facebook.com/tools/explorer/" target="_blank">Get a new token →</a></div>`;
+    card.style.display = 'block';
+  } finally {
+    btn.disabled      = false;
+    label.textContent = 'Check token';
+  }
+}
+
+// ────────────────────────────────────────────────────────────
+//  FILTER RULES
+// ────────────────────────────────────────────────────────────
+function toggleFilters() {
+  const section = document.getElementById('filter-section');
+  section.classList.toggle('open');
+}
+
+function onRuleToggle(ruleId) {
+  const checked = document.getElementById(ruleId).checked;
+  const inputs = document.getElementById(`inputs-${ruleId}`);
+  if (inputs) {
+    inputs.style.display = checked ? 'block' : 'none';
+    if (checked) inputs.querySelector('input')?.focus();
+  }
+  updateFilterBadge();
+}
+
+function updateFilterBadge() {
+  const ids = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude'];
+  const active = ids.filter(id => document.getElementById(id).checked).length;
+  const badge = document.getElementById('filter-badge');
+  badge.textContent = active === 0 ? 'Filters' : `${active} rule${active !== 1 ? 's' : ''} active`;
+  badge.className = `filter-badge${active > 0 ? ' active' : ''}`;
+  markFiltersDirty();
+}
+
+let _hasExtracted = false;
+let _filtersDirty = false;
+const _filterInputIds = ['filter-keyword','filter-mentions','filter-length','filter-date-from','filter-date-to','filter-exclude'];
+
+document.addEventListener('input', function(e) {
+  if (_filterInputIds.includes(e.target.id)) markFiltersDirty();
+});
+
+function markFiltersDirty() {
+  if (!_hasExtracted || _filtersDirty) return;
+  _filtersDirty = true;
+  const btn = document.getElementById('extract-btn');
+  btn.onclick = null;
+  btn.setAttribute('onclick', 'updatePreview()');
+  btn.querySelector('.btn-icon').innerHTML =
+    '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>' +
+    '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>';
+  btn.querySelector('.btn-label').textContent = 'Update Preview';
+}
+
+function resetExtractBtn() {
+  _filtersDirty = false;
+  const btn = document.getElementById('extract-btn');
+  btn.onclick = null;
+  btn.setAttribute('onclick', 'handleExtract()');
+  btn.querySelector('.btn-icon').innerHTML =
+    '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>';
+  btn.querySelector('.btn-label').textContent = 'Extract Comments';
+}
+
+function updatePreview() {
+  if (!_hasExtracted || !_previewAll.length) return;
+  const qualified = applyFilters(_previewAll);
+  const filtersActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+  const qualifiedCount = qualified.length;
+  const totalCount = _previewAll.length;
+
+  const panel = document.getElementById('status');
+  panel.className = filtersActive && qualifiedCount === 0 ? 'status-panel error' : 'status-panel success';
+  if (filtersActive && qualifiedCount === 0) {
+    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div>
+      <div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified.</div>`;
+  } else {
+    const filterNote = filtersActive
+      ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules</div>`
+      : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments below, then download when ready</div>`;
+    panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
+  }
+
+  _reportData.totalCount     = totalCount;
+  _reportData.qualifiedCount = qualifiedCount;
+
+  showPreview(_previewAll, qualified, filtersActive);
+  resetExtractBtn();
+}
+
+// ────────────────────────────────────────────────────────────
+//  FILTER PRESET SYSTEM
+// ────────────────────────────────────────────────────────────
+const BUILTIN_PRESETS = [
+  { id: 'standard-giveaway', name: 'Standard Giveaway', desc: 'Dedup + 1 mention + keyword required',
+    config: { dedupOn: true, mentionsOn: true, mentions: 1, keywordOn: true, keyword: '#giveaway' } },
+  { id: 'comment-to-win',   name: 'Comment to Win',   desc: 'One entry per person only', config: { dedupOn: true } },
+  { id: 'hashtag-campaign', name: 'Hashtag Campaign', desc: 'Must include a specific hashtag', config: { keywordOn: true, keyword: '' } },
+  { id: 'clean-extract',    name: 'Clean Extract',    desc: 'No filters — all comments included', config: {} },
+];
+
+const LS_PRESETS_KEY = 'commentpull_presets';
+let _presetsOpen = false;
+
+function loadCustomPresets() {
+  try { return JSON.parse(localStorage.getItem(LS_PRESETS_KEY) || '[]'); } catch { return []; }
+}
+function savePresetsToStorage(presets) { localStorage.setItem(LS_PRESETS_KEY, JSON.stringify(presets)); }
+
+function getCurrentFilterState() {
+  return {
+    keywordOn: document.getElementById('rule-keyword').checked,
+    keyword:   document.getElementById('filter-keyword').value,
+    mentionsOn: document.getElementById('rule-mentions').checked,
+    mentions:   document.getElementById('filter-mentions').value,
+    lengthOn:   document.getElementById('rule-length').checked,
+    length:     document.getElementById('filter-length').value,
+    dedupOn:    document.getElementById('rule-dedup').checked,
+    daterangeOn: document.getElementById('rule-daterange').checked,
+    dateFrom:    document.getElementById('filter-date-from').value,
+    dateTo:      document.getElementById('filter-date-to').value,
+    excludeOn:   document.getElementById('rule-exclude').checked,
+    exclude:     document.getElementById('filter-exclude').value,
+  };
+}
+
+function applyFilterConfig(config) {
+  const ruleIds = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude'];
+  ruleIds.forEach(id => {
+    document.getElementById(id).checked = false;
+    const inputs = document.getElementById(`inputs-${id}`);
+    if (inputs) inputs.style.display = 'none';
+  });
+
+  function enable(id, condition, setup) {
+    if (!condition) return;
+    document.getElementById(id).checked = true;
+    const inputs = document.getElementById(`inputs-${id}`);
+    if (inputs) inputs.style.display = 'block';
+    if (setup) setup();
+  }
+
+  enable('rule-keyword',   config.keywordOn,   () => { document.getElementById('filter-keyword').value  = config.keyword  ?? ''; });
+  enable('rule-mentions',  config.mentionsOn,  () => { document.getElementById('filter-mentions').value = config.mentions ?? 2;  });
+  enable('rule-length',    config.lengthOn,    () => { document.getElementById('filter-length').value   = config.length   ?? 10; });
+  enable('rule-dedup',     config.dedupOn);
+  enable('rule-daterange', config.daterangeOn, () => {
+    document.getElementById('filter-date-from').value = config.dateFrom ?? '';
+    document.getElementById('filter-date-to').value   = config.dateTo   ?? '';
+  });
+  enable('rule-exclude', config.excludeOn, () => { document.getElementById('filter-exclude').value = config.exclude ?? ''; });
+  updateFilterBadge();
+}
+
+function _afterPresetApply() {
+  const anyActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+  if (anyActive) document.getElementById('filter-section').classList.add('open');
+  closePresetsMenu();
+}
+
+function applyBuiltinPreset(i) { applyFilterConfig(BUILTIN_PRESETS[i].config); _afterPresetApply(); }
+function applyCustomPreset(i)  { const p = loadCustomPresets(); if (p[i]) { applyFilterConfig(p[i].config); _afterPresetApply(); } }
+
+function deleteCustomPreset(i) {
+  const presets = loadCustomPresets();
+  presets.splice(i, 1);
+  savePresetsToStorage(presets);
+  renderPresetsMenu();
+}
+
+function saveCustomPreset() {
+  const nameInput = document.getElementById('preset-name-input');
+  if (!nameInput) return;
+  const name = nameInput.value.trim();
+  if (!name) { nameInput.focus(); return; }
+  const presets  = loadCustomPresets();
+  const config   = getCurrentFilterState();
+  const existIdx = presets.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+  if (existIdx >= 0) {
+    if (!confirm(`A preset named "${name}" already exists. Overwrite it?`)) return;
+    presets[existIdx].config = config;
+  } else {
+    presets.push({ name, config });
+  }
+  savePresetsToStorage(presets);
+  nameInput.value = '';
+  renderPresetsMenu();
+}
+
+function renderPresetsMenu() {
+  const menu   = document.getElementById('presets-menu');
+  const custom = loadCustomPresets();
+  const delIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
+  let html = '<div class="presets-menu-section"><div class="presets-menu-label">Built-in</div>';
+  BUILTIN_PRESETS.forEach((p, i) => {
+    html += `<div class="preset-item" onclick="applyBuiltinPreset(${i})">
+      <div class="preset-item-info">
+        <div class="preset-item-name">${escHtml(p.name)}</div>
+        <div class="preset-item-desc">${escHtml(p.desc)}</div>
+      </div></div>`;
+  });
+  html += '</div><div class="presets-menu-section"><div class="presets-menu-label">Saved</div>';
+  if (custom.length === 0) {
+    html += '<div class="presets-empty">No saved presets yet.</div>';
+  } else {
+    custom.forEach((p, i) => {
+      html += `<div class="preset-item" onclick="applyCustomPreset(${i})">
+        <div class="preset-item-info"><div class="preset-item-name">${escHtml(p.name)}</div></div>
+        <button class="preset-item-del" onclick="event.stopPropagation(); deleteCustomPreset(${i})" title="Delete">${delIcon}</button>
+      </div>`;
+    });
+  }
+  html += `</div><div class="presets-menu-section presets-save-area">
+    <div class="presets-menu-label">Save current filters</div>
+    <div class="presets-save-row">
+      <input type="text" id="preset-name-input" placeholder="Preset name…" onkeydown="if(event.key==='Enter') saveCustomPreset()">
+      <button class="btn-preset-save" onclick="saveCustomPreset()">Save</button>
+    </div></div>`;
+  menu.innerHTML = html;
+}
+
+function togglePresetsMenu() { _presetsOpen ? closePresetsMenu() : openPresetsMenu(); }
+
+function positionPresetsMenu() {
+  const menu = document.getElementById('presets-menu');
+  const btn  = document.getElementById('btn-presets');
+  const rect = btn.getBoundingClientRect();
+  const menuH = menu.offsetHeight;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  if (spaceBelow < menuH + 10 && rect.top > menuH + 10) {
+    menu.style.top = (rect.top - menuH - 6) + 'px';
+  } else {
+    menu.style.top = (rect.bottom + 6) + 'px';
+  }
+  menu.style.right = (window.innerWidth - rect.right) + 'px';
+  menu.style.left  = 'auto';
+}
+
+function openPresetsMenu() {
+  _presetsOpen = true;
+  renderPresetsMenu();
+  const menu = document.getElementById('presets-menu');
+  menu.style.display = 'block';
+  positionPresetsMenu();
+  document.getElementById('btn-presets').classList.add('open');
+}
+
+function closePresetsMenu() {
+  _presetsOpen = false;
+  document.getElementById('presets-menu').style.display = 'none';
+  document.getElementById('btn-presets').classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (_presetsOpen && !e.target.closest('#presets-menu') && !e.target.closest('#btn-presets')) closePresetsMenu();
+  if (_dlMenuOpen && !e.target.closest('#dl-menu') && !e.target.closest('#btn-dl-main')) closeDlMenu();
+});
+
+window.addEventListener('scroll', function() {
+  if (_presetsOpen) closePresetsMenu();
+  if (_dlMenuOpen) closeDlMenu();
+}, { passive: true });
+
+let _dlMenuOpen = false;
+function toggleDlMenu() { _dlMenuOpen ? closeDlMenu() : openDlMenu(); }
+function openDlMenu() {
+  _dlMenuOpen = true;
+  document.getElementById('dl-menu').style.display = 'block';
+  document.getElementById('btn-dl-main').classList.add('open');
+}
+function closeDlMenu() {
+  _dlMenuOpen = false;
+  document.getElementById('dl-menu').style.display = 'none';
+  const btn = document.getElementById('btn-dl-main');
+  if (btn) btn.classList.remove('open');
+}
+
+// ────────────────────────────────────────────────────────────
+//  FILTER LOGIC
+// ────────────────────────────────────────────────────────────
+function applyFilters(rows) {
+  const keywordOn  = document.getElementById('rule-keyword').checked;
+  const mentionsOn = document.getElementById('rule-mentions').checked;
+  const lengthOn   = document.getElementById('rule-length').checked;
+  const dedupOn    = document.getElementById('rule-dedup').checked;
+  const dateOn     = document.getElementById('rule-daterange').checked;
+  const excludeOn  = document.getElementById('rule-exclude').checked;
+
+  const anyActive = keywordOn || mentionsOn || lengthOn || dedupOn || dateOn || excludeOn;
+  if (!anyActive) return rows;
+
+  const keyword     = document.getElementById('filter-keyword').value.trim().toLowerCase();
+  const minMentions = parseInt(document.getElementById('filter-mentions').value) || 1;
+  const minLength   = parseInt(document.getElementById('filter-length').value)   || 1;
+  const rawFrom     = document.getElementById('filter-date-from').value;
+  const rawTo       = document.getElementById('filter-date-to').value;
+  const dateFrom    = rawFrom ? new Date(rawFrom + 'T00:00:00') : null;
+  const dateTo      = rawTo   ? new Date(rawTo   + 'T23:59:59') : null;
+  const excludeList = excludeOn
+    ? document.getElementById('filter-exclude').value.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+    : [];
+
+  const seen   = new Set();
+  const result = [];
+
+  for (const row of rows) {
+    const text = row.comment_text || '';
+    const name = (row.commenter_name || '').toLowerCase();
+    const id   = (row.commenter_id  || '').toLowerCase();
+
+    if (keywordOn && keyword && !text.toLowerCase().includes(keyword)) continue;
+    if (mentionsOn) { const count = (text.match(/@[\w.]+/g) || []).length; if (count < minMentions) continue; }
+    if (lengthOn && text.trim().length < minLength) continue;
+    if (dateOn) {
+      const ts = new Date(row.timestamp);
+      if (dateFrom && ts < dateFrom) continue;
+      if (dateTo   && ts > dateTo)   continue;
+    }
+    if (excludeOn && excludeList.length && (excludeList.includes(name) || excludeList.includes(id))) continue;
+    if (dedupOn) {
+      const key = (id && id !== (row.comment_id || '').toLowerCase()) ? id : name;
+      if (seen.has(key)) continue;
+      seen.add(key);
+    }
+    result.push(row);
+  }
+  return result;
+}
+
+// ────────────────────────────────────────────────────────────
+//  RESULTS PREVIEW TABLE
+// ────────────────────────────────────────────────────────────
+let _previewAll = [];
+let _previewQualified = [];
+let _qualifiedSet = new Set();
+let _filtersWereActive = false;
+
+function showPreview(allRows, qualifiedRows, filtersActive) {
+  _previewAll       = allRows;
+  _previewQualified = qualifiedRows;
+  _qualifiedSet     = new Set(qualifiedRows);
+  _filtersWereActive = filtersActive;
+
+  const panel = document.getElementById('preview-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  document.getElementById('preview-search').value = '';
+
+  const meta = document.getElementById('preview-meta');
+  if (filtersActive) {
+    const excl = allRows.length - qualifiedRows.length;
+    meta.innerHTML =
+      `<span style="color:#4ade80">${qualifiedRows.length} qualified</span>` +
+      (excl > 0 ? ` &nbsp;·&nbsp; <span style="color:#9ca3af">${excl} excluded</span>` : '') +
+      ` &nbsp;·&nbsp; ${allRows.length} total`;
+  } else {
+    meta.innerHTML = `${allRows.length} comment${allRows.length !== 1 ? 's' : ''} extracted`;
+  }
+
+  const fmt = document.getElementById('fmt').value.toUpperCase();
+  document.getElementById('dl-qualified-desc').textContent =
+    `${qualifiedRows.length} comment${qualifiedRows.length !== 1 ? 's' : ''} · ${fmt}`;
+  document.getElementById('dl-all-desc').textContent =
+    `${allRows.length} comment${allRows.length !== 1 ? 's' : ''} · ${fmt}`;
+
+  document.getElementById('preview-legend').style.display = filtersActive ? 'flex' : 'none';
+
+  renderPreview(allRows);
+  showRandSection();
+}
+
+function formatPreviewDate(ts) {
+  if (!ts) return '—';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
+  } catch { return ts.slice(0, 10); }
+}
+
+function formatPostId(id) {
+  if (!id) return '—';
+  const s = String(id);
+  return s.length > 14 ? '…' + s.slice(-12) : s;
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderPreview(rows) {
+  const tbody = document.getElementById('preview-tbody');
+  const empty = document.getElementById('preview-empty');
+  tbody.innerHTML = '';
+
+  if (rows.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('preview-footer-text').textContent = 'No results.';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const frag = document.createDocumentFragment();
+  rows.forEach((row, i) => {
+    const isQualified = !_filtersWereActive || _qualifiedSet.has(row);
+    const cls = _filtersWereActive ? (isQualified ? 'row-ok' : 'row-out') : '';
+    const dot = _filtersWereActive ? `<span class="status-dot"></span>` : '';
+    const tr = document.createElement('tr');
+    if (cls) tr.className = cls;
+    tr.innerHTML = `
+      <td class="td-num">${i + 1}</td>
+      <td class="td-name">${dot}${escHtml(row.commenter_name)}</td>
+      <td class="td-comment">${escHtml(row.comment_text)}</td>
+      <td class="td-date">${formatPreviewDate(row.timestamp)}</td>
+      <td class="td-post">${formatPostId(row.post_id)}</td>`;
+    frag.appendChild(tr);
+  });
+  tbody.appendChild(frag);
+  updatePreviewFooter(rows.length, _previewAll.length);
+}
+
+function updatePreviewFooter(shown, total) {
+  const text = shown === total
+    ? `${total} comment${total !== 1 ? 's' : ''}`
+    : `${shown} of ${total} comments`;
+  document.getElementById('preview-footer-text').textContent = text;
+}
+
+function searchPreview() {
+  const q = document.getElementById('preview-search').value.trim().toLowerCase();
+  if (!q) { renderPreview(_previewAll); return; }
+  const filtered = _previewAll.filter(r =>
+    (r.commenter_name || '').toLowerCase().includes(q) ||
+    (r.comment_text  || '').toLowerCase().includes(q)
+  );
+  renderPreview(filtered);
+}
+
+async function reDownload(which) {
+  const rows = which === 'all' ? _previewAll : _previewQualified;
+  if (!rows.length) return;
+  const fmt = document.getElementById('fmt').value;
+  const includeSummary = document.getElementById('opt-summary').classList.contains('selected');
+  if (fmt === 'xlsx')     await exportXLSX(rows, includeSummary);
+  else if (fmt === 'csv') exportCSV(rows);
+  else                    exportJSON(rows);
+}
+
+// ────────────────────────────────────────────────────────────
+//  MAIN EXTRACTION HANDLER
+// ────────────────────────────────────────────────────────────
+async function handleExtract() {
+  const token = document.getElementById('token-input').value.trim();
+  const includeReplies = document.getElementById('opt-replies').classList.contains('selected');
+
+  gtag('event', 'extract_started', { platform });
+
+  if (!token) { setStatus('error','Access token required','Please enter your Page Access Token.'); return; }
+
+  const btn = document.getElementById('extract-btn');
+  btn.classList.add('loading');
+  const all = [];
+  let anyError = false;
+
+  try {
+    if (platform === 'fb') {
+      const pageId = document.getElementById('fb-page-id').value.trim();
+      if (!pageId) { setStatus('error','Page ID required','Enter your Page ID or click Auto-detect.'); btn.classList.remove('loading'); return; }
+      const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', `Connecting to Facebook Graph API…`, '');
+      const filter = includeReplies ? 'stream' : 'toplevel';
+
+      for (let i = 0; i < urls.length; i++) {
+        const link = urls[i], fullId = buildFullPostId(link, pageId);
+        const label = link.length > 44 ? '…'+link.slice(-41) : link;
+        const pid = `p${i}`;
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — connecting…`);
+        try {
+          const comments = await fetchFbComments(fullId, token, filter, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          });
+          all.push(...comments);
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`); anyError = true; }
+      }
+
+    } else if (platform === 'yt') {
+      const apiKey = document.getElementById('token-input').value.trim();
+      const urls   = [...document.querySelectorAll('.yt-url')].map(i => i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No video URL','Paste at least one YouTube video URL.'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', 'Connecting to YouTube Data API…', '');
+
+      for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        const videoId = extractYtVideoId(url);
+        const label   = url.length > 44 ? '…'+url.slice(-41) : url;
+        const pid     = `p${i}`;
+
+        if (!videoId) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Could not extract video ID from URL`);
+          anyError = true; continue;
+        }
+
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
+        try {
+          const comments = await fetchYtComments(videoId, apiKey, includeReplies, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          });
+          all.push(...comments);
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
+          anyError = true;
+        }
+      }
+
+    } else {
+      const fbPageId = document.getElementById('ig-page-id').value.trim();
+      if (!fbPageId) { setStatus('error','Page ID required','Enter your Facebook Page ID or click Auto-detect.'); btn.classList.remove('loading'); return; }
+      const urls = [...document.querySelectorAll('.ig-url')].map(i=>i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No post URL','Paste at least one Instagram post URL.'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', 'Connecting to Instagram Graph API…', '');
+
+      let igUserId;
+      try {
+        setProgItem('ig-resolve', 'active', 'Resolving Instagram Business Account ID…');
+        igUserId = await resolveIgUserId(fbPageId, token);
+        setProgItem('ig-resolve', 'done', `Instagram Business Account: ${igUserId}`);
+      } catch(e) {
+        setProgItem('ig-resolve', 'err', `Could not resolve IG account: ${e.message}`);
+        btn.classList.remove('loading'); return;
+      }
+
+      for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        const shortcode = extractIgShortcode(url);
+        const label = url.length > 44 ? '…'+url.slice(-41) : url;
+        const pid = `p${i}`;
+
+        if (!shortcode) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Could not extract shortcode from URL`);
+          anyError = true; continue;
+        }
+
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — looking up media ID…`);
+        try {
+          const mediaId = await resolveIgMediaId(shortcode, igUserId, token);
+          setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
+          const comments = await fetchIgComments(mediaId, token, includeReplies, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          });
+          all.push(...comments);
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) {
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
+          anyError = true;
+        }
+      }
+    }
+  } catch(e) {
+    setStatus('error', 'Unexpected error', e.message);
+    btn.classList.remove('loading'); return;
+  }
+
+  btn.classList.remove('loading');
+
+  if (all.length === 0) {
+    const tip = anyError
+      ? `Check your token has the right permissions and your Page/Account IDs are correct.`
+      : `No comments found — the posts may be empty.`;
+    setStatus('error', 'No comments collected', tip);
+    return;
+  }
+
+  const qualified     = applyFilters(all);
+  const totalCount    = all.length;
+  const qualifiedCount = qualified.length;
+  const filtersActive = ['rule-keyword','rule-mentions','rule-length','rule-dedup','rule-daterange','rule-exclude']
+    .some(id => document.getElementById(id).checked);
+
+  if (filtersActive && qualifiedCount === 0) {
+    const panel = document.getElementById('status');
+    const list  = panel.querySelector('.progress-list');
+    panel.className = 'status-panel error';
+    panel.innerHTML = `<div class="status-header">✕ No comments passed your filter rules</div>
+      <div style="margin-top:6px;font-size:11px;opacity:0.8">${totalCount} comment${totalCount!==1?'s':''} extracted — 0 qualified. Try relaxing your filters.</div>`;
+    if (list) panel.appendChild(list);
+    _hasExtracted = true;
+    resetExtractBtn();
+    showPreview(all, qualified, filtersActive);
+    return;
+  }
+
+  const panel = document.getElementById('status');
+  const list  = panel.querySelector('.progress-list');
+  panel.className = 'status-panel success';
+  const filterNote = filtersActive
+    ? `<div style="margin-top:6px;font-size:11px;opacity:0.75">${qualifiedCount} of ${totalCount} passed your filter rules</div>`
+    : `<div style="margin-top:6px;font-size:11px;opacity:0.75">Review comments below, then download when ready</div>`;
+  panel.innerHTML = `<div class="status-header">✓ ${qualifiedCount} comment${qualifiedCount!==1?'s':''} ready</div>${filterNote}`;
+  if (list) panel.appendChild(list);
+
+  _reportData.extractedAt    = new Date();
+  _reportData.totalCount     = totalCount;
+  _reportData.qualifiedCount = qualifiedCount;
+
+  _hasExtracted = true;
+  resetExtractBtn();
+  showPreview(all, qualified, filtersActive);
+}
+
+// ────────────────────────────────────────────────────────────
+//  GIVEAWAY REPORT
+// ────────────────────────────────────────────────────────────
+let _reportData = { extractedAt: null, totalCount: 0, qualifiedCount: 0, seed: null, drawnAt: null, poolSize: 0 };
+
+function getActiveFiltersSummary() {
+  const rules = [];
+  if (document.getElementById('rule-keyword').checked) {
+    const kw = document.getElementById('filter-keyword').value.trim();
+    if (kw) rules.push(`Must contain "${kw}"`);
+  }
+  if (document.getElementById('rule-mentions').checked) {
+    const n = document.getElementById('filter-mentions').value;
+    rules.push(`Min. ${n} @mention${n > 1 ? 's' : ''}`);
+  }
+  if (document.getElementById('rule-length').checked) {
+    rules.push(`Min. ${document.getElementById('filter-length').value} characters`);
+  }
+  if (document.getElementById('rule-dedup').checked) rules.push('One entry per person');
+  if (document.getElementById('rule-daterange').checked) {
+    const from = document.getElementById('filter-date-from').value;
+    const to   = document.getElementById('filter-date-to').value;
+    const parts = [];
+    if (from) parts.push(`from ${from}`);
+    if (to)   parts.push(`to ${to}`);
+    if (parts.length) rules.push(`Date range: ${parts.join(' ')}`);
+  }
+  if (document.getElementById('rule-exclude').checked) {
+    const ex = document.getElementById('filter-exclude').value.trim();
+    if (ex) rules.push(`Excluded: ${ex}`);
+  }
+  return rules;
+}
+
+function generateReport() {
+  const winners = _drawnWinners.filter(Boolean);
+  if (!_reportData.extractedAt || winners.length === 0) {
+    alert('Draw winners first before generating a report.');
+    return;
+  }
+
+  const plat  = platform === 'ig' ? 'Instagram' : platform === 'yt' ? 'YouTube' : 'Facebook';
+  const urls  = [...document.querySelectorAll(platform === 'fb' ? '.fb-url' : platform === 'ig' ? '.ig-url' : '.yt-url')]
+                  .map(i => i.value.trim()).filter(Boolean);
+  const filters = getActiveFiltersSummary();
+
+  const urlsHtml = urls.length
+    ? `<div class="rp-urls">${urls.map(u => `<span class="rp-url">${escHtml(u)}</span>`).join('')}</div>`
+    : '<span class="rp-notag">—</span>';
+
+  const filtersHtml = filters.length
+    ? `<div class="rp-tags">${filters.map(f => `<span class="rp-tag">${escHtml(f)}</span>`).join('')}</div>`
+    : '<span class="rp-notag">No filters — all comments included</span>';
+
+  const winnersHtml = winners.map((w, i) => `
+    <div class="rp-winner${i === 0 ? ' first' : ''}">
+      <div class="rp-winner-rank">${i + 1}</div>
+      <div class="rp-winner-body">
+        <div class="rp-winner-name">${escHtml(w.row.commenter_name)}</div>
+        <div class="rp-winner-comment">"${escHtml((w.row.comment_text || '').slice(0, 280))}"</div>
+        <div class="rp-winner-meta">${formatPreviewDate(w.row.timestamp)}</div>
+      </div>
+    </div>`).join('');
+
+  const excludeRaw = document.getElementById('rand-exclude').value.trim();
+
+  document.getElementById('report-sheet').innerHTML = `
+    <div class="rp-page">
+      <div class="rp-header">
+        <div class="rp-logo">Comment<span>Pull</span></div>
+        <div class="rp-doc-title">Giveaway Draw Report</div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-section-title">Draw Summary</div>
+        <div class="rp-grid">
+          <div class="rp-row"><span class="rp-label">Platform</span><span class="rp-val">${plat}</span></div>
+          <div class="rp-row"><span class="rp-label">Post URL${urls.length > 1 ? 's' : ''}</span><span class="rp-val">${urlsHtml}</span></div>
+          <div class="rp-row"><span class="rp-label">Extracted on</span><span class="rp-val">${_reportData.extractedAt.toLocaleString()}</span></div>
+          <div class="rp-row"><span class="rp-label">Total comments</span><span class="rp-val">${_reportData.totalCount.toLocaleString()}</span></div>
+          <div class="rp-row"><span class="rp-label">Filter rules</span><span class="rp-val">${filtersHtml}</span></div>
+          <div class="rp-row"><span class="rp-label">Qualified</span><span class="rp-val">${_reportData.qualifiedCount.toLocaleString()} entries</span></div>
+          <div class="rp-row"><span class="rp-label">Draw pool</span><span class="rp-val">${_reportData.poolSize.toLocaleString()} eligible${excludeRaw ? ' (after manual exclusions)' : ''}</span></div>
+          <div class="rp-row"><span class="rp-label">Winners drawn</span><span class="rp-val">${winners.length}</span></div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-section-title">Winner${winners.length > 1 ? 's' : ''}</div>
+        ${winnersHtml}
+      </div>
+      <div class="rp-footer">
+        <div class="rp-foot-row"><span class="rp-foot-label">Random seed</span><strong>${_reportData.seed}</strong></div>
+        <div class="rp-foot-row"><span class="rp-foot-label">Drawn on</span>${_reportData.drawnAt ? _reportData.drawnAt.toLocaleString() : '—'}</div>
+        <div class="rp-foot-row"><span class="rp-foot-label">Algorithm</span>mulberry32 PRNG · Fisher-Yates shuffle</div>
+        <div class="rp-foot-brand">Generated by extractcomments · All draws are client-side and reproducible by seed.</div>
+      </div>
+    </div>`;
+
+  window.print();
+}
+
+// ────────────────────────────────────────────────────────────
+//  WINNER RANDOMIZER
+// ────────────────────────────────────────────────────────────
+let _randWinnerCount = 1;
+let _randPool        = [];
+let _drawnWinners    = [];
+let _rerolledIdxs    = new Set();
+
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function buildRandPool() {
+  const raw = (document.getElementById('rand-exclude').value || '').split(',')
+    .map(s => s.trim().toLowerCase()).filter(Boolean);
+  return _previewQualified.filter(r => {
+    const name = (r.commenter_name || '').toLowerCase();
+    const uid  = (r.commenter_id  || '').toLowerCase();
+    return !raw.includes(name) && !raw.includes(uid);
+  });
+}
+
+function adjustWinners(delta) {
+  const max = Math.min(Math.max(_previewQualified.length, 1), 20);
+  _randWinnerCount = Math.max(1, Math.min(max, _randWinnerCount + delta));
+  document.getElementById('rand-winner-count').textContent = _randWinnerCount;
+  document.getElementById('btn-draw-text').textContent =
+    `Draw ${_randWinnerCount} Winner${_randWinnerCount !== 1 ? 's' : ''}`;
+}
+
+function showRandSection() {
+  const n     = _previewQualified.length;
+  const panel = document.getElementById('rand-panel');
+  if (n === 0) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  document.getElementById('rand-pool-tag').textContent =
+    `${n} eligible entr${n !== 1 ? 'ies' : 'y'}`;
+  _randWinnerCount = Math.min(_randWinnerCount, n);
+  document.getElementById('rand-winner-count').textContent = _randWinnerCount;
+  document.getElementById('btn-draw-text').textContent =
+    `Draw ${_randWinnerCount} Winner${_randWinnerCount !== 1 ? 's' : ''}`;
+  resetDraw();
+}
+
+async function drawWinners() {
+  const pool = buildRandPool();
+  const n    = _randWinnerCount;
+
+  if (pool.length === 0) { alert('No eligible entries in the pool.'); return; }
+  if (n > pool.length) { alert(`Only ${pool.length} eligible entr${pool.length !== 1 ? 'ies' : 'y'} available.`); return; }
+
+  _randPool     = pool;
+  _drawnWinners = new Array(n).fill(null);
+  _rerolledIdxs = new Set();
+  document.getElementById('rand-winners').innerHTML = '';
+  document.getElementById('rand-footer').style.display = 'none';
+
+  const btn = document.getElementById('btn-draw');
+  btn.disabled = true;
+
+  const seed = Date.now();
+  const rng  = mulberry32(seed);
+  const indices = pool.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const pickedIndices = indices.slice(0, n);
+
+  const stage     = document.getElementById('rand-stage');
+  const winnersEl = document.getElementById('rand-winners');
+  stage.style.display = 'block';
+  stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  winnersEl.classList.add('drawing');
+
+  const allNames = pool.map(r => r.commenter_name);
+
+  for (let i = 0; i < n; i++) {
+    const poolIdx = pickedIndices[i];
+    const winner  = pool[poolIdx];
+
+    await runSlotMachine(winner.commenter_name, allNames, i + 1, n);
+
+    _drawnWinners[i] = { row: winner, poolIdx };
+    winnersEl.appendChild(buildWinnerCardEl(winner, i, true));
+
+    if (i < n - 1) await new Promise(r => setTimeout(r, 600));
+  }
+
+  stage.style.display = 'none';
+  winnersEl.classList.remove('drawing');
+  btn.disabled = false;
+  showRandFooter(seed, pool.length, n);
+  startConfetti();
+  setTimeout(stopConfetti, 4200);
+}
+
+function runSlotMachine(finalName, allNames, winnerNum, totalWinners) {
+  return new Promise(resolve => {
+    const slotName = document.getElementById('slot-name');
+    const slotSub  = document.getElementById('slot-sub');
+    slotSub.textContent = totalWinners > 1
+      ? `Drawing winner ${winnerNum} of ${totalWinners}…`
+      : 'Drawing winner…';
+
+    const DURATION = 2400;
+    const start    = Date.now();
+    let   interval = 55;
+
+    function tick() {
+      const elapsed  = Date.now() - start;
+      const progress = Math.min(elapsed / DURATION, 1);
+      if (progress >= 1) { slotName.textContent = finalName; resolve(); return; }
+      slotName.textContent = allNames[Math.floor(Math.random() * allNames.length)];
+      interval = 55 + Math.pow(progress, 2.8) * 380;
+      setTimeout(tick, interval);
+    }
+    tick();
+  });
+}
+
+function buildWinnerCardEl(row, index, isGold) {
+  const card = document.createElement('div');
+  card.className = `winner-card${isGold ? ' gold' : ''}`;
+  card.id = `winner-card-${index}`;
+
+  const date    = formatPreviewDate(row.timestamp);
+  const rawText = row.comment_text || '';
+  const excerpt = rawText.length > 220 ? rawText.slice(0, 220) + '…' : rawText;
+
+  card.innerHTML = `
+    <div class="winner-rank">${index + 1}</div>
+    <div class="winner-info">
+      <div class="winner-name">${escHtml(row.commenter_name)}</div>
+      <div class="winner-comment">"${escHtml(excerpt)}"</div>
+      <div class="winner-meta">${date}</div>
+    </div>
+    <button class="btn-reroll" onclick="rerollWinner(${index})" title="Re-pick this winner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <polyline points="1 4 1 10 7 10"/>
+        <polyline points="23 20 23 14 17 14"/>
+        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+      </svg>
+      Re-roll
+    </button>`;
+  return card;
+}
+
+function rerollWinner(index) {
+  if (!_drawnWinners[index]) return;
+  _rerolledIdxs.add(_drawnWinners[index].poolIdx);
+  const inUse     = new Set(_drawnWinners.filter(Boolean).map(d => d.poolIdx));
+  const available = _randPool.map((_, idx) => idx)
+    .filter(idx => !inUse.has(idx) && !_rerolledIdxs.has(idx));
+
+  if (available.length === 0) { alert('No more eligible entries to re-roll from.'); return; }
+
+  const newPoolIdx = available[Math.floor(Math.random() * available.length)];
+  const newRow     = _randPool[newPoolIdx];
+  _drawnWinners[index] = { row: newRow, poolIdx: newPoolIdx };
+
+  const oldCard = document.getElementById(`winner-card-${index}`);
+  oldCard.replaceWith(buildWinnerCardEl(newRow, index, true));
+}
+
+function showRandFooter(seed, poolSize, winnerCount) {
+  const drawn = _drawnWinners.filter(Boolean).length;
+  const now   = new Date();
+
+  _reportData.seed     = seed;
+  _reportData.drawnAt  = now;
+  _reportData.poolSize = poolSize;
+
+  document.getElementById('rand-seed-info').innerHTML =
+    `Pool: ${poolSize} eligible &nbsp;·&nbsp; Winners drawn: ${drawn}<br>` +
+    `Seed: <code>${seed}</code> &nbsp;·&nbsp; ${now.toLocaleString()}`;
+  document.getElementById('rand-footer').style.display = 'flex';
+}
+
+function resetDraw() {
+  _drawnWinners = [];
+  _rerolledIdxs = new Set();
+  _randPool     = [];
+  document.getElementById('rand-winners').innerHTML = '';
+  document.getElementById('rand-stage').style.display  = 'none';
+  document.getElementById('rand-footer').style.display = 'none';
+  const btn = document.getElementById('btn-draw');
+  if (btn) btn.disabled = false;
+}
+
+// ────────────────────────────────────────────────────────────
+//  CONFETTI
+// ────────────────────────────────────────────────────────────
+let _confettiRaf = null;
+
+function startConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx    = canvas.getContext('2d');
+  const colors = ['#f0c060','#f5d080','#7de8a8','#e8e8e8','#e1306c','#60b0f0'];
+
+  const particles = Array.from({ length: 90 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -10 - Math.random() * 60,
+    r: 3 + Math.random() * 6,
+    speed: 2.2 + Math.random() * 2.8,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    tiltAngle: Math.random() * Math.PI * 2,
+    tiltSpeed: 0.04 + Math.random() * 0.08,
+    wobble: Math.random() * Math.PI * 2,
+    opacity: 1,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    for (const p of particles) {
+      p.tiltAngle += p.tiltSpeed;
+      p.wobble    += 0.05;
+      p.y         += p.speed;
+      p.x         += Math.sin(p.wobble) * 1.2;
+      p.opacity   -= 0.005;
+      if (p.opacity > 0 && p.y < canvas.height + 20) alive = true;
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle   = p.color;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, p.r, p.r * 0.45, p.tiltAngle, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (alive) _confettiRaf = requestAnimationFrame(draw);
+    else stopConfetti();
+  }
+
+  if (_confettiRaf) cancelAnimationFrame(_confettiRaf);
+  _confettiRaf = requestAnimationFrame(draw);
+}
+
+function stopConfetti() {
+  if (_confettiRaf) { cancelAnimationFrame(_confettiRaf); _confettiRaf = null; }
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- Adapter: platform detection + hero URL → engine bridge     -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <script>
+    // Detect platform from URL string
+    function detectPlatform(url) {
+      if (url.includes('instagram.com')) return 'ig';
+      if (url.includes('youtube.com') || url.includes('youtu.be')) return 'yt';
+      return 'fb';
+    }
+
+    // Called on every keystroke in the hero URL input
+    function onHeroUrlInput() {
+      const url       = document.getElementById('hero-url').value.trim();
+      const tokenRow  = document.getElementById('hero-token-row');
+      const pageIdRow = document.getElementById('hero-pageid-row');
+      const actionRow = document.getElementById('hero-action-row');
+      const filterSec = document.getElementById('filter-section');
+      const badge     = document.getElementById('platform-badge');
+
+      if (!url) {
+        [tokenRow, pageIdRow, actionRow].forEach(el => el.style.display = 'none');
+        filterSec.style.display = 'none';
+        badge.style.display = 'none';
+        return;
+      }
+
+      const p = detectPlatform(url);
+
+      // Update the JS engine's platform state (updates token placeholder, etc.)
+      selectPlatform(p);
+
+      // Populate the hidden platform-specific URL input
+      const urlInput = document.querySelector('.' + p + '-url');
+      if (urlInput) urlInput.value = url;
+
+      // Show + style the platform badge
+      const names     = { fb: 'Facebook', ig: 'Instagram', yt: 'YouTube' };
+      const dots      = { fb: '#60a5fa', ig: '#f472b6', yt: '#f87171' };
+      const badgeCls  = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
+      document.getElementById('platform-badge-text').textContent = names[p] + ' detected';
+      document.getElementById('platform-badge-dot').style.background = dots[p];
+      badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 ' + badgeCls[p];
+      badge.style.display = 'flex';
+
+      // Show token row
+      tokenRow.style.display = 'flex';
+
+      // Show/hide page ID row (not needed for YouTube)
+      if (p === 'yt') {
+        pageIdRow.style.display = 'none';
+      } else {
+        pageIdRow.style.display = 'flex';
+        // Show the correct page ID input + auto-detect button + hint
+        document.getElementById('fb-page-id').style.display    = p === 'fb' ? '' : 'none';
+        document.getElementById('ig-page-id').style.display    = p === 'ig' ? '' : 'none';
+        document.getElementById('btn-fb-auto').style.display   = p === 'fb' ? '' : 'none';
+        document.getElementById('btn-ig-auto').style.display   = p === 'ig' ? '' : 'none';
+        document.getElementById('fb-pageid-hint').style.display = p === 'fb' ? '' : 'none';
+        document.getElementById('ig-pageid-hint').style.display = p === 'ig' ? '' : 'none';
+      }
+
+      // Show action row (Filters button + Extract button)
+      actionRow.style.display = 'flex';
+
+      // Show filter section container (collapsed by default)
+      filterSec.style.display = 'block';
+    }
+
+    // Override showPreview to hide the placeholder sample table when real data loads
+    const _origShowPreview = showPreview;
+    showPreview = function(allRows, qualifiedRows, filtersActive) {
+      const ph = document.getElementById('preview-placeholder');
+      if (ph) ph.style.display = 'none';
+      _origShowPreview(allRows, qualifiedRows, filtersActive);
+    };
+
+    // Header CSV/Excel/JSON quick-download buttons
+    function setFmtAndDownload(fmt) {
+      const sel = document.getElementById('fmt');
+      if (sel) sel.value = fmt;
+      if (typeof _previewQualified !== 'undefined' && _previewQualified.length) {
+        reDownload('qualified');
+      } else if (typeof _previewAll !== 'undefined' && _previewAll.length) {
+        reDownload('all');
+      } else {
+        // No data yet — focus the URL input and scroll up
+        document.getElementById('hero-url').focus();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  </script>
+
+  <script src="/lang.js"></script>
+</body>
+</html>

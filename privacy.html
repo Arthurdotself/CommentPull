@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9850397255720200"
-     crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy — CommentPull</title>
 <meta name="description" content="CommentPull Privacy Policy — how we handle your data, what we collect, and your rights.">
 <meta name="robots" content="index, follow">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="canonical" href="https://commentpull.com/privacy">
+<link rel="canonical" href="https://commentpull.com/privacy.html">
+<link rel="alternate" hreflang="en" href="https://commentpull.com/privacy.html">
+<link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/privacy.html">
+<link rel="alternate" hreflang="x-default" href="https://commentpull.com/privacy.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Arabic / RTL overrides ── */
+  body.lang-ar { font-family: 'Cairo', sans-serif; }
+  body.lang-ar .page-title, body.lang-ar .section-title { font-family: 'Cairo', sans-serif; font-style: normal; }
+  [dir="rtl"] .footer-right { flex-direction: row-reverse; }
+  [dir="rtl"] .prose ul li { flex-direction: row-reverse; }
+  [dir="rtl"] .prose ul li::before { content: '—'; margin-top: 1px; }
+  [dir="rtl"] .callout { border-left: none; border-right: 3px solid var(--accent); }
+</style>
 <style>
   :root {
     --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
@@ -72,40 +82,43 @@
 
 <nav>
   <a href="/" class="logo">Comment<span>Pull</span></a>
-  <a href="/" class="btn-nav">← Back to app</a>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button id="lang-toggle" onclick="toggleLang()" class="btn-nav">العربية</button>
+    <a href="/" class="btn-nav" data-i18n="nav.back">← Back to app</a>
+  </div>
 </nav>
 
 <div class="page">
-  <p class="page-eyebrow">Legal</p>
-  <h1 class="page-title">Privacy Policy</h1>
-  <p class="page-date">Last updated: April 6, 2025</p>
+  <p class="page-eyebrow" data-i18n="privacy.eyebrow">Legal</p>
+  <h1 class="page-title" data-i18n="privacy.title">Privacy Policy</h1>
+  <p class="page-date" data-i18n="privacy.date">Last updated: April 6, 2025</p>
 
   <div class="prose">
 
-    <div class="callout">
+    <div class="callout" data-i18n-html="privacy.callout">
       CommentPull is built on a simple principle: <strong>your data stays on your device</strong>. All comment extraction runs entirely in your browser — your access tokens and extracted content never touch our servers.
     </div>
 
     <div>
-      <h2 class="section-title">1. Who we are</h2>
-      <p>CommentPull is a web-based tool that lets you extract, filter, and export comments from Facebook, Instagram, and YouTube posts. We are the operator of this service, reachable at the contact details at the bottom of this page.</p>
+      <h2 class="section-title" data-i18n="privacy.s1.title">1. Who we are</h2>
+      <p data-i18n="privacy.s1.text">CommentPull is a web-based tool that lets you extract, filter, and export comments from Facebook, Instagram, and YouTube posts. We are the operator of this service, reachable at the contact details at the bottom of this page.</p>
     </div>
 
     <div>
-      <h2 class="section-title">2. What we collect</h2>
-      <p>We collect only the minimum information needed to run your account:</p>
-      <ul>
+      <h2 class="section-title" data-i18n="privacy.s2.title">2. What we collect</h2>
+      <p data-i18n="privacy.s2.intro">We collect only the minimum information needed to run your account:</p>
+      <ul data-i18n-html="privacy.s2.items">
         <li><strong>Email address</strong> — used to identify your account and for transactional messages (e.g. password reset).</li>
         <li><strong>Name</strong> — displayed in the app interface.</li>
         <li><strong>Password</strong> — stored as a bcrypt hash (cost 12). We never store your plain-text password.</li>
         <li><strong>Account timestamps</strong> — when your account was created and last updated.</li>
       </ul>
-      <p style="margin-top:14px">We do <strong>not</strong> collect payment information. No credit card is required to use CommentPull.</p>
+      <p style="margin-top:14px" data-i18n-html="privacy.s2.nopayment">We do <strong>not</strong> collect payment information. No credit card is required to use CommentPull.</p>
     </div>
 
     <div>
-      <h2 class="section-title">3. What we do NOT collect</h2>
-      <ul>
+      <h2 class="section-title" data-i18n="privacy.s3.title">3. What we do NOT collect</h2>
+      <ul data-i18n-html="privacy.s3.items">
         <li>Your Facebook or Instagram <strong>access tokens</strong> — these are entered in your browser and sent directly to Meta's servers. They never pass through ours.</li>
         <li>The <strong>comments, usernames, or post content</strong> you extract — all processing happens in your browser and the data goes straight to your downloaded file.</li>
         <li>Your <strong>YouTube API key</strong> — same as above, browser-only.</li>
@@ -114,50 +127,50 @@
     </div>
 
     <div>
-      <h2 class="section-title">4. How we use your data</h2>
-      <ul>
+      <h2 class="section-title" data-i18n="privacy.s4.title">4. How we use your data</h2>
+      <ul data-i18n-html="privacy.s4.items">
         <li>To authenticate you and maintain your session.</li>
       </ul>
-      <p>We do not sell, rent, or share your personal data with third parties for marketing purposes.</p>
+      <p data-i18n="privacy.s4.nosell">We do not sell, rent, or share your personal data with third parties for marketing purposes.</p>
     </div>
 
     <div>
-      <h2 class="section-title">5. Cookies &amp; sessions</h2>
-      <p>We set one HTTP-only, secure cookie (<code>cp_token</code>) when you sign in. It contains a random session token — not your password or any personal data. It expires after 30 days or when you sign out. We do not use advertising cookies or third-party tracking cookies.</p>
+      <h2 class="section-title" data-i18n-html="privacy.s5.title">5. Cookies &amp; sessions</h2>
+      <p data-i18n-html="privacy.s5.text">We set one HTTP-only, secure cookie (<code>cp_token</code>) when you sign in. It contains a random session token — not your password or any personal data. It expires after 30 days or when you sign out. We do not use advertising cookies or third-party tracking cookies.</p>
     </div>
 
     <div>
-      <h2 class="section-title">6. Analytics</h2>
-      <p>We use <strong>Google Analytics 4</strong> to understand how the app is used in aggregate (e.g. which platform tab is most popular, how many extractions succeed). This data is anonymised and not linked to your account. You can opt out via browser extensions that block Google Analytics.</p>
+      <h2 class="section-title" data-i18n="privacy.s6.title">6. Analytics</h2>
+      <p data-i18n-html="privacy.s6.text">We use <strong>Google Analytics 4</strong> to understand how the app is used in aggregate (e.g. which platform tab is most popular, how many extractions succeed). This data is anonymised and not linked to your account. You can opt out via browser extensions that block Google Analytics.</p>
     </div>
 
     <div>
-      <h2 class="section-title">7. Data storage &amp; security</h2>
-      <p>Account data is stored in a MySQL database hosted on Hostinger. We use bcrypt password hashing, cryptographically random session tokens (256-bit entropy), and HTTPS-only delivery. Session tokens expire automatically after 30 days.</p>
-      <p>No extraction data (comments, post content, API keys) is ever written to our database.</p>
+      <h2 class="section-title" data-i18n-html="privacy.s7.title">7. Data storage &amp; security</h2>
+      <p data-i18n="privacy.s7.text">Account data is stored in a MySQL database hosted on Hostinger. We use bcrypt password hashing, cryptographically random session tokens (256-bit entropy), and HTTPS-only delivery. Session tokens expire automatically after 30 days.</p>
+      <p data-i18n="privacy.s7.noextract">No extraction data (comments, post content, API keys) is ever written to our database.</p>
     </div>
 
     <div>
-      <h2 class="section-title">8. Data retention</h2>
-      <p>Your account data is retained for as long as your account is active. You may request deletion at any time by contacting us — we will permanently delete your email, name, and password hash within 7 days.</p>
+      <h2 class="section-title" data-i18n="privacy.s8.title">8. Data retention</h2>
+      <p data-i18n="privacy.s8.text">Your account data is retained for as long as your account is active. You may request deletion at any time by contacting us — we will permanently delete your email, name, and password hash within 7 days.</p>
     </div>
 
     <div>
-      <h2 class="section-title">9. Your rights</h2>
-      <p>Depending on your location, you may have rights under GDPR, CCPA, or similar laws, including:</p>
-      <ul>
+      <h2 class="section-title" data-i18n="privacy.s9.title">9. Your rights</h2>
+      <p data-i18n="privacy.s9.intro">Depending on your location, you may have rights under GDPR, CCPA, or similar laws, including:</p>
+      <ul data-i18n-html="privacy.s9.items">
         <li>The right to <strong>access</strong> the data we hold about you.</li>
         <li>The right to <strong>correct</strong> inaccurate data.</li>
         <li>The right to <strong>delete</strong> your account and all associated data.</li>
         <li>The right to <strong>data portability</strong> — a copy of your data in a machine-readable format.</li>
         <li>The right to <strong>withdraw consent</strong> at any time.</li>
       </ul>
-      <p>To exercise any of these rights, contact us at the email below.</p>
+      <p data-i18n="privacy.s9.contact">To exercise any of these rights, contact us at the email below.</p>
     </div>
 
     <div>
-      <h2 class="section-title">10. Third-party services</h2>
-      <ul>
+      <h2 class="section-title" data-i18n="privacy.s10.title">10. Third-party services</h2>
+      <ul data-i18n-html="privacy.s10.items">
         <li><strong>Meta Graph API</strong> — used directly from your browser to fetch Facebook and Instagram comments. Subject to <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta's Privacy Policy</a>.</li>
         <li><strong>YouTube Data API v3</strong> — used directly from your browser. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
         <li><strong>Google Analytics</strong> — aggregate usage analytics. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
@@ -166,13 +179,13 @@
     </div>
 
     <div>
-      <h2 class="section-title">11. Changes to this policy</h2>
-      <p>We may update this Privacy Policy occasionally. When we do, we will revise the "Last updated" date at the top. Continued use of CommentPull after changes are posted constitutes your acceptance of the updated policy.</p>
+      <h2 class="section-title" data-i18n="privacy.s11.title">11. Changes to this policy</h2>
+      <p data-i18n="privacy.s11.text">We may update this Privacy Policy occasionally. When we do, we will revise the "Last updated" date at the top. Continued use of CommentPull after changes are posted constitutes your acceptance of the updated policy.</p>
     </div>
 
     <div>
-      <h2 class="section-title">12. Contact</h2>
-      <p>Questions, data requests, or deletion requests can be sent to:<br>
+      <h2 class="section-title" data-i18n="privacy.s12.title">12. Contact</h2>
+      <p data-i18n-html="privacy.s12.text">Questions, data requests, or deletion requests can be sent to:<br>
       <a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a></p>
     </div>
 
@@ -180,13 +193,14 @@
 </div>
 
 <footer>
-  <span class="footer-left">© 2025 CommentPull</span>
+  <span class="footer-left" data-i18n="footer.copyright">© 2025 CommentPull</span>
   <div class="footer-right">
-    <a href="/about">About</a>
-    <a href="/privacy">Privacy Policy</a>
-    <a href="/">Back to app</a>
+    <a href="/about.html" data-i18n="footer.about">About</a>
+    <a href="/privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+    <a href="/" data-i18n="footer.back">Back to app</a>
   </div>
 </footer>
 
+<script src="/lang.js"></script>
 </body>
 </html>

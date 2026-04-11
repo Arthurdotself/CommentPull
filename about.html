@@ -1,18 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9850397255720200"
-     crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About CommentPull — Free Facebook, Instagram &amp; YouTube Comment Downloader</title>
-<meta name="description" content="CommentPull is a free comment download and export tool for Facebook, Instagram, and YouTube. Extract comments to Excel or CSV, pick giveaway winners, and back up posts — all in your browser.">
+<title>About — CommentPull</title>
+<meta name="description" content="CommentPull — built for marketers, community managers, and giveaway organizers who need fast, clean comment data without writing a line of code.">
 <meta name="robots" content="index, follow">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="canonical" href="https://commentpull.com/about">
+<link rel="canonical" href="https://commentpull.com/about.html">
+<link rel="alternate" hreflang="en" href="https://commentpull.com/about.html">
+<link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/about.html">
+<link rel="alternate" hreflang="x-default" href="https://commentpull.com/about.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Arabic / RTL overrides ── */
+  body.lang-ar { font-family: 'Cairo', sans-serif; }
+  body.lang-ar .page-title, body.lang-ar .section-title,
+  body.lang-ar .cta-title, body.lang-ar .stat-number { font-family: 'Cairo', sans-serif; font-style: normal; }
+  body.lang-ar .logo { font-family: 'Cairo', var(--serif); }
+  [dir="rtl"] .footer-right { flex-direction: row-reverse; }
+  [dir="rtl"] .tl-item { flex-direction: row-reverse; }
+  [dir="rtl"] .values { direction: rtl; }
+  [dir="rtl"] .stats { direction: rtl; }
+</style>
 <style>
   :root {
     --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
@@ -100,28 +112,31 @@
 
 <nav>
   <a href="/" class="logo">Comment<span>Pull</span></a>
-  <a href="/" class="btn-nav">← Back to app</a>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button id="lang-toggle" onclick="toggleLang()" class="btn-nav">العربية</button>
+    <a href="/" class="btn-nav" data-i18n="nav.back">← Back to app</a>
+  </div>
 </nav>
 
 <div class="page">
 
-  <p class="page-eyebrow">About</p>
-  <h1 class="page-title">Built for the people<br>running the comments.</h1>
-  <p class="page-lead">CommentPull exists because copying comments by hand is a terrible way to spend your afternoon. We built the comment download and export tool we wished existed — paste a URL, get a clean Excel or CSV file of every comment, instantly. Fast, private, and free.</p>
+  <p class="page-eyebrow" data-i18n="about.eyebrow">About</p>
+  <h1 class="page-title" data-i18n-html="about.title">Built for the people<br>running the comments.</h1>
+  <p class="page-lead" data-i18n="about.lead">CommentPull exists because copying comments by hand is a terrible way to spend your afternoon. We built the tool we wished existed — fast, private, and free.</p>
 
   <!-- Stats -->
   <div class="stats">
     <div class="stat">
       <div class="stat-number">3</div>
-      <div class="stat-label">Platforms supported</div>
+      <div class="stat-label" data-i18n="about.stat1.label">Platforms supported</div>
     </div>
     <div class="stat">
       <div class="stat-number">0</div>
-      <div class="stat-label">Bytes stored from your extractions</div>
+      <div class="stat-label" data-i18n="about.stat2.label">Bytes stored from your extractions</div>
     </div>
     <div class="stat">
-      <div class="stat-number">Free</div>
-      <div class="stat-label">Always, for everyone</div>
+      <div class="stat-number" data-i18n="about.stat3.number">Free</div>
+      <div class="stat-label" data-i18n="about.stat3.label">Always, for everyone</div>
     </div>
   </div>
 
@@ -129,80 +144,80 @@
 
     <!-- Story -->
     <div>
-      <h2 class="section-title">The story</h2>
-      <p>It started with a giveaway. Someone needed to download all comments from a Facebook post to pick a fair winner — and discovered that the options were either (a) copy-paste everything by hand, (b) pay for an overpriced enterprise tool, or (c) figure out the Graph API yourself.</p>
-      <p>CommentPull is option (d): open the tool, paste the URL, download comments as Excel or CSV in seconds. No API knowledge required. No subscription. No data sent anywhere you didn't ask it to go.</p>
-      <p>We added Instagram comment downloading, then YouTube, then filters, a giveaway winner picker, and Excel and CSV export — because social media comment extraction should be accessible to everyone, from a solo creator to a brand team.</p>
+      <h2 class="section-title" data-i18n="about.story.title">The story</h2>
+      <p data-i18n="about.story.p1">It started with a giveaway. Someone needed to pull every commenter from a Facebook post to pick a fair winner — and discovered that the options were either (a) copy-paste everything by hand, (b) pay for an overpriced enterprise tool, or (c) figure out the Graph API yourself.</p>
+      <p data-i18n="about.story.p2">CommentPull is option (d): open the tool, paste the URL, get a clean file. No API knowledge required. No subscription. No data sent anywhere you didn't ask it to go.</p>
+      <p data-i18n="about.story.p3">We added Instagram, then YouTube, then filters, winner picker, and Excel export — because the tool should be accessible to everyone, from a solo creator to a brand team.</p>
     </div>
 
     <!-- How it works -->
     <div>
-      <h2 class="section-title">How it actually works</h2>
-      <p>When you click Extract, your browser makes direct API calls to Facebook, Instagram, or YouTube — <strong>not to our servers</strong>. Your access token travels from your device to Meta or Google and nowhere else. The comments come back to your browser, get processed in memory, and land in a file on your device.</p>
-      <p>Our backend only handles two things: your account (email + hashed password) and your session. That's it. We've deliberately built a system where we <em>can't</em> see your data even if we wanted to.</p>
+      <h2 class="section-title" data-i18n="about.howitworks.title">How it actually works</h2>
+      <p data-i18n-html="about.howitworks.p1">When you click Extract, your browser makes direct API calls to Facebook, Instagram, or YouTube — <strong>not to our servers</strong>. Your access token travels from your device to Meta or Google and nowhere else. The comments come back to your browser, get processed in memory, and land in a file on your device.</p>
+      <p data-i18n-html="about.howitworks.p2">Our backend only handles two things: your account (email + hashed password) and your session. That's it. We've deliberately built a system where we <em>can't</em> see your data even if we wanted to.</p>
     </div>
 
     <!-- Values -->
     <div>
-      <h2 class="section-title">What we care about</h2>
+      <h2 class="section-title" data-i18n="about.values.title">What we care about</h2>
       <div class="values">
         <div class="value-card">
           <div class="value-icon">🔒</div>
-          <div class="value-title">Privacy by design</div>
-          <div class="value-desc">Your extraction data never touches our servers. We've engineered the architecture so we have nothing to leak.</div>
+          <div class="value-title" data-i18n="about.v1.title">Privacy by design</div>
+          <div class="value-desc" data-i18n="about.v1.desc">Your extraction data never touches our servers. We've engineered the architecture so we have nothing to leak.</div>
         </div>
         <div class="value-card">
           <div class="value-icon">⚡</div>
-          <div class="value-title">Speed over ceremony</div>
-          <div class="value-desc">No onboarding flows. No dashboards to configure. Paste a URL, download comments to Excel or CSV. That's the whole product.</div>
+          <div class="value-title" data-i18n="about.v2.title">Speed over ceremony</div>
+          <div class="value-desc" data-i18n="about.v2.desc">No onboarding flows. No dashboards to configure. Paste a URL, get comments. That's the whole product.</div>
         </div>
         <div class="value-card">
           <div class="value-icon">🆓</div>
-          <div class="value-title">Free, not freemium</div>
-          <div class="value-desc">No paywalled features. No credit card, ever.</div>
+          <div class="value-title" data-i18n="about.v3.title">Free, not freemium</div>
+          <div class="value-desc" data-i18n="about.v3.desc">No paywalled features. No credit card, ever.</div>
         </div>
         <div class="value-card">
           <div class="value-icon">🔧</div>
-          <div class="value-title">Does one thing well</div>
-          <div class="value-desc">We won't add a CRM, a scheduler, or an AI content writer. CommentPull downloads and exports comments from Facebook, Instagram, and YouTube. That's the mission.</div>
+          <div class="value-title" data-i18n="about.v4.title">Does one thing well</div>
+          <div class="value-desc" data-i18n="about.v4.desc">We won't add a CRM, a scheduler, or an AI content writer. CommentPull extracts comments. That's the mission.</div>
         </div>
       </div>
     </div>
 
     <!-- Timeline -->
     <div>
-      <h2 class="section-title">Timeline</h2>
+      <h2 class="section-title" data-i18n="about.timeline.title">Timeline</h2>
       <div class="timeline">
         <div class="tl-item">
           <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
           <div class="tl-right">
-            <div class="tl-date">2024 — Early build</div>
-            <div class="tl-title">Facebook comment extraction</div>
-            <div class="tl-desc">First version: download Facebook comments, CSV export, no account needed.</div>
+            <div class="tl-date" data-i18n="about.tl1.date">2024 — Early build</div>
+            <div class="tl-title" data-i18n="about.tl1.title">Facebook comment extraction</div>
+            <div class="tl-desc" data-i18n="about.tl1.desc">First version: Facebook posts only, CSV export, no account needed.</div>
           </div>
         </div>
         <div class="tl-item">
           <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
           <div class="tl-right">
-            <div class="tl-date">2024 — Expansion</div>
-            <div class="tl-title">Instagram &amp; YouTube added</div>
-            <div class="tl-desc">Download Instagram and YouTube comments, reply threading, export to Excel with summary sheet.</div>
+            <div class="tl-date" data-i18n="about.tl2.date">2024 — Expansion</div>
+            <div class="tl-title" data-i18n-html="about.tl2.title">Instagram &amp; YouTube added</div>
+            <div class="tl-desc" data-i18n="about.tl2.desc">Multi-platform support, reply threading, Excel export with summary sheet.</div>
           </div>
         </div>
         <div class="tl-item">
           <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
           <div class="tl-right">
-            <div class="tl-date">2024 — Features</div>
-            <div class="tl-title">Filters &amp; winner picker</div>
-            <div class="tl-desc">Keyword filters, dedup, date range, mention rules, and a fair giveaway comment picker and winner randomizer.</div>
+            <div class="tl-date" data-i18n="about.tl3.date">2024 — Features</div>
+            <div class="tl-title" data-i18n-html="about.tl3.title">Filters &amp; winner picker</div>
+            <div class="tl-desc" data-i18n="about.tl3.desc">Keyword filters, dedup, date range, mention rules, and a fair random winner picker.</div>
           </div>
         </div>
         <div class="tl-item">
           <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
           <div class="tl-right">
-            <div class="tl-date">2025 — Accounts</div>
-            <div class="tl-title">Accounts &amp; sessions</div>
-            <div class="tl-desc">Free accounts with persistent sessions. Sign in with email, Google, or GitHub — no subscription required.</div>
+            <div class="tl-date" data-i18n="about.tl4.date">2025 — Accounts</div>
+            <div class="tl-title" data-i18n-html="about.tl4.title">Free accounts &amp; ad-supported</div>
+            <div class="tl-desc" data-i18n="about.tl4.desc">Free accounts with unlimited extractions, supported by optional ads — no subscription required.</div>
           </div>
         </div>
       </div>
@@ -210,24 +225,25 @@
 
     <!-- Contact / CTA -->
     <div class="cta-block">
-      <div class="cta-title">Ready to download your comments?</div>
-      <p class="cta-desc">Export Facebook, Instagram, and YouTube comments to Excel or CSV — free.<br>No credit card, no trial period, no catch.</p>
-      <a href="/" class="btn-cta">Start extracting →</a>
+      <div class="cta-title" data-i18n="about.cta.title">Ready to pull some comments?</div>
+      <p class="cta-desc" data-i18n-html="about.cta.desc">Free account. Unlimited extractions.<br>No credit card, no trial period, no catch.</p>
+      <a href="/" class="btn-cta" data-i18n="about.cta.btn">Start extracting →</a>
     </div>
 
   </div>
 </div>
 
 <footer>
-  <span class="footer-left">© 2025 CommentPull</span>
+  <span class="footer-left" data-i18n="footer.copyright">© 2025 CommentPull</span>
   <div class="footer-right">
-    <a href="/about">About</a>
-    <a href="/support">Support</a>
-    <a href="/contact">Contact</a>
-    <a href="/privacy">Privacy Policy</a>
-    <a href="/">Back to app</a>
+    <a href="/about.html" data-i18n="footer.about">About</a>
+    <a href="/support.html" data-i18n="footer.support">Support</a>
+    <a href="/contact.html" data-i18n="footer.contact">Contact</a>
+    <a href="/privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+    <a href="/" data-i18n="footer.back">Back to app</a>
   </div>
 </footer>
 
+<script src="/lang.js"></script>
 </body>
 </html>

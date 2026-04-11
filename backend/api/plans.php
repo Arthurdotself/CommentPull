@@ -13,11 +13,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 json_out([
-    'features' => [
-        'Unlimited extractions',
-        'Up to 5 posts per extraction',
-        'Facebook, Instagram & YouTube',
-        'Export to CSV & JSON',
-        'Winner picker',
+    'plans' => [
+        [
+            'id'       => 'free',
+            'name'     => 'Free',
+            'price'    => 0,
+            'features' => [
+                'Unlimited extractions',
+                'Facebook, Instagram & YouTube',
+                'Export to CSV & JSON',
+                'Winner picker',
+            ],
+        ],
     ],
 ]);

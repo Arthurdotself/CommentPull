@@ -1,33 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://commentpull.com/</loc>
-    <lastmod>2026-04-06</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/"/>
   </url>
   <url>
-    <loc>https://commentpull.com/about</loc>
-    <lastmod>2026-04-06</lastmod>
+    <loc>https://commentpull.com/ar/</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/"/>
+  </url>
+  <url>
+    <loc>https://commentpull.com/about.html</loc>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/about.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/about.html"/>
   </url>
   <url>
-    <loc>https://commentpull.com/contact</loc>
-    <lastmod>2026-04-06</lastmod>
+    <loc>https://commentpull.com/ar/about.html</loc>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/about.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/about.html"/>
   </url>
   <url>
-    <loc>https://commentpull.com/support</loc>
-    <lastmod>2026-04-06</lastmod>
+    <loc>https://commentpull.com/contact.html</loc>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/contact.html"/>
   </url>
   <url>
-    <loc>https://commentpull.com/privacy</loc>
-    <lastmod>2026-04-06</lastmod>
+    <loc>https://commentpull.com/ar/contact.html</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/contact.html"/>
+  </url>
+  <url>
+    <loc>https://commentpull.com/support.html</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/support.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/support.html"/>
+  </url>
+  <url>
+    <loc>https://commentpull.com/ar/support.html</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/support.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/support.html"/>
+  </url>
+  <url>
+    <loc>https://commentpull.com/privacy.html</loc>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/privacy.html"/>
+  </url>
+  <url>
+    <loc>https://commentpull.com/ar/privacy.html</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://commentpull.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/privacy.html"/>
   </url>
 </urlset>

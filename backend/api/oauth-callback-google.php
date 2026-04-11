@@ -83,5 +83,6 @@ $user    = find_or_create_oauth_user($email, $name, $isNew);
 $session = create_session((int) $user['id']);
 
 // ── 6. Redirect to frontend ───────────────────────────────────────
-header('Location: ' . SITE_URL . '/?oauth=success&token=' . urlencode($session) . '&name=' . urlencode($user['name']));
+$betaGift = $isNew && defined('BETA_MODE') && BETA_MODE ? '&beta_gift=1' : ''; // BETA
+header('Location: ' . SITE_URL . '/?oauth=success&token=' . urlencode($session) . '&name=' . urlencode($user['name']) . $betaGift);
 exit;

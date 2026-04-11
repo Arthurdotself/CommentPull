@@ -1,0 +1,597 @@
+/* ─── CommentPull i18n ─── */
+(function () {
+  'use strict';
+
+  const MENA = ['AE','SA','EG','IQ','KW','QA','BH','OM','JO','LB','SY','YE','LY','TN','DZ','MA','PS','SD','MR','SO','DJ','KM'];
+
+  const T = {
+    en: {
+      /* ── shared nav / footer ── */
+      'nav.back': '← Back to app',
+      'nav.how': 'How it Works',
+      'nav.results': 'Results',
+      'nav.start': 'Start Extracting',
+      'lang.switch': 'العربية',
+      'footer.copyright': '© 2025 CommentPull',
+      'footer.about': 'About',
+      'footer.support': 'Support',
+      'footer.contact': 'Contact',
+      'footer.privacy': 'Privacy Policy',
+      'footer.back': 'Back to app',
+      'footer.index.copyright': '© 2026 extractcomments. All rights reserved.',
+      'footer.product': 'Product',
+      'footer.platforms': 'Platforms',
+      'footer.exports': 'Export Formats',
+      'footer.how': 'How it Works',
+      'footer.preview': 'Results Preview',
+
+      /* ── index hero ── */
+      'index.hero.badge': 'Supports Facebook · Instagram · YouTube',
+      'index.hero.h1': 'Draw a Winner.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Instantly.</span>',
+      'index.hero.subtitle': 'Pick a winner from any post\'s comments with one click — no spreadsheets, no bias, no effort.',
+      'index.hero.trusted': 'Trusted by social media managers at',
+      'index.token.check': 'Check token',
+      'index.token.get': 'Get token →',
+      'index.btn.autodetect.fb': 'Auto-detect →',
+      'index.btn.autodetect.ig': 'Auto-detect →',
+      'index.btn.filters': 'Filters',
+      'index.btn.extract': 'Extract Comments',
+      'index.url.placeholder': 'Paste your Facebook, Instagram or YouTube URL here...',
+
+      /* ── filters ── */
+      'filter.title': 'Filter Rules',
+      'filter.collapse': 'click to collapse ↑',
+      'filter.keyword': 'Must contain keyword or hashtag',
+      'filter.keyword.placeholder': 'e.g. #giveaway',
+      'filter.mentions': 'Minimum @mentions',
+      'filter.mentions.suffix': 'or more @mentions required',
+      'filter.length': 'Minimum comment length',
+      'filter.length.suffix': 'characters minimum',
+      'filter.dedup': 'One entry per person',
+      'filter.daterange': 'Date range',
+      'filter.daterange.from': 'From',
+      'filter.daterange.to': 'To',
+      'filter.exclude': 'Exclude specific users',
+      'filter.exclude.placeholder': 'username1, username2, …',
+
+      /* ── how it works ── */
+      'how.title': 'How it works',
+      'how.subtitle': 'Three simple steps to get your data ready for analysis.',
+      'how.1.title': '1. Paste URL',
+      'how.1.desc': 'Paste any Facebook post, Instagram photo/reel, or YouTube video URL. Platform is detected automatically.',
+      'how.2.title': '2. Extract',
+      'how.2.desc': 'Add your API token and click Extract. All comments, replies, usernames, and timestamps are fetched in real-time.',
+      'how.3.title': '3. Export',
+      'how.3.desc': 'Download your clean data in CSV, Excel, or JSON format — ready for sentiment analysis, reporting, or giveaway draws.',
+
+      /* ── preview ── */
+      'preview.title': 'Clean, structured data',
+      'preview.subtitle': 'Preview exactly what you\'ll get before exporting.',
+      'preview.col.name': 'Name',
+      'preview.col.comment': 'Comment',
+      'preview.col.date': 'Date',
+      'preview.col.post': 'Post',
+      'preview.col.username': 'Username',
+      'preview.col.text': 'Comment Text',
+      'preview.col.likes': 'Likes',
+      'preview.col.status': 'Status',
+      'preview.placeholder': 'Paste a URL above to extract real comments',
+      'preview.try': 'Try it now →',
+      'preview.search.placeholder': 'Search name or comment…',
+      'preview.no-match': 'No comments match your search.',
+      'preview.dl.qualified': 'Filtered results',
+      'preview.dl.all': 'All results',
+      'preview.download': 'Download ▾',
+
+      /* ── winner ── */
+      'winner.title': 'Winner Randomizer',
+      'winner.winners': 'Winners:',
+      'winner.exclude.placeholder': 'Exclude from draw: username1, username2, …',
+      'winner.draw': 'Draw 1 Winner',
+      'winner.again': '↺ Draw again',
+      'winner.report': 'Generate Report',
+
+      /* ── about ── */
+      'about.eyebrow': 'About',
+      'about.title': 'Built for the people<br>running the comments.',
+      'about.lead': 'CommentPull exists because copying comments by hand is a terrible way to spend your afternoon. We built the tool we wished existed — fast, private, and free.',
+      'about.stat3.number': 'Free',
+      'about.stat1.label': 'Platforms supported',
+      'about.stat2.label': 'Bytes stored from your extractions',
+      'about.stat3.label': 'Always, for everyone',
+      'about.story.title': 'The story',
+      'about.story.p1': 'It started with a giveaway. Someone needed to pull every commenter from a Facebook post to pick a fair winner — and discovered that the options were either (a) copy-paste everything by hand, (b) pay for an overpriced enterprise tool, or (c) figure out the Graph API yourself.',
+      'about.story.p2': 'CommentPull is option (d): open the tool, paste the URL, get a clean file. No API knowledge required. No subscription. No data sent anywhere you didn\'t ask it to go.',
+      'about.story.p3': 'We added Instagram, then YouTube, then filters, winner picker, and Excel export — because the tool should be accessible to everyone, from a solo creator to a brand team.',
+      'about.howitworks.title': 'How it actually works',
+      'about.howitworks.p1': 'When you click Extract, your browser makes direct API calls to Facebook, Instagram, or YouTube — <strong>not to our servers</strong>. Your access token travels from your device to Meta or Google and nowhere else. The comments come back to your browser, get processed in memory, and land in a file on your device.',
+      'about.howitworks.p2': 'Our backend only handles two things: your account (email + hashed password) and your session. That\'s it. We\'ve deliberately built a system where we <em>can\'t</em> see your data even if we wanted to.',
+      'about.values.title': 'What we care about',
+      'about.v1.title': 'Privacy by design',
+      'about.v1.desc': 'Your extraction data never touches our servers. We\'ve engineered the architecture so we have nothing to leak.',
+      'about.v2.title': 'Speed over ceremony',
+      'about.v2.desc': 'No onboarding flows. No dashboards to configure. Paste a URL, get comments. That\'s the whole product.',
+      'about.v3.title': 'Free, not freemium',
+      'about.v3.desc': 'No paywalled features. No credit card, ever.',
+      'about.v4.title': 'Does one thing well',
+      'about.v4.desc': 'We won\'t add a CRM, a scheduler, or an AI content writer. CommentPull extracts comments. That\'s the mission.',
+      'about.timeline.title': 'Timeline',
+      'about.tl1.date': '2024 — Early build',
+      'about.tl1.title': 'Facebook comment extraction',
+      'about.tl1.desc': 'First version: Facebook posts only, CSV export, no account needed.',
+      'about.tl2.date': '2024 — Expansion',
+      'about.tl2.title': 'Instagram &amp; YouTube added',
+      'about.tl2.desc': 'Multi-platform support, reply threading, Excel export with summary sheet.',
+      'about.tl3.date': '2024 — Features',
+      'about.tl3.title': 'Filters &amp; winner picker',
+      'about.tl3.desc': 'Keyword filters, dedup, date range, mention rules, and a fair random winner picker.',
+      'about.tl4.date': '2025 — Accounts',
+      'about.tl4.title': 'Free accounts &amp; ad-supported',
+      'about.tl4.desc': 'Free accounts with unlimited extractions, supported by optional ads — no subscription required.',
+      'about.cta.title': 'Ready to pull some comments?',
+      'about.cta.desc': 'Free account. Unlimited extractions.<br>No credit card, no trial period, no catch.',
+      'about.cta.btn': 'Start extracting →',
+
+      /* ── contact ── */
+      'contact.eyebrow': 'Contact',
+      'contact.title': 'We\'re here<br>if you need us.',
+      'contact.lead': 'Have a question, found a bug, or just want to say hello? Drop us a message and we\'ll get back to you within one business day.',
+      'contact.c1.title': 'Technical support',
+      'contact.c1.desc': 'Extraction errors, token issues, URL problems, or anything not working as expected.',
+      'contact.c1.link': 'Send a message →',
+      'contact.c2.title': 'Help &amp; docs',
+      'contact.c2.desc': 'Check the support page first — most common questions are answered there.',
+      'contact.c2.link': 'View support →',
+      'contact.c3.title': 'Feature requests',
+      'contact.c3.desc': 'Have an idea for something we should add? We\'d love to hear it.',
+      'contact.c3.link': 'Tell us →',
+      'contact.c4.title': 'Privacy &amp; legal',
+      'contact.c4.desc': 'Data requests, compliance questions, or anything related to our privacy policy.',
+      'contact.c4.link': 'Get in touch →',
+      'contact.response': '<strong>Response time:</strong> We typically reply within one business day (Monday–Friday). Messages sent over weekends will be answered on Monday.',
+      'contact.form.title': 'Send us a message',
+      'contact.form.subtitle': 'Fill in the form below and we\'ll get back to you as soon as possible.',
+      'contact.form.name': 'Name',
+      'contact.form.name.placeholder': 'Your name',
+      'contact.form.email': 'Email',
+      'contact.form.email.placeholder': 'you@example.com',
+      'contact.form.subject': 'Subject',
+      'contact.form.subject.placeholder': 'Select a topic…',
+      'contact.form.subject.tech': 'Technical support',
+      'contact.form.subject.token': 'Token / account issue',
+      'contact.form.subject.feature': 'Feature request',
+      'contact.form.subject.bug': 'Bug report',
+      'contact.form.subject.privacy': 'Privacy / data request',
+      'contact.form.subject.other': 'Other',
+      'contact.form.message': 'Message',
+      'contact.form.message.placeholder': 'Describe your question or issue in as much detail as you can. If it\'s a bug, include the URL you were using and what happened.',
+      'contact.form.submit': 'Send message',
+      'contact.form.error.fields': 'Please fill in all fields before sending.',
+      'contact.form.error.email': 'Please enter a valid email address.',
+      'contact.form.sending': 'Sending…',
+      'contact.form.success': 'Message sent! We\'ll get back to you within one business day.',
+      'contact.form.error.server': 'Something went wrong. Please try again or email us directly.',
+      'contact.form.sent': 'Message sent',
+
+      /* ── support ── */
+      'support.eyebrow': 'Support',
+      'support.title': 'How can we<br>help you?',
+      'support.lead': 'Find answers to common questions below. If you can\'t find what you\'re looking for, reach out via the contact page — we typically respond within one business day.',
+      'support.hint': 'Can\'t find an answer? <strong><a href="/contact.html" style="color:var(--accent);text-decoration:none">Contact us directly →</a></strong>',
+      'support.s1.title': 'Getting started',
+      'support.q1.q': 'What is CommentPull and how does it work?',
+      'support.q1.a': '<p>CommentPull is a browser-based tool that extracts comments from Facebook, Instagram, and YouTube posts. You paste a post URL, and the tool makes API calls directly from your browser to retrieve the comments — nothing passes through our servers.</p><p>The extracted comments are processed entirely in your browser\'s memory and exported as an Excel, CSV, or JSON file directly to your device.</p>',
+      'support.q2.q': 'Do I need to create an account?',
+      'support.q2.a': '<p>A free account gives you access to all features including filters, deduplication, date ranges, and the winner picker. You can sign up with just an email address — no credit card required.</p>',
+      'support.q3.q': 'Which platforms are supported?',
+      'support.q3.a': '<p>CommentPull supports <strong>Facebook</strong>, <strong>Instagram</strong>, and <strong>YouTube</strong>. Each platform requires providing an access token so your browser can authenticate with the respective API.</p>',
+      'support.s2.title': 'API access',
+      'support.q4.q': 'Where do I get a Facebook or Instagram access token?',
+      'support.q4.a': '<p>The tool includes a step-by-step guide for generating access tokens directly from Meta\'s Graph API Explorer. You\'ll need a Meta developer account (free) and a Facebook app with the appropriate permissions. The in-app guide walks you through each step.</p>',
+      'support.s3.title': 'Extraction &amp; exports',
+      'support.q5.q': 'What URL formats are supported?',
+      'support.q5.a': '<p>Facebook supports standard post URLs and <code>pfbid</code> encoded URLs. Instagram supports <code>/p/</code>, <code>/reel/</code>, and <code>/tv/</code> links. YouTube supports standard watch URLs (<code>watch?v=</code>) and shortened <code>youtu.be</code> links.</p>',
+      'support.q6.q': 'What export formats are available?',
+      'support.q6.a': '<p>You can export comments as <strong>Excel (.xlsx)</strong> with a summary sheet, <strong>CSV</strong>, or <strong>JSON</strong>. Excel exports include metadata like total comment count, extraction date, and platform.</p>',
+      'support.q7.q': 'Is there a limit on how many comments I can extract?',
+      'support.q7.a': '<p>There is no hard cap on the number of comments per extraction — CommentPull will paginate through the full API response. Very large extractions (tens of thousands of comments) may take longer due to API rate limits imposed by Meta or Google.</p>',
+      'support.q8.q': 'Can I extract comments from multiple posts at once?',
+      'support.q8.a': '<p>Yes. Toggle multi-URL mode in the input area to paste multiple post URLs. They will be queued and extracted sequentially, with results merged into a single export file.</p>',
+      'support.s4.title': 'Privacy &amp; security',
+      'support.q9.q': 'Is my data safe? Do you store my comments?',
+      'support.q9.a': '<p>No. All extraction happens directly in your browser — comment data never touches our servers. We only store your account (email + hashed password) and your session on our backend. We have deliberately architected the system so we cannot see your extracted data even if we wanted to.</p>',
+      'support.q10.q': 'Where does my access token go?',
+      'support.q10.a': '<p>Your access token travels from your browser directly to Meta or Google\'s API endpoint — it never passes through CommentPull\'s servers. Treat access tokens like passwords: regenerate them if you believe they\'ve been compromised, and use tokens with the minimum permissions required.</p>',
+      'support.q11.q': 'Does CommentPull comply with Meta\'s Terms of Service?',
+      'support.q11.a': '<p>CommentPull uses the official Meta Graph API and requires you to authenticate with your own access token. This means you are accessing data that is already accessible to your account through Meta\'s official channels. You are responsible for ensuring your use of the extracted data complies with Meta\'s Platform Terms and applicable laws.</p>',
+      'support.s5.title': 'Troubleshooting',
+      'support.q12.q': 'I\'m getting an "invalid token" error. What should I do?',
+      'support.q12.a': '<p>Access tokens expire. Short-lived tokens last around 1–2 hours; long-lived tokens last up to 60 days. Generate a fresh token from Meta\'s Graph API Explorer and paste it into the token field. Make sure the token has the correct permissions (<code>pages_read_engagement</code> for Facebook pages, <code>instagram_basic</code> for Instagram).</p>',
+      'support.q13.q': 'The extraction stops partway through. Why?',
+      'support.q13.a': '<p>This is usually caused by an API rate limit from Meta or Google. The tool will display the partial results already fetched. Try again after a few minutes. Very large posts may require multiple extraction sessions.</p>',
+      'support.q14.q': 'My post URL isn\'t being recognised. What formats work?',
+      'support.q14.a': '<p>Make sure you are copying the full URL from your browser\'s address bar, not from a share link or the mobile app. Instagram posts must include <code>/p/</code>, <code>/reel/</code>, or <code>/tv/</code> in the URL. If you\'re still having trouble, <a href="/contact.html">contact us</a> with the URL format (you can redact the post ID) and we\'ll investigate.</p>',
+      'support.cta.title': 'Still need help?',
+      'support.cta.desc': 'Can\'t find your answer here? Send us a message and we\'ll get back to you within one business day.',
+      'support.cta.btn': 'Contact us →',
+      'support.cta.back': 'Back to app',
+
+      /* ── privacy ── */
+      'privacy.eyebrow': 'Legal',
+      'privacy.title': 'Privacy Policy',
+      'privacy.date': 'Last updated: April 6, 2025',
+      'privacy.callout': 'CommentPull is built on a simple principle: <strong>your data stays on your device</strong>. All comment extraction runs entirely in your browser — your access tokens and extracted content never touch our servers.',
+      'privacy.s1.title': '1. Who we are',
+      'privacy.s1.text': 'CommentPull is a web-based tool that lets you extract, filter, and export comments from Facebook, Instagram, and YouTube posts. We are the operator of this service, reachable at the contact details at the bottom of this page.',
+      'privacy.s2.title': '2. What we collect',
+      'privacy.s2.intro': 'We collect only the minimum information needed to run your account:',
+      'privacy.s2.items': '<li><strong>Email address</strong> — used to identify your account and for transactional messages (e.g. password reset).</li><li><strong>Name</strong> — displayed in the app interface.</li><li><strong>Password</strong> — stored as a bcrypt hash (cost 12). We never store your plain-text password.</li><li><strong>Account timestamps</strong> — when your account was created and last updated.</li>',
+      'privacy.s2.nopayment': 'We do <strong>not</strong> collect payment information. No credit card is required to use CommentPull.',
+      'privacy.s3.title': '3. What we do NOT collect',
+      'privacy.s3.items': '<li>Your Facebook or Instagram <strong>access tokens</strong> — these are entered in your browser and sent directly to Meta\'s servers. They never pass through ours.</li><li>The <strong>comments, usernames, or post content</strong> you extract — all processing happens in your browser and the data goes straight to your downloaded file.</li><li>Your <strong>YouTube API key</strong> — same as above, browser-only.</li><li><strong>Browsing behaviour</strong>, page interactions, or session recordings beyond basic analytics.</li>',
+      'privacy.s4.title': '4. How we use your data',
+      'privacy.s4.items': '<li>To authenticate you and maintain your session.</li>',
+      'privacy.s4.nosell': 'We do not sell, rent, or share your personal data with third parties for marketing purposes.',
+      'privacy.s5.title': '5. Cookies &amp; sessions',
+      'privacy.s5.text': 'We set one HTTP-only, secure cookie (<code>cp_token</code>) when you sign in. It contains a random session token — not your password or any personal data. It expires after 30 days or when you sign out. We do not use advertising cookies or third-party tracking cookies.',
+      'privacy.s6.title': '6. Analytics',
+      'privacy.s6.text': 'We use <strong>Google Analytics 4</strong> to understand how the app is used in aggregate (e.g. which platform tab is most popular, how many extractions succeed). This data is anonymised and not linked to your account. You can opt out via browser extensions that block Google Analytics.',
+      'privacy.s7.title': '7. Data storage &amp; security',
+      'privacy.s7.text': 'Account data is stored in a MySQL database hosted on Hostinger. We use bcrypt password hashing, cryptographically random session tokens (256-bit entropy), and HTTPS-only delivery. Session tokens expire automatically after 30 days.',
+      'privacy.s7.noextract': 'No extraction data (comments, post content, API keys) is ever written to our database.',
+      'privacy.s8.title': '8. Data retention',
+      'privacy.s8.text': 'Your account data is retained for as long as your account is active. You may request deletion at any time by contacting us — we will permanently delete your email, name, and password hash within 7 days.',
+      'privacy.s9.title': '9. Your rights',
+      'privacy.s9.intro': 'Depending on your location, you may have rights under GDPR, CCPA, or similar laws, including:',
+      'privacy.s9.items': '<li>The right to <strong>access</strong> the data we hold about you.</li><li>The right to <strong>correct</strong> inaccurate data.</li><li>The right to <strong>delete</strong> your account and all associated data.</li><li>The right to <strong>data portability</strong> — a copy of your data in a machine-readable format.</li><li>The right to <strong>withdraw consent</strong> at any time.</li>',
+      'privacy.s9.contact': 'To exercise any of these rights, contact us at the email below.',
+      'privacy.s10.title': '10. Third-party services',
+      'privacy.s10.items': '<li><strong>Meta Graph API</strong> — used directly from your browser to fetch Facebook and Instagram comments. Subject to <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta\'s Privacy Policy</a>.</li><li><strong>YouTube Data API v3</strong> — used directly from your browser. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google\'s Privacy Policy</a>.</li><li><strong>Google Analytics</strong> — aggregate usage analytics. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google\'s Privacy Policy</a>.</li><li><strong>Hostinger</strong> — our hosting provider stores account data in their data centres. Subject to <a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener">Hostinger\'s Privacy Policy</a>.</li>',
+      'privacy.s11.title': '11. Changes to this policy',
+      'privacy.s11.text': 'We may update this Privacy Policy occasionally. When we do, we will revise the "Last updated" date at the top. Continued use of CommentPull after changes are posted constitutes your acceptance of the updated policy.',
+      'privacy.s12.title': '12. Contact',
+      'privacy.s12.text': 'Questions, data requests, or deletion requests can be sent to:<br><a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a>',
+    },
+
+    ar: {
+      /* ── shared nav / footer ── */
+      'nav.back': 'العودة للتطبيق →',
+      'nav.how': 'كيف يعمل',
+      'nav.results': 'النتائج',
+      'nav.start': 'ابدأ الاستخراج',
+      'lang.switch': 'English',
+      'footer.copyright': '© 2025 CommentPull',
+      'footer.about': 'حول',
+      'footer.support': 'الدعم',
+      'footer.contact': 'تواصل معنا',
+      'footer.privacy': 'سياسة الخصوصية',
+      'footer.back': 'العودة للتطبيق',
+      'footer.index.copyright': '© 2026 extractcomments. جميع الحقوق محفوظة.',
+      'footer.product': 'المنتج',
+      'footer.platforms': 'المنصات',
+      'footer.exports': 'تنسيقات التصدير',
+      'footer.how': 'كيف يعمل',
+      'footer.preview': 'معاينة النتائج',
+
+      /* ── index hero ── */
+      'index.hero.badge': 'يدعم فيسبوك · إنستغرام · يوتيوب',
+      'index.hero.h1': 'اسحب الفائز.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">بنقرة واحدة.</span>',
+      'index.hero.subtitle': 'من تعليقات الفيسبوك أو الإنستغرام أو اليوتيوب —\nبدون تعقيد، بدون تحيّز، بدون جهد.',
+      'index.hero.trusted': 'يثق به مديرو وسائل التواصل الاجتماعي في',
+      'index.token.check': 'فحص الرمز',
+      'index.token.get': 'احصل على الرمز ←',
+      'index.btn.autodetect.fb': 'اكتشاف تلقائي ←',
+      'index.btn.autodetect.ig': 'اكتشاف تلقائي ←',
+      'index.btn.filters': 'المرشحات',
+      'index.btn.extract': 'استخراج التعليقات',
+      'index.url.placeholder': 'الصق رابط فيسبوك أو إنستغرام أو يوتيوب هنا...',
+
+      /* ── filters ── */
+      'filter.title': 'قواعد التصفية',
+      'filter.collapse': 'انقر للطي ↑',
+      'filter.keyword': 'يجب أن يحتوي على كلمة مفتاحية أو هاشتاق',
+      'filter.keyword.placeholder': 'مثال: #giveaway',
+      'filter.mentions': 'الحد الأدنى من الإشارات @',
+      'filter.mentions.suffix': 'إشارة أو أكثر مطلوبة',
+      'filter.length': 'الحد الأدنى لطول التعليق',
+      'filter.length.suffix': 'حرف كحد أدنى',
+      'filter.dedup': 'مشاركة واحدة لكل شخص',
+      'filter.daterange': 'نطاق التاريخ',
+      'filter.daterange.from': 'من',
+      'filter.daterange.to': 'إلى',
+      'filter.exclude': 'استبعاد مستخدمين محددين',
+      'filter.exclude.placeholder': 'username1, username2, …',
+
+      /* ── how it works ── */
+      'how.title': 'كيف يعمل',
+      'how.subtitle': 'ثلاث خطوات بسيطة لتجهيز بياناتك للتحليل.',
+      'how.1.title': '١. الصق الرابط',
+      'how.1.desc': 'الصق أي رابط منشور فيسبوك أو صورة/ريل إنستغرام أو فيديو يوتيوب. يتم اكتشاف المنصة تلقائياً.',
+      'how.2.title': '٢. استخراج',
+      'how.2.desc': 'أضف رمز API وانقر على استخراج. يتم جلب جميع التعليقات والردود وأسماء المستخدمين والتواريخ في الوقت الفعلي.',
+      'how.3.title': '٣. تصدير',
+      'how.3.desc': 'حمّل بياناتك النظيفة بتنسيق CSV أو Excel أو JSON — جاهزة لتحليل المشاعر أو التقارير أو سحوبات الهدايا.',
+
+      /* ── preview ── */
+      'preview.title': 'بيانات نظيفة ومنظمة',
+      'preview.subtitle': 'معاينة ما ستحصل عليه بالضبط قبل التصدير.',
+      'preview.col.name': 'الاسم',
+      'preview.col.comment': 'التعليق',
+      'preview.col.date': 'التاريخ',
+      'preview.col.post': 'المنشور',
+      'preview.col.username': 'اسم المستخدم',
+      'preview.col.text': 'نص التعليق',
+      'preview.col.likes': 'الإعجابات',
+      'preview.col.status': 'الحالة',
+      'preview.placeholder': 'الصق رابطاً أعلاه لاستخراج التعليقات الحقيقية',
+      'preview.try': 'جربه الآن ←',
+      'preview.search.placeholder': 'البحث في الاسم أو التعليق…',
+      'preview.no-match': 'لا توجد تعليقات تطابق بحثك.',
+      'preview.dl.qualified': 'النتائج المصفاة',
+      'preview.dl.all': 'جميع النتائج',
+      'preview.download': 'تحميل ▾',
+
+      /* ── winner ── */
+      'winner.title': 'اختيار الفائز',
+      'winner.winners': 'الفائزون:',
+      'winner.exclude.placeholder': 'استبعاد من السحب: username1, username2, …',
+      'winner.draw': 'اختر فائزاً',
+      'winner.again': '↺ اختر مجدداً',
+      'winner.report': 'إنشاء تقرير',
+
+      /* ── about ── */
+      'about.eyebrow': 'حول',
+      'about.title': 'مصمَّم للأشخاص<br>الذين يديرون التعليقات.',
+      'about.lead': 'وُجدت CommentPull لأن نسخ التعليقات يدوياً طريقة سيئة لقضاء وقتك. بنينا الأداة التي كنا نتمنى وجودها — سريعة وخاصة ومجانية.',
+      'about.stat3.number': 'مجاني',
+      'about.stat1.label': 'منصة مدعومة',
+      'about.stat2.label': 'بايت مخزَّن من عمليات الاستخراج',
+      'about.stat3.label': 'دائماً، للجميع',
+      'about.story.title': 'القصة',
+      'about.story.p1': 'بدأ الأمر بمسابقة هدايا. احتاج أحدهم لاستخراج أسماء المعلقين من منشور فيسبوك لاختيار فائز عادل — فاكتشف أن الخيارات إما (أ) النسخ واللصق يدوياً، أو (ب) دفع ثمن أداة مؤسسية باهظة، أو (ج) تعلُّم Graph API بنفسه.',
+      'about.story.p2': 'CommentPull هو الخيار (د): افتح الأداة، الصق الرابط، احصل على ملف نظيف. لا تحتاج لمعرفة API. لا اشتراك. لا بيانات ترسل لأي مكان دون إذنك.',
+      'about.story.p3': 'أضفنا إنستغرام، ثم يوتيوب، ثم المرشحات ومنتقي الفائز وتصدير Excel — لأن الأداة يجب أن تكون في متناول الجميع، من المبدع الفردي إلى فريق العلامة التجارية.',
+      'about.howitworks.title': 'كيف يعمل فعلياً',
+      'about.howitworks.p1': 'عندما تنقر على استخراج، يقوم متصفحك بإجراء استدعاءات API مباشرة إلى فيسبوك أو إنستغرام أو يوتيوب — <strong>وليس إلى خوادمنا</strong>. يسافر رمز الوصول من جهازك إلى Meta أو Google فحسب. تعود التعليقات إلى متصفحك، وتُعالَج في الذاكرة، وتُحفظ في ملف على جهازك.',
+      'about.howitworks.p2': 'لا يتولى الخادم الخلفي لدينا سوى أمرين: حسابك (البريد الإلكتروني + كلمة المرور المشفرة) وجلستك. هذا كل شيء. بنينا نظاماً لا نستطيع فيه رؤية بياناتك حتى لو أردنا ذلك.',
+      'about.values.title': 'ما نهتم به',
+      'about.v1.title': 'الخصوصية من التصميم',
+      'about.v1.desc': 'بيانات الاستخراج لا تلمس خوادمنا أبداً. صممنا البنية بحيث ليس لدينا ما نكشفه.',
+      'about.v2.title': 'السرعة قبل التعقيد',
+      'about.v2.desc': 'لا تدفقات إعداد. لا لوحات تحكم للضبط. الصق رابطاً، احصل على التعليقات. هذا هو المنتج بأكمله.',
+      'about.v3.title': 'مجاني حقاً',
+      'about.v3.desc': 'لا ميزات مقفلة. لا بطاقة ائتمانية، أبداً.',
+      'about.v4.title': 'يتقن شيئاً واحداً',
+      'about.v4.desc': 'لن نضيف CRM أو جدولاً أو كاتب محتوى بالذكاء الاصطناعي. CommentPull تستخرج التعليقات. هذه هي المهمة.',
+      'about.timeline.title': 'الجدول الزمني',
+      'about.tl1.date': '2024 — البناء الأولي',
+      'about.tl1.title': 'استخراج تعليقات فيسبوك',
+      'about.tl1.desc': 'الإصدار الأول: منشورات فيسبوك فقط، تصدير CSV، بدون حساب.',
+      'about.tl2.date': '2024 — التوسع',
+      'about.tl2.title': 'إضافة إنستغرام ويوتيوب',
+      'about.tl2.desc': 'دعم متعدد المنصات، تسلسل الردود، تصدير Excel مع ورقة ملخص.',
+      'about.tl3.date': '2024 — الميزات',
+      'about.tl3.title': 'المرشحات ومنتقي الفائز',
+      'about.tl3.desc': 'مرشحات الكلمات المفتاحية وإلغاء التكرار والنطاق الزمني وقواعد الإشارة ومنتقي عشوائي عادل للفائز.',
+      'about.tl4.date': '2025 — الحسابات',
+      'about.tl4.title': 'حسابات مجانية ومدعومة بالإعلانات',
+      'about.tl4.desc': 'حسابات مجانية مع استخراجات غير محدودة، مدعومة بإعلانات اختيارية — لا اشتراك مطلوب.',
+      'about.cta.title': 'هل أنت مستعد لاستخراج التعليقات؟',
+      'about.cta.desc': 'حساب مجاني. استخراجات غير محدودة.<br>بدون بطاقة ائتمانية، ولا فترة تجريبية، ولا شروط خفية.',
+      'about.cta.btn': 'ابدأ الاستخراج ←',
+
+      /* ── contact ── */
+      'contact.eyebrow': 'تواصل معنا',
+      'contact.title': 'نحن هنا<br>إذا احتجت مساعدة.',
+      'contact.lead': 'هل لديك سؤال، أو وجدت خطأً، أو تريد فقط أن تقول مرحباً؟ أرسل لنا رسالة وسنرد عليك خلال يوم عمل واحد.',
+      'contact.c1.title': 'الدعم التقني',
+      'contact.c1.desc': 'أخطاء الاستخراج ومشاكل الرمز ومشاكل الروابط أو أي شيء لا يعمل كما هو متوقع.',
+      'contact.c1.link': 'أرسل رسالة ←',
+      'contact.c2.title': 'المساعدة والوثائق',
+      'contact.c2.desc': 'تحقق من صفحة الدعم أولاً — معظم الأسئلة الشائعة مجاب عنها هناك.',
+      'contact.c2.link': 'عرض الدعم ←',
+      'contact.c3.title': 'طلبات الميزات',
+      'contact.c3.desc': 'هل لديك فكرة لشيء يجب إضافته؟ سيسعدنا سماعها.',
+      'contact.c3.link': 'أخبرنا ←',
+      'contact.c4.title': 'الخصوصية والقانون',
+      'contact.c4.desc': 'طلبات البيانات وأسئلة الامتثال أو أي شيء يتعلق بسياسة الخصوصية.',
+      'contact.c4.link': 'تواصل معنا ←',
+      'contact.response': '<strong>وقت الاستجابة:</strong> نرد عادةً خلال يوم عمل واحد (الاثنين–الجمعة). الرسائل المرسلة خلال عطلة نهاية الأسبوع ستُجاب يوم الاثنين.',
+      'contact.form.title': 'أرسل لنا رسالة',
+      'contact.form.subtitle': 'املأ النموذج أدناه وسنتواصل معك في أقرب وقت ممكن.',
+      'contact.form.name': 'الاسم',
+      'contact.form.name.placeholder': 'اسمك',
+      'contact.form.email': 'البريد الإلكتروني',
+      'contact.form.email.placeholder': 'you@example.com',
+      'contact.form.subject': 'الموضوع',
+      'contact.form.subject.placeholder': 'اختر موضوعاً…',
+      'contact.form.subject.tech': 'الدعم التقني',
+      'contact.form.subject.token': 'مشكلة في الرمز / الحساب',
+      'contact.form.subject.feature': 'طلب ميزة',
+      'contact.form.subject.bug': 'الإبلاغ عن خطأ',
+      'contact.form.subject.privacy': 'طلب خصوصية / بيانات',
+      'contact.form.subject.other': 'أخرى',
+      'contact.form.message': 'الرسالة',
+      'contact.form.message.placeholder': 'صف سؤالك أو مشكلتك بأكبر قدر من التفاصيل. إذا كان خطأً، أرفق الرابط الذي كنت تستخدمه وما حدث.',
+      'contact.form.submit': 'إرسال الرسالة',
+      'contact.form.error.fields': 'يرجى ملء جميع الحقول قبل الإرسال.',
+      'contact.form.error.email': 'يرجى إدخال عنوان بريد إلكتروني صالح.',
+      'contact.form.sending': 'جاري الإرسال…',
+      'contact.form.success': 'تم إرسال الرسالة! سنتواصل معك خلال يوم عمل واحد.',
+      'contact.form.error.server': 'حدث خطأ ما. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرة.',
+      'contact.form.sent': 'تم الإرسال',
+
+      /* ── support ── */
+      'support.eyebrow': 'الدعم',
+      'support.title': 'كيف يمكننا<br>مساعدتك؟',
+      'support.lead': 'ابحث عن إجابات للأسئلة الشائعة أدناه. إذا لم تجد ما تبحث عنه، تواصل معنا عبر صفحة الاتصال — نرد عادةً خلال يوم عمل واحد.',
+      'support.hint': 'لم تجد إجابة؟ <strong><a href="/contact.html" style="color:var(--accent);text-decoration:none">تواصل معنا مباشرة ←</a></strong>',
+      'support.s1.title': 'البدء',
+      'support.q1.q': 'ما هي CommentPull وكيف تعمل؟',
+      'support.q1.a': '<p>CommentPull أداة تعمل في المتصفح لاستخراج التعليقات من منشورات فيسبوك وإنستغرام ويوتيوب. تلصق رابط المنشور، وتجري الأداة استدعاءات API مباشرة من متصفحك — لا شيء يمر عبر خوادمنا.</p><p>تُعالَج التعليقات المستخرجة كلياً في ذاكرة متصفحك وتُصدَّر كملف Excel أو CSV أو JSON مباشرة إلى جهازك.</p>',
+      'support.q2.q': 'هل أحتاج إلى إنشاء حساب؟',
+      'support.q2.a': '<p>يمنحك الحساب المجاني الوصول إلى جميع الميزات بما في ذلك المرشحات وإلغاء التكرار والنطاقات الزمنية ومنتقي الفائز. يمكنك التسجيل ببريدك الإلكتروني فقط — لا بطاقة ائتمانية مطلوبة.</p>',
+      'support.q3.q': 'ما هي المنصات المدعومة؟',
+      'support.q3.a': '<p>تدعم CommentPull <strong>فيسبوك</strong> و<strong>إنستغرام</strong> و<strong>يوتيوب</strong>. تتطلب كل منصة تقديم رمز وصول حتى يتمكن متصفحك من المصادقة مع API المعني.</p>',
+      'support.s2.title': 'الوصول إلى API',
+      'support.q4.q': 'من أين أحصل على رمز وصول فيسبوك أو إنستغرام؟',
+      'support.q4.a': '<p>تتضمن الأداة دليلاً خطوة بخطوة لإنشاء رموز الوصول مباشرة من Graph API Explorer الخاص بـ Meta. ستحتاج إلى حساب مطور Meta (مجاني) وتطبيق فيسبوك بالصلاحيات المناسبة. يرشدك الدليل الداخلي خلال كل خطوة.</p>',
+      'support.s3.title': 'الاستخراج والتصدير',
+      'support.q5.q': 'ما تنسيقات الروابط المدعومة؟',
+      'support.q5.a': '<p>يدعم فيسبوك روابط المنشورات القياسية وروابط <code>pfbid</code> المشفرة. يدعم إنستغرام روابط <code>/p/</code> و<code>/reel/</code> و<code>/tv/</code>. يدعم يوتيوب روابط المشاهدة القياسية (<code>watch?v=</code>) وروابط <code>youtu.be</code> المختصرة.</p>',
+      'support.q6.q': 'ما تنسيقات التصدير المتاحة؟',
+      'support.q6.a': '<p>يمكنك تصدير التعليقات كـ <strong>Excel (.xlsx)</strong> مع ورقة ملخص، أو <strong>CSV</strong>، أو <strong>JSON</strong>. تتضمن صادرات Excel بيانات وصفية مثل عدد التعليقات الإجمالي وتاريخ الاستخراج والمنصة.</p>',
+      'support.q7.q': 'هل هناك حد لعدد التعليقات التي يمكنني استخراجها؟',
+      'support.q7.a': '<p>لا يوجد حد صارم لعدد التعليقات — ستصفح CommentPull استجابة API الكاملة. قد تستغرق عمليات الاستخراج الكبيرة جداً وقتاً أطول بسبب حدود معدل API التي تفرضها Meta أو Google.</p>',
+      'support.q8.q': 'هل يمكنني استخراج التعليقات من منشورات متعددة في وقت واحد؟',
+      'support.q8.a': '<p>نعم. قم بتفعيل وضع الروابط المتعددة في منطقة الإدخال للصق روابط منشورات متعددة. ستُوضع في قائمة انتظار وتُستخرج بالتسلسل، مع دمج النتائج في ملف تصدير واحد.</p>',
+      'support.s4.title': 'الخصوصية والأمان',
+      'support.q9.q': 'هل بياناتي آمنة؟ هل تخزنون تعليقاتي؟',
+      'support.q9.a': '<p>لا. يتم كل الاستخراج مباشرة في متصفحك — لا تلمس بيانات التعليقات خوادمنا أبداً. نخزن فقط حسابك (البريد الإلكتروني + كلمة المرور المشفرة) وجلستك. لقد صممنا النظام بحيث لا نستطيع رؤية بياناتك المستخرجة حتى لو أردنا ذلك.</p>',
+      'support.q10.q': 'إلى أين يذهب رمز الوصول الخاص بي؟',
+      'support.q10.a': '<p>يسافر رمز الوصول من متصفحك مباشرة إلى نقطة API الخاصة بـ Meta أو Google — ولا يمر أبداً عبر خوادم CommentPull. تعامل مع رموز الوصول ككلمات مرور: أعد إنشاءها إذا اعتقدت أنها تعرضت للاختراق.</p>',
+      'support.q11.q': 'هل تلتزم CommentPull بشروط خدمة Meta؟',
+      'support.q11.a': '<p>تستخدم CommentPull Meta Graph API الرسمي وتتطلب منك المصادقة برمز وصولك الخاص. هذا يعني أنك تصل إلى البيانات المتاحة لحسابك عبر القنوات الرسمية لـ Meta. أنت مسؤول عن التأكد من أن استخدامك للبيانات يمتثل لشروط منصة Meta والقوانين المعمول بها.</p>',
+      'support.s5.title': 'استكشاف الأخطاء وإصلاحها',
+      'support.q12.q': 'أحصل على خطأ "رمز غير صالح". ماذا أفعل؟',
+      'support.q12.a': '<p>رموز الوصول تنتهي صلاحيتها. تدوم الرموز قصيرة الأمد حوالي 1-2 ساعة؛ وتدوم الرموز طويلة الأمد حتى 60 يوماً. أنشئ رمزاً جديداً من Graph API Explorer وألصقه في حقل الرمز. تأكد من أن الرمز يملك الصلاحيات الصحيحة (<code>pages_read_engagement</code> لفيسبوك، <code>instagram_basic</code> لإنستغرام).</p>',
+      'support.q13.q': 'يتوقف الاستخراج في المنتصف. لماذا؟',
+      'support.q13.a': '<p>يحدث هذا عادةً بسبب حد معدل API من Meta أو Google. ستعرض الأداة النتائج الجزئية المجلوبة. حاول مرة أخرى بعد بضع دقائق. قد تتطلب المنشورات الكبيرة جداً جلسات استخراج متعددة.</p>',
+      'support.q14.q': 'رابط منشوري غير معروف. ما التنسيقات الصحيحة؟',
+      'support.q14.a': '<p>تأكد من نسخ الرابط الكامل من شريط عنوان متصفحك. يجب أن تتضمن منشورات إنستغرام <code>/p/</code> أو <code>/reel/</code> أو <code>/tv/</code> في الرابط. إذا استمرت المشكلة، <a href="/contact.html">تواصل معنا</a> مع تنسيق الرابط وسنحقق في الأمر.</p>',
+      'support.cta.title': 'لا تزال بحاجة للمساعدة؟',
+      'support.cta.desc': 'لم تجد إجابتك هنا؟ أرسل لنا رسالة وسنتواصل معك خلال يوم عمل واحد.',
+      'support.cta.btn': 'تواصل معنا ←',
+      'support.cta.back': 'العودة للتطبيق',
+
+      /* ── privacy ── */
+      'privacy.eyebrow': 'القانونية',
+      'privacy.title': 'سياسة الخصوصية',
+      'privacy.date': 'آخر تحديث: 6 أبريل 2025',
+      'privacy.callout': 'CommentPull مبنية على مبدأ بسيط: <strong>بياناتك تبقى على جهازك</strong>. يتم تشغيل جميع عمليات استخراج التعليقات كلياً في متصفحك — رموز الوصول والمحتوى المستخرج لا يلمسان خوادمنا أبداً.',
+      'privacy.s1.title': '١. من نحن',
+      'privacy.s1.text': 'CommentPull أداة ويب تتيح لك استخراج التعليقات وتصفيتها وتصديرها من منشورات فيسبوك وإنستغرام ويوتيوب. نحن مشغل هذه الخدمة، ويمكن الوصول إلينا على تفاصيل الاتصال في أسفل هذه الصفحة.',
+      'privacy.s2.title': '٢. ما نجمعه',
+      'privacy.s2.intro': 'نجمع فقط الحد الأدنى من المعلومات اللازمة لتشغيل حسابك:',
+      'privacy.s2.items': '<li><strong>عنوان البريد الإلكتروني</strong> — يُستخدم لتعريف حسابك والرسائل التعاملية (مثل إعادة تعيين كلمة المرور).</li><li><strong>الاسم</strong> — يُعرض في واجهة التطبيق.</li><li><strong>كلمة المرور</strong> — مخزنة كهاش bcrypt (تكلفة 12). لا نخزن كلمة مرورك بالنص العادي.</li><li><strong>طوابع وقت الحساب</strong> — متى تم إنشاء حسابك وآخر تحديث.</li>',
+      'privacy.s2.nopayment': 'لا <strong>نجمع</strong> معلومات الدفع. لا يلزم وجود بطاقة ائتمانية لاستخدام CommentPull.',
+      'privacy.s3.title': '٣. ما لا نجمعه',
+      'privacy.s3.items': '<li>رموز الوصول <strong>لفيسبوك أو إنستغرام</strong> — تُدخَل في متصفحك وترسل مباشرة إلى خوادم Meta. لا تمر عبر خوادمنا.</li><li><strong>التعليقات وأسماء المستخدمين أو محتوى المنشورات</strong> التي تستخرجها — تتم معالجتها كلها في متصفحك وتذهب البيانات مباشرة إلى ملفك المحمَّل.</li><li><strong>مفتاح YouTube API</strong> — نفس الأمر، المتصفح فقط.</li><li><strong>سلوك التصفح</strong> أو تفاعلات الصفحة أو تسجيلات الجلسة بما يتجاوز التحليلات الأساسية.</li>',
+      'privacy.s4.title': '٤. كيف نستخدم بياناتك',
+      'privacy.s4.items': '<li>للمصادقة عليك والحفاظ على جلستك.</li>',
+      'privacy.s4.nosell': 'لا نبيع أو نؤجر أو نشارك بياناتك الشخصية مع أطراف ثالثة لأغراض تسويقية.',
+      'privacy.s5.title': '٥. ملفات تعريف الارتباط والجلسات',
+      'privacy.s5.text': 'نضع ملف تعريف ارتباط HTTP-only آمن واحد (<code>cp_token</code>) عند تسجيل دخولك. يحتوي على رمز جلسة عشوائي — وليس كلمة مرورك أو أي بيانات شخصية. تنتهي صلاحيته بعد 30 يوماً أو عند تسجيل خروجك. لا نستخدم ملفات تعريف ارتباط إعلانية أو تتبع طرف ثالث.',
+      'privacy.s6.title': '٦. التحليلات',
+      'privacy.s6.text': 'نستخدم <strong>Google Analytics 4</strong> لفهم كيفية استخدام التطبيق بشكل إجمالي (مثل أي علامة تبويب الأكثر شيوعاً، وعدد عمليات الاستخراج الناجحة). هذه البيانات مجهولة الهوية وغير مرتبطة بحسابك. يمكنك إلغاء الاشتراك عبر الإضافات التي تحجب Google Analytics.',
+      'privacy.s7.title': '٧. تخزين البيانات وأمانها',
+      'privacy.s7.text': 'تُخزَّن بيانات الحساب في قاعدة بيانات MySQL مستضافة على Hostinger. نستخدم تجزئة bcrypt لكلمات المرور ورموز جلسة عشوائية مشفرة (256 بت) والتسليم عبر HTTPS فقط. تنتهي صلاحية رموز الجلسة تلقائياً بعد 30 يوماً.',
+      'privacy.s7.noextract': 'لا تُكتب أي بيانات استخراج (التعليقات أو محتوى المنشور أو مفاتيح API) في قاعدة بياناتنا.',
+      'privacy.s8.title': '٨. الاحتفاظ بالبيانات',
+      'privacy.s8.text': 'تُحتفظ ببيانات حسابك طالما كان حسابك نشطاً. يمكنك طلب الحذف في أي وقت بالتواصل معنا — سنحذف بريدك الإلكتروني واسمك وهاش كلمة المرور بشكل دائم خلال 7 أيام.',
+      'privacy.s9.title': '٩. حقوقك',
+      'privacy.s9.intro': 'اعتماداً على موقعك، قد يكون لديك حقوق بموجب GDPR أو CCPA أو قوانين مماثلة، بما في ذلك:',
+      'privacy.s9.items': '<li>الحق في <strong>الوصول</strong> إلى البيانات التي نحتفظ بها عنك.</li><li>الحق في <strong>تصحيح</strong> البيانات غير الدقيقة.</li><li>الحق في <strong>حذف</strong> حسابك وجميع البيانات المرتبطة به.</li><li>الحق في <strong>إمكانية نقل البيانات</strong> — نسخة من بياناتك بتنسيق يمكن قراءته آلياً.</li><li>الحق في <strong>سحب الموافقة</strong> في أي وقت.</li>',
+      'privacy.s9.contact': 'لممارسة أي من هذه الحقوق، تواصل معنا على البريد الإلكتروني أدناه.',
+      'privacy.s10.title': '١٠. خدمات الطرف الثالث',
+      'privacy.s10.items': '<li><strong>Meta Graph API</strong> — يُستخدم مباشرة من متصفحك لجلب تعليقات فيسبوك وإنستغرام. خاضع لـ <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">سياسة خصوصية Meta</a>.</li><li><strong>YouTube Data API v3</strong> — يُستخدم مباشرة من متصفحك. خاضع لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li><li><strong>Google Analytics</strong> — تحليلات استخدام إجمالية. خاضعة لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li><li><strong>Hostinger</strong> — يخزن مزود الاستضافة بيانات الحساب في مراكز بياناتهم. خاضع لـ <a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener">سياسة خصوصية Hostinger</a>.</li>',
+      'privacy.s11.title': '١١. التغييرات على هذه السياسة',
+      'privacy.s11.text': 'قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر. عند القيام بذلك، سنراجع تاريخ "آخر تحديث" في الأعلى. يُعدّ استمرار استخدام CommentPull بعد نشر التغييرات قبولاً للسياسة المحدَّثة.',
+      'privacy.s12.title': '١٢. الاتصال',
+      'privacy.s12.text': 'يمكن إرسال الأسئلة وطلبات البيانات وطلبات الحذف إلى:<br><a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a>',
+    }
+  };
+
+  /* ── state ── */
+  let currentLang = 'en';
+
+  function t(key) {
+    return (T[currentLang] && T[currentLang][key] !== undefined)
+      ? T[currentLang][key]
+      : (T.en[key] !== undefined ? T.en[key] : key);
+  }
+
+  function applyLang(lang) {
+    currentLang = lang;
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    document.body.classList.toggle('lang-ar', lang === 'ar');
+
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+      el.innerHTML = t(el.getAttribute('data-i18n-html'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+      el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+    });
+
+    var toggle = document.getElementById('lang-toggle');
+    if (toggle) toggle.textContent = t('lang.switch');
+
+    localStorage.setItem('cp_lang', lang);
+  }
+
+  function toggleLang() {
+    var p = window.location.pathname;
+    if (p.startsWith('/ar')) {
+      localStorage.setItem('cp_lang', 'en');
+      window.location.href = p.replace(/^\/ar/, '') || '/';
+    } else {
+      localStorage.setItem('cp_lang', 'ar');
+      window.location.href = '/ar' + p;
+    }
+  }
+
+  async function detectAndApply() {
+    var p = window.location.pathname;
+    var onAr = p.startsWith('/ar');
+
+    /* On Arabic pages: apply Arabic (content already in HTML, but sets currentLang for dynamic JS) */
+    if (onAr) {
+      applyLang('ar');
+      var toggle = document.getElementById('lang-toggle');
+      if (toggle) toggle.textContent = 'English';
+      return;
+    }
+
+    /* On English pages: check saved preference */
+    var saved = localStorage.getItem('cp_lang');
+    if (saved === 'ar') { window.location.href = '/ar' + p; return; }
+    if (saved === 'en') { applyLang('en'); return; }
+
+    /* 2. browser language */
+    var nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    if (nav.startsWith('ar')) {
+      localStorage.setItem('cp_lang', 'ar');
+      window.location.href = '/ar' + p;
+      return;
+    }
+
+    /* 3. IP geolocation (non-blocking) */
+    try {
+      var r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout ? AbortSignal.timeout(4000) : undefined });
+      var d = await r.json();
+      if (d && d.country_code && MENA.indexOf(d.country_code.toUpperCase()) !== -1) {
+        localStorage.setItem('cp_lang', 'ar');
+        window.location.href = '/ar' + p;
+        return;
+      }
+    } catch (e) { /* network error or timeout — fall through */ }
+
+    applyLang('en');
+  }
+
+  /* ── public API ── */
+  window.toggleLang = toggleLang;
+  window.I18n = { t: t, applyLang: applyLang };
+
+  /* ── auto-init ── */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', detectAndApply);
+  } else {
+    detectAndApply();
+  }
+})();

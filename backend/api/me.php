@@ -2,11 +2,12 @@
 /**
  * GET /backend/api/me.php
  * Returns the currently authenticated user's profile.
- * Returns: { "id": 1, "email": "...", "name": "...", "plan": "free"|"pro" }
+ * Returns: { "id": 1, "email": "...", "name": "...", "plan": "free" }
  */
 require_once __DIR__ . '/../middleware/cors.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../helpers.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -19,5 +20,6 @@ json_out([
     'id'         => (int) $user['id'],
     'email'      => $user['email'],
     'name'       => $user['name'],
+    'plan'       => $user['plan'],
     'created_at' => $user['created_at'],
 ]);

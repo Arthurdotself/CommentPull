@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email               VARCHAR(255)  NOT NULL UNIQUE,
     password_hash       VARCHAR(255)  NOT NULL,
     name                VARCHAR(100)  NOT NULL DEFAULT '',
+    plan                ENUM('free')  NOT NULL DEFAULT 'free',
     created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

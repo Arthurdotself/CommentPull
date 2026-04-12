@@ -21,6 +21,28 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // ── GET ────────────────────────────────────────────────────────────
 if ($method === 'GET') {
+
+    // GET /scheduled-exports.php?id=X  → single export (with comments payload)
+    if (isset($_GET['id'])) {
+        $id   = (int) $_GET['id'];
+        $stmt = db()->prepare(
+            'SELECT id, platform, post_url, export_format, scheduled_at, status, total_count, comments, error_message, created_at
+             FROM scheduled_exports WHERE id = :id AND user_id = :uid LIMIT 1'
+        );
+        $stmt->execute([':id' => $id, ':uid' => (int) $user['id']]);
+        $exp = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$exp) json_error(404, 'Scheduled export not found');
+
+        $exp['id']          = (int) $exp['id'];
+        $exp['total_count'] = (int) $exp['total_count'];
+        $exp['comments']    = $exp['comments'] ? json_decode($exp['comments'], true) : [];
+        $exp['params']      = null; // params not exposed (contains internal IDs)
+
+        json_out($exp);
+    }
+
+    // GET /scheduled-exports.php  → list (no comments payload)
     $stmt = db()->prepare(
         'SELECT id, platform, post_url, export_format, scheduled_at, status, total_count, error_message, created_at
          FROM scheduled_exports
@@ -38,26 +60,6 @@ if ($method === 'GET') {
     unset($exp);
 
     json_out(['exports' => $exports]);
-}
-
-// ── GET single (for downloading completed export) ──────────────────
-// GET /scheduled-exports.php?id=X&download=1
-if ($method === 'GET' && isset($_GET['id'])) {
-    $id   = (int) $_GET['id'];
-    $stmt = db()->prepare(
-        'SELECT * FROM scheduled_exports WHERE id = :id AND user_id = :uid LIMIT 1'
-    );
-    $stmt->execute([':id' => $id, ':uid' => (int) $user['id']]);
-    $exp = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$exp) json_error(404, 'Scheduled export not found');
-
-    $exp['id']          = (int) $exp['id'];
-    $exp['total_count'] = (int) $exp['total_count'];
-    $exp['comments']    = $exp['comments'] ? json_decode($exp['comments'], true) : [];
-    $exp['params']      = $exp['params']   ? json_decode($exp['params'],   true) : null;
-
-    json_out($exp);
 }
 
 // ── POST ───────────────────────────────────────────────────────────
@@ -163,7 +165,7 @@ if ($method === 'POST') {
         ':uid'      => (int) $user['id'],
         ':platform' => $platform,
         ':post_url' => $postUrl,
-        ':token'    => $accessToken,
+        ':token'    => encrypt_token($accessToken),
         ':params'   => $params ? json_encode($params) : null,
         ':format'   => $exportFormat,
         ':sched'    => $scheduledAtDb,

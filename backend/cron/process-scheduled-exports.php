@@ -24,6 +24,7 @@ if (!file_exists($configPath) || !file_exists($dbPath)) {
 
 require_once $configPath;
 require_once $dbPath;
+require_once __DIR__ . '/../helpers.php';
 
 // ── HTTP security guard ────────────────────────────────────────────
 if (PHP_SAPI !== 'cli') {
@@ -54,6 +55,10 @@ if (empty($exports)) {
     log_msg('No pending exports due.');
     exit(0);
 }
+
+// ── Clean up expired sessions ──────────────────────────────────────
+$deleted = db()->exec('DELETE FROM sessions WHERE expires_at < NOW()');
+if ($deleted > 0) log_msg("Cleaned up {$deleted} expired session(s).");
 
 log_msg('Processing ' . count($exports) . ' export(s)…');
 
@@ -100,7 +105,7 @@ function log_msg(string $msg): void {
 function runExport(array $export): array {
     $platform    = $export['platform'];
     $postUrl     = $export['post_url'];
-    $accessToken = $export['access_token'];
+    $accessToken = decrypt_token($export['access_token']);
     $params      = $export['params'] ? json_decode($export['params'], true) : [];
 
     return match ($platform) {

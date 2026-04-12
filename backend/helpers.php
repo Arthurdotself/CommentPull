@@ -29,6 +29,34 @@ function generate_token(int $bytes = 32): string {
 }
 
 /**
+ * Encrypt a sensitive string (e.g. OAuth access token) with AES-256-GCM.
+ * Returns a base64-encoded blob: IV (12 bytes) + tag (16 bytes) + ciphertext.
+ */
+function encrypt_token(string $plaintext): string {
+    $key = hex2bin(TOKEN_ENCRYPT_KEY);
+    $iv  = random_bytes(12);
+    $tag = '';
+    $ct  = openssl_encrypt($plaintext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag, '', 16);
+    if ($ct === false) throw new RuntimeException('Token encryption failed');
+    return base64_encode($iv . $tag . $ct);
+}
+
+/**
+ * Decrypt a token encrypted by encrypt_token().
+ */
+function decrypt_token(string $encrypted): string {
+    $raw = base64_decode($encrypted, true);
+    if ($raw === false || strlen($raw) < 29) throw new RuntimeException('Invalid encrypted token');
+    $key = hex2bin(TOKEN_ENCRYPT_KEY);
+    $iv  = substr($raw, 0, 12);
+    $tag = substr($raw, 12, 16);
+    $ct  = substr($raw, 28);
+    $pt  = openssl_decrypt($ct, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+    if ($pt === false) throw new RuntimeException('Token decryption failed — key mismatch or data corrupted');
+    return $pt;
+}
+
+/**
  * Generate a signed OAuth state token (CSRF protection).
  * Valid for 10 minutes.
  */

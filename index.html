@@ -187,7 +187,7 @@
         <a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
         <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
         <a href="support.html" class="hover:text-white transition-colors">Support</a>
-        <a href="history.html" id="nav-history-link" class="hidden text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">History</a>
+        <a href="history.html" class="hover:text-white transition-colors">History</a>
       </nav>
       <div class="flex items-center gap-3" id="nav-auth-area">
         <button id="lang-toggle" onclick="toggleLang()"
@@ -2367,11 +2367,6 @@ function stopConfetti() {
 
     function _cpUpdateNav(user) {
       if (!user) return;
-      // Show History link for pro users
-      if (user.plan === 'pro') {
-        const hl = document.getElementById('nav-history-link');
-        if (hl) hl.classList.remove('hidden');
-      }
       // Swap Sign In / Sign Up for a greeting + Sign Out
       const signIn  = document.getElementById('nav-signin');
       const signUp  = document.getElementById('nav-signup');

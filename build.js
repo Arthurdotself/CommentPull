@@ -31,13 +31,14 @@ const META = {
   'index.html':             { title: { ar: 'commentpull - استخراج تعليقات وسائل التواصل الاجتماعي' }, desc: { ar: 'استخرج وصفّ وصدّر التعليقات من فيسبوك وإنستغرام ويوتيوب بنقرة واحدة.' } },
   'history.html':           { title: { ar: 'سجل التشغيل — commentpull' },        desc: { ar: '' } },
   'scheduled-exports.html': { title: { ar: 'الصادرات المجدولة — commentpull' }, desc: { ar: '' } },
+  'pricing.html':           { title: { ar: 'الأسعار — commentpull' },            desc: { ar: 'خطط commentpull — مجانية وبرو ومؤسسات لاستخراج تعليقات وسائل التواصل الاجتماعي.' } },
 };
 
 /* Pages that have /ar/ versions — used to rewrite internal href links */
-const AR_PAGES = new Set(['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html']);
+const AR_PAGES = new Set(['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html', 'pricing.html']);
 
 /* Pages to generate */
-const PAGES = ['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html'];
+const PAGES = ['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html', 'pricing.html'];
 
 /* ── 3. Core transformation ─────────────────────────────────────────────── */
 function generateAr(filename) {

@@ -1,3 +1,4 @@
+<!-- SOURCE FILE: Edit this file. Run `node build.js` to regenerate /ar/pricing.html -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -13,7 +14,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pricing — commentpull</title>
-  <link rel="canonical" href="https://commentpull.com/pricing">
+  <meta name="description" content="commentpull pricing — free, pro, and enterprise plans for social media comment extraction.">
+  <link rel="canonical" href="https://commentpull.com/pricing.html">
+  <link rel="alternate" hreflang="en" href="https://commentpull.com/pricing.html">
+  <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/pricing.html">
+  <link rel="alternate" hreflang="x-default" href="https://commentpull.com/pricing.html">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -31,8 +36,12 @@
   </script>
   <style>
     body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
     ::-webkit-scrollbar { display: none; }
     .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] .faq-question { text-align: right; }
 
     /* ── Pricing cards ── */
     .pricing-feature { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #d1d5db; }
@@ -71,21 +80,21 @@
       <span class="text-xl font-semibold tracking-tight text-white">commentpull</span>
       </a>
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="index.html#how-it-works" class="hover:text-white transition-colors">How it Works</a>
-        <a href="pricing.html" class="text-white transition-colors">Pricing</a>
-        <a href="support.html" class="hover:text-white transition-colors">Support</a>
+        <a href="index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
+        <a href="pricing.html" class="text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
+        <a href="support.html" class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
       </nav>
       <div class="flex items-center gap-3">
-        <button onclick="toggleLang()"
+        <button id="lang-toggle" onclick="toggleLang()"
           class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">
           العربية
         </button>
         <a href="signin.html"
-          class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium">
+          class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium" data-i18n="nav.signin">
           Sign In
         </a>
         <a href="signup.html"
-          class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">
+          class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" data-i18n="nav.signup">
           Sign Up
         </a>
       </div>
@@ -100,12 +109,12 @@
       <div class="max-w-[760px] mx-auto px-6 relative z-10">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel text-sm text-gray-400 mb-6 border border-white/10">
           <i class="fa-solid fa-tag text-indigo-400 text-xs"></i>
-          <span>Simple, transparent pricing</span>
+          <span data-i18n="pricing.eyebrow">Simple, transparent pricing</span>
         </div>
-        <h1 class="text-5xl md:text-6xl font-semibold tracking-tight mb-5 leading-[1.1]">
+        <h1 class="text-5xl md:text-6xl font-semibold tracking-tight mb-5 leading-[1.1]" data-i18n="pricing.h1">
           Choose your plan
         </h1>
-        <p class="text-gray-400 text-lg max-w-md mx-auto">
+        <p class="text-gray-400 text-lg max-w-md mx-auto" data-i18n="pricing.subtitle">
           Start free. Upgrade when you need more power. No hidden fees.
         </p>
       </div>
@@ -119,20 +128,20 @@
           <!-- Free Tier -->
           <div class="pricing-card glass-panel rounded-3xl p-8 flex flex-col text-left border border-white/8">
             <div class="mb-6">
-              <span class="text-xs font-semibold uppercase tracking-widest text-gray-500">Free Tier</span>
+              <span class="text-xs font-semibold uppercase tracking-widest text-gray-500" data-i18n="pricing.free.label">Free Tier</span>
               <div class="mt-3 flex items-end gap-1">
-                <span class="text-4xl font-bold text-white">0</span>
-                <span class="text-gray-400 text-sm mb-1">IQD / mo</span>
+                <span class="text-4xl font-bold text-white" data-i18n="pricing.free.price">0</span>
+                <span class="text-gray-400 text-sm mb-1" data-i18n="pricing.free.unit">IQD / mo</span>
               </div>
-              <p class="text-gray-500 text-sm mt-2">No credit card required</p>
+              <p class="text-gray-500 text-sm mt-2" data-i18n="pricing.free.desc">No credit card required</p>
             </div>
             <ul class="space-y-3 mb-8 flex-grow">
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span>Up to <strong class="text-white">100 comments</strong> per run</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span><strong class="text-white">500 total</strong> comments stored</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span><strong class="text-white">5 posts</strong> only</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span>CSV &amp; JSON export</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.free.f1">Up to <strong class="text-white">100 comments</strong> per run</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.free.f2"><strong class="text-white">500 total</strong> comments stored</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.free.f3"><strong class="text-white">5 posts</strong> only</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n="pricing.free.f4">CSV &amp; JSON export</span></li>
             </ul>
-            <a href="index.html" class="pricing-btn-outline block text-center w-full py-3 rounded-xl text-sm font-medium transition-all no-underline">
+            <a href="index.html" class="pricing-btn-outline block text-center w-full py-3 rounded-xl text-sm font-medium transition-all no-underline" data-i18n="pricing.free.cta">
               Get started free
             </a>
           </div>
@@ -140,24 +149,24 @@
           <!-- Pro Tier -->
           <div class="pricing-card pricing-card--pro rounded-3xl p-8 flex flex-col text-left relative overflow-hidden border border-indigo-500/40" style="background:linear-gradient(135deg,rgba(99,102,241,0.15) 0%,rgba(99,102,241,0.05) 100%)">
             <div class="absolute top-5 right-5">
-              <span class="bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Popular</span>
+              <span class="bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide" data-i18n="pricing.pro.badge">Popular</span>
             </div>
             <div class="mb-6">
-              <span class="text-xs font-semibold uppercase tracking-widest text-indigo-400">Pro</span>
+              <span class="text-xs font-semibold uppercase tracking-widest text-indigo-400" data-i18n="pricing.pro.label">Pro</span>
               <div class="mt-3 flex items-end gap-1">
-                <span class="text-4xl font-bold text-white">15,000</span>
-                <span class="text-gray-400 text-sm mb-1">IQD / mo</span>
+                <span class="text-4xl font-bold text-white" data-i18n="pricing.pro.price">15,000</span>
+                <span class="text-gray-400 text-sm mb-1" data-i18n="pricing.pro.unit">IQD / mo</span>
               </div>
-              <p class="text-gray-500 text-sm mt-2">Everything you need to scale</p>
+              <p class="text-gray-500 text-sm mt-2" data-i18n="pricing.pro.desc">Everything you need to scale</p>
             </div>
             <ul class="space-y-3 mb-8 flex-grow">
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span><strong class="text-white">Unlimited</strong> comments</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span><strong class="text-white">Priority</strong> processing</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span><strong class="text-white">Advanced</strong> filtering</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span>CSV, JSON &amp; Excel export</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span>Multi-post bulk runs</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.pro.f1"><strong class="text-white">Unlimited</strong> comments</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.pro.f2"><strong class="text-white">Priority</strong> processing</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.pro.f3"><strong class="text-white">Advanced</strong> filtering</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n="pricing.pro.f4">CSV, JSON &amp; Excel export</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n="pricing.pro.f5">Multi-post bulk runs</span></li>
             </ul>
-            <button class="pricing-btn-primary w-full py-3 rounded-xl text-sm font-semibold transition-all">
+            <button class="pricing-btn-primary w-full py-3 rounded-xl text-sm font-semibold transition-all" data-i18n="pricing.pro.cta">
               Start Pro
             </button>
           </div>
@@ -165,20 +174,20 @@
           <!-- Enterprise -->
           <div class="pricing-card glass-panel rounded-3xl p-8 flex flex-col text-left border border-white/8">
             <div class="mb-6">
-              <span class="text-xs font-semibold uppercase tracking-widest text-gray-500">Enterprise</span>
+              <span class="text-xs font-semibold uppercase tracking-widest text-gray-500" data-i18n="pricing.ent.label">Enterprise</span>
               <div class="mt-3 flex items-end gap-1">
-                <span class="text-4xl font-bold text-white">Custom</span>
+                <span class="text-4xl font-bold text-white" data-i18n="pricing.ent.price">Custom</span>
               </div>
-              <p class="text-gray-500 text-sm mt-2">Tailored to your team's needs</p>
+              <p class="text-gray-500 text-sm mt-2" data-i18n="pricing.ent.desc">Tailored to your team's needs</p>
             </div>
             <ul class="space-y-3 mb-8 flex-grow">
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span>Everything in Pro</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span><strong class="text-white">Bulk export</strong> automation</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span><strong class="text-white">API access</strong></span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span>Dedicated support</span></li>
-              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span>Custom integrations</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n="pricing.ent.f1">Everything in Pro</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.ent.f2"><strong class="text-white">Bulk export</strong> automation</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n-html="pricing.ent.f3"><strong class="text-white">API access</strong></span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n="pricing.ent.f4">Dedicated support</span></li>
+              <li class="pricing-feature"><i class="fa-solid fa-check text-indigo-400 text-xs"></i><span data-i18n="pricing.ent.f5">Custom integrations</span></li>
             </ul>
-            <button class="pricing-btn-outline w-full py-3 rounded-xl text-sm font-medium transition-all">
+            <button class="pricing-btn-outline w-full py-3 rounded-xl text-sm font-medium transition-all" data-i18n="pricing.ent.cta">
               Contact us
             </button>
           </div>
@@ -190,74 +199,74 @@
     <!-- ─── Compare Table ─── -->
     <section class="py-20 border-t border-white/5">
       <div class="max-w-[900px] mx-auto px-6">
-        <h2 class="text-3xl font-semibold text-center mb-12">Full comparison</h2>
+        <h2 class="text-3xl font-semibold text-center mb-12" data-i18n="pricing.compare.h2">Full comparison</h2>
         <div class="overflow-x-auto rounded-2xl glass-panel border border-white/8">
           <table class="w-full border-collapse">
             <thead>
               <tr>
-                <th class="compare-th text-left">Feature</th>
-                <th class="compare-th text-center">Free</th>
-                <th class="compare-th text-center compare-highlight">Pro</th>
-                <th class="compare-th text-center">Enterprise</th>
+                <th class="compare-th text-left" data-i18n="pricing.compare.feature">Feature</th>
+                <th class="compare-th text-center" data-i18n="pricing.compare.free">Free</th>
+                <th class="compare-th text-center compare-highlight" data-i18n="pricing.compare.pro">Pro</th>
+                <th class="compare-th text-center" data-i18n="pricing.compare.ent">Enterprise</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="compare-td feature-name">Comments per run</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r1">Comments per run</td>
                 <td class="compare-td text-center">100</td>
-                <td class="compare-td text-center compare-highlight text-white font-medium">Unlimited</td>
-                <td class="compare-td text-center text-white font-medium">Unlimited</td>
+                <td class="compare-td text-center compare-highlight text-white font-medium" data-i18n="pricing.compare.unlimited">Unlimited</td>
+                <td class="compare-td text-center text-white font-medium" data-i18n="pricing.compare.unlimited">Unlimited</td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">Total stored comments</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r2">Total stored comments</td>
                 <td class="compare-td text-center">500</td>
-                <td class="compare-td text-center compare-highlight text-white font-medium">Unlimited</td>
-                <td class="compare-td text-center text-white font-medium">Unlimited</td>
+                <td class="compare-td text-center compare-highlight text-white font-medium" data-i18n="pricing.compare.unlimited">Unlimited</td>
+                <td class="compare-td text-center text-white font-medium" data-i18n="pricing.compare.unlimited">Unlimited</td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">Posts</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r3">Posts</td>
                 <td class="compare-td text-center">5</td>
-                <td class="compare-td text-center compare-highlight text-white font-medium">Unlimited</td>
-                <td class="compare-td text-center text-white font-medium">Unlimited</td>
+                <td class="compare-td text-center compare-highlight text-white font-medium" data-i18n="pricing.compare.unlimited">Unlimited</td>
+                <td class="compare-td text-center text-white font-medium" data-i18n="pricing.compare.unlimited">Unlimited</td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">Priority processing</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r4">Priority processing</td>
                 <td class="compare-td text-center"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center compare-highlight"><i class="fa-solid fa-check check-yes"></i></td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">Advanced filtering</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r5">Advanced filtering</td>
                 <td class="compare-td text-center"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center compare-highlight"><i class="fa-solid fa-check check-yes"></i></td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">CSV &amp; JSON export</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r6">CSV &amp; JSON export</td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
                 <td class="compare-td text-center compare-highlight"><i class="fa-solid fa-check check-yes"></i></td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">Excel export</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r7">Excel export</td>
                 <td class="compare-td text-center"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center compare-highlight"><i class="fa-solid fa-check check-yes"></i></td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">Bulk export automation</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r8">Bulk export automation</td>
                 <td class="compare-td text-center"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center compare-highlight"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">API access</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r9">API access</td>
                 <td class="compare-td text-center"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center compare-highlight"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
               </tr>
               <tr>
-                <td class="compare-td feature-name">Dedicated support</td>
+                <td class="compare-td feature-name" data-i18n="pricing.compare.r10">Dedicated support</td>
                 <td class="compare-td text-center"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center compare-highlight"><i class="fa-solid fa-xmark check-no"></i></td>
                 <td class="compare-td text-center"><i class="fa-solid fa-check check-yes"></i></td>
@@ -271,54 +280,54 @@
     <!-- ─── FAQ ─── -->
     <section class="py-20 border-t border-white/5">
       <div class="max-w-[700px] mx-auto px-6">
-        <h2 class="text-3xl font-semibold text-center mb-12">Frequently asked questions</h2>
+        <h2 class="text-3xl font-semibold text-center mb-12" data-i18n="pricing.faq.h2">Frequently asked questions</h2>
 
         <div class="faq-item">
           <button class="faq-question" onclick="toggleFaq(this)">
-            Can I upgrade or downgrade at any time?
+            <span data-i18n="pricing.faq.q1">Can I upgrade or downgrade at any time?</span>
             <i class="fa-solid fa-plus faq-icon text-sm"></i>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" data-i18n="pricing.faq.a1">
             Yes. You can upgrade to Pro at any time and your new limits take effect immediately. Downgrading to Free takes effect at the end of your billing cycle.
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" onclick="toggleFaq(this)">
-            What counts as a "run"?
+            <span data-i18n="pricing.faq.q2">What counts as a "run"?</span>
             <i class="fa-solid fa-plus faq-icon text-sm"></i>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" data-i18n="pricing.faq.a2">
             A run is a single extraction request for one post URL. On the Free plan each run fetches up to 100 comments. Pro removes this cap entirely.
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" onclick="toggleFaq(this)">
-            What payment methods are accepted?
+            <span data-i18n="pricing.faq.q3">What payment methods are accepted?</span>
             <i class="fa-solid fa-plus faq-icon text-sm"></i>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" data-i18n="pricing.faq.a3">
             We accept all major credit cards and local Iraqi payment options. For Enterprise, bank transfer and invoicing are also available.
           </div>
         </div>
 
         <div class="faq-item">
           <button class="faq-question" onclick="toggleFaq(this)">
-            How does API access work for Enterprise?
+            <span data-i18n="pricing.faq.q4">How does API access work for Enterprise?</span>
             <i class="fa-solid fa-plus faq-icon text-sm"></i>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" data-i18n="pricing.faq.a4">
             Enterprise customers receive a REST API key that lets you trigger extractions, retrieve results, and push data into your own systems programmatically. Full API documentation is provided on sign-up.
           </div>
         </div>
 
         <div class="faq-item" style="border-bottom:none">
           <button class="faq-question" onclick="toggleFaq(this)">
-            Is there a free trial for Pro?
+            <span data-i18n="pricing.faq.q5">Is there a free trial for Pro?</span>
             <i class="fa-solid fa-plus faq-icon text-sm"></i>
           </button>
-          <div class="faq-answer">
+          <div class="faq-answer" data-i18n="pricing.faq.a5">
             The Free plan is always available with no time limit, so you can evaluate the tool before upgrading. We don't currently offer a timed Pro trial.
           </div>
         </div>
@@ -329,10 +338,10 @@
     <!-- ─── CTA Banner ─── -->
     <section class="py-20 border-t border-white/5">
       <div class="max-w-[700px] mx-auto px-6 text-center">
-        <h2 class="text-4xl font-semibold mb-4">Ready to get started?</h2>
-        <p class="text-gray-400 mb-8">Join teams already extracting insights from social media comments.</p>
+        <h2 class="text-4xl font-semibold mb-4" data-i18n="pricing.cta.h2">Ready to get started?</h2>
+        <p class="text-gray-400 mb-8" data-i18n="pricing.cta.desc">Join teams already extracting insights from social media comments.</p>
         <a href="index.html"
-          class="inline-block bg-white text-black px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-gray-100 transition-colors">
+          class="inline-block bg-white text-black px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-gray-100 transition-colors" data-i18n="pricing.cta.btn">
           Start for free
         </a>
       </div>
@@ -348,20 +357,20 @@
           <div class="flex items-center gap-2 mb-6">
           <span class="text-xl font-semibold tracking-tight">commentpull</span>
           </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">
+          <p class="text-gray-400 text-sm leading-relaxed mb-6" data-i18n="pricing.footer.desc">
             The fastest way to extract, analyze, and export social media comments for marketers and researchers.
           </p>
         </div>
         <div>
-          <h4 class="text-white font-semibold mb-4">Product</h4>
+          <h4 class="text-white font-semibold mb-4" data-i18n="pricing.footer.product">Product</h4>
           <ul class="space-y-3 text-sm text-gray-400">
-            <li><a href="index.html#how-it-works" class="hover:text-white transition-colors">How it Works</a></li>
-            <li><a href="index.html#preview" class="hover:text-white transition-colors">Results Preview</a></li>
-            <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing</a></li>
+            <li><a href="index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="pricing.footer.how">How it Works</a></li>
+            <li><a href="index.html#preview" class="hover:text-white transition-colors" data-i18n="pricing.footer.preview">Results Preview</a></li>
+            <li><a href="pricing.html" class="hover:text-white transition-colors" data-i18n="pricing.footer.pricing">Pricing</a></li>
           </ul>
         </div>
         <div>
-          <h4 class="text-white font-semibold mb-4">Platforms</h4>
+          <h4 class="text-white font-semibold mb-4" data-i18n="pricing.footer.platforms">Platforms</h4>
           <ul class="space-y-3 text-sm text-gray-400">
             <li class="flex items-center gap-2"><i class="fa-brands fa-facebook text-blue-400"></i> Facebook</li>
             <li class="flex items-center gap-2"><i class="fa-brands fa-instagram text-pink-400"></i> Instagram</li>
@@ -369,7 +378,7 @@
           </ul>
         </div>
         <div>
-          <h4 class="text-white font-semibold mb-4">Export Formats</h4>
+          <h4 class="text-white font-semibold mb-4" data-i18n="pricing.footer.exports">Export Formats</h4>
           <ul class="space-y-3 text-sm text-gray-400">
             <li>Excel (.xlsx)</li>
             <li>CSV (.csv)</li>
@@ -378,7 +387,7 @@
         </div>
       </div>
       <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-        <p>&copy; 2026 commentpull. All rights reserved.</p>
+        <p data-i18n="pricing.footer.copyright">&copy; 2026 commentpull. All rights reserved.</p>
         <div class="flex gap-4">
           <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter text-lg"></i></a>
           <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-github text-lg"></i></a>

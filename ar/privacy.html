@@ -1,204 +1,148 @@
+<!-- AUTO-GENERATED — do not edit. Edit root source files and run: node build.js -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-MMW3VEQWT2');
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سياسة الخصوصية — CommentPull</title>
-<meta name="description" content="سياسة خصوصية CommentPull — كيف نتعامل مع بياناتك، وما الذي نجمعه، وحقوقك.">
-<meta name="robots" content="index, follow">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="canonical" href="https://commentpull.com/ar/privacy.html">
-<link rel="alternate" hreflang="en" href="https://commentpull.com/privacy.html">
-<link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/privacy.html">
-<link rel="alternate" hreflang="x-default" href="https://commentpull.com/privacy.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
-    --border: #2a2a2a; --border-active: #444;
-    --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
-    --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
-    --radius: 10px; --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; font-size: 14px; min-height: 100vh; overflow-x: hidden; }
-  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 999; opacity: 0.4; }
-
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: linear-gradient(to bottom, rgba(13,13,13,0.97) 0%, transparent 100%); backdrop-filter: blur(4px); }
-  .logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
-  .logo span { color: var(--text-dim); font-weight: 300; font-style: italic; }
-  .btn-nav { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: 'Cairo', sans-serif; font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
-  .btn-nav:hover { border-color: var(--border-active); color: var(--text); }
-
-  .page { max-width: 720px; margin: 0 auto; padding: 120px 40px 80px; }
-
-  .page-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
-  .page-title { font-family: 'Cairo', sans-serif; font-size: 40px; font-weight: 700; color: var(--text); line-height: 1.15; margin-bottom: 10px; }
-  .page-date { font-size: 11px; color: var(--text-muted); margin-bottom: 48px; }
-
-  .prose { display: flex; flex-direction: column; gap: 36px; }
-  .section-title { font-family: 'Cairo', sans-serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
-  .prose p { font-size: 13px; color: var(--text-dim); line-height: 1.85; }
-  .prose p + p { margin-top: 12px; }
-  .prose ul { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-  .prose ul li { font-size: 13px; color: var(--text-dim); line-height: 1.7; display: flex; align-items: flex-start; gap: 10px; flex-direction: row-reverse; }
-  .prose ul li::before { content: '—'; color: var(--text-muted); flex-shrink: 0; margin-top: 1px; }
-  .prose a { color: var(--accent); text-decoration: none; }
-  .prose a:hover { text-decoration: underline; }
-  strong { color: var(--text); font-weight: 500; }
-
-  .callout { background: var(--surface2); border: 1px solid var(--border); border-right: 3px solid var(--accent); border-radius: var(--radius); padding: 16px 20px; font-size: 13px; color: var(--text-dim); line-height: 1.75; }
-
-  footer { border-top: 1px solid var(--border); padding: 32px 40px; max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .footer-left { font-size: 12px; color: var(--text-muted); }
-  .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; flex-direction: row-reverse; }
-  .footer-right a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-  .footer-right a:hover { color: var(--text-dim); }
-
-  @media (max-width: 600px) {
-    nav { padding: 16px 20px; }
-    .page { padding: 100px 20px 60px; }
-    .page-title { font-size: 30px; }
-    footer { padding: 24px 20px; flex-direction: column; gap: 10px; }
-  }
-</style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سياسة الخصوصية — commentpull</title>
+  <meta name="description" content="سياسة خصوصية commentpull — كيف نجمع بياناتك ونستخدمها ونحميها.">
+  <link rel="canonical" href="https://commentpull.com/ar/privacy.html">
+  <link rel="alternate" hreflang="en" href="https://commentpull.com/privacy.html">
+  <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/privacy.html">
+  <link rel="alternate" hreflang="x-default" href="https://commentpull.com/privacy.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] .prose ul { padding-right: 1.5rem; padding-left: 0; }
+    .prose h2 { font-size: 1.125rem; font-weight: 600; color: #fff; margin-top: 2.5rem; margin-bottom: 0.75rem; }
+    .prose p, .prose li { font-size: 0.9375rem; color: #9ca3af; line-height: 1.75; }
+    .prose ul { list-style: disc; padding-left: 1.5rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .prose a { color: #818cf8; }
+    .prose a:hover { color: #a5b4fc; }
+    .prose code { background: rgba(255,255,255,0.07); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  </style>
 </head>
-<body class="lang-ar">
+<body class="lang-ar antialiased min-h-screen flex flex-col">
 
-<nav>
-  <a href="/" class="logo">Comment<span>Pull</span></a>
-  <div style="display:flex;gap:8px;align-items:center">
-    <a href="/ar/support.html" class="btn-nav">دعم</a>
-    <button id="lang-toggle" onclick="toggleLang()" class="btn-nav">English</button>
-    <a href="/ar/" class="btn-nav">→ العودة للتطبيق</a>
-  </div>
-</nav>
-
-<div class="page">
-  <p class="page-eyebrow">القانونية</p>
-  <h1 class="page-title">سياسة الخصوصية</h1>
-  <p class="page-date">آخر تحديث: 6 أبريل 2025</p>
-
-  <div class="prose">
-
-    <div class="callout">
-      CommentPull مبنية على مبدأ بسيط: <strong>بياناتك تبقى على جهازك</strong>. يتم تشغيل جميع عمليات استخراج التعليقات كلياً في متصفحك — رموز الوصول والمحتوى المستخرج لا يلمسان خوادمنا أبداً.
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="/ar/index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="/ar/index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">كيف يعمل</a>
+        <a href="pricing.html" class="hover:text-white transition-colors" data-i18n="nav.pricing">الأسعار</a>
+        <a href="/ar/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">الدعم</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button id="lang-toggle" onclick="toggleLang()"
+          class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">العربية</button>
+        <a href="signin.html" class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium" data-i18n="nav.signin">تسجيل الدخول</a>
+        <a href="signup.html" class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" data-i18n="nav.signup">إنشاء حساب</a>
+      </div>
     </div>
+  </header>
 
-    <div>
-      <h2 class="section-title">١. من نحن</h2>
-      <p>CommentPull أداة ويب تتيح لك استخراج التعليقات وتصفيتها وتصديرها من منشورات فيسبوك وإنستغرام ويوتيوب. نحن مشغل هذه الخدمة، ويمكن الوصول إلينا على تفاصيل الاتصال في أسفل هذه الصفحة.</p>
+  <main class="flex-grow pt-20">
+    <div class="max-w-3xl mx-auto px-6 py-24">
+
+      <!-- Page heading -->
+      <div class="mb-12">
+        <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4" data-i18n="privacy.eyebrow">القانونية</span>
+        <h1 class="text-4xl font-semibold text-white mb-4" data-i18n="privacy.title">سياسة الخصوصية</h1>
+        <p class="text-gray-500 text-sm" data-i18n="privacy.date">آخر تحديث: 6 أبريل 2025</p>
+      </div>
+
+      <!-- Callout -->
+      <div class="rounded-xl border border-indigo-500/20 bg-indigo-500/5 px-6 py-5 mb-12 text-sm text-gray-300 leading-relaxed" data-i18n-html="privacy.callout">CommentPull مبنية على مبدأ بسيط: <strong>بياناتك تبقى على جهازك</strong>. يتم تشغيل جميع عمليات استخراج التعليقات كلياً في متصفحك — رموز الوصول والمحتوى المستخرج لا يلمسان خوادمنا أبداً.</div>
+
+      <div class="prose">
+
+        <h2 data-i18n="privacy.s1.title">١. من نحن</h2>
+        <p data-i18n="privacy.s1.text">CommentPull أداة ويب تتيح لك استخراج التعليقات وتصفيتها وتصديرها من منشورات فيسبوك وإنستغرام ويوتيوب. نحن مشغل هذه الخدمة، ويمكن الوصول إلينا على تفاصيل الاتصال في أسفل هذه الصفحة.</p>
+
+        <h2 data-i18n="privacy.s2.title">٢. ما نجمعه</h2>
+        <p data-i18n="privacy.s2.intro">نجمع فقط الحد الأدنى من المعلومات اللازمة لتشغيل حسابك:</p>
+        <ul data-i18n-html="privacy.s2.items"><li><strong>عنوان البريد الإلكتروني</strong> — يُستخدم لتعريف حسابك والرسائل التعاملية (مثل إعادة تعيين كلمة المرور).</li><li><strong>الاسم</strong> — يُعرض في واجهة التطبيق.</li><li><strong>كلمة المرور</strong> — مخزنة كهاش bcrypt (تكلفة 12). لا نخزن كلمة مرورك بالنص العادي.</li><li><strong>طوابع وقت الحساب</strong> — متى تم إنشاء حسابك وآخر تحديث.</li></ul>
+        <p data-i18n-html="privacy.s2.nopayment">لا <strong>نجمع</strong> معلومات الدفع. لا يلزم وجود بطاقة ائتمانية لاستخدام CommentPull.</p>
+
+        <h2 data-i18n="privacy.s3.title">٣. ما لا نجمعه</h2>
+        <ul data-i18n-html="privacy.s3.items"><li>رموز الوصول <strong>لفيسبوك أو إنستغرام</strong> — تُدخَل في متصفحك وترسل مباشرة إلى خوادم Meta. لا تمر عبر خوادمنا.</li><li><strong>التعليقات وأسماء المستخدمين أو محتوى المنشورات</strong> التي تستخرجها — تتم معالجتها كلها في متصفحك وتذهب البيانات مباشرة إلى ملفك المحمَّل.</li><li><strong>مفتاح YouTube API</strong> — نفس الأمر، المتصفح فقط.</li><li><strong>سلوك التصفح</strong> أو تفاعلات الصفحة أو تسجيلات الجلسة بما يتجاوز التحليلات الأساسية.</li></ul>
+
+        <h2 data-i18n="privacy.s4.title">٤. كيف نستخدم بياناتك</h2>
+        <ul data-i18n-html="privacy.s4.items"><li>للمصادقة عليك والحفاظ على جلستك.</li></ul>
+        <p data-i18n="privacy.s4.nosell">لا نبيع أو نؤجر أو نشارك بياناتك الشخصية مع أطراف ثالثة لأغراض تسويقية.</p>
+
+        <h2 data-i18n="privacy.s5.title">٥. ملفات تعريف الارتباط والجلسات</h2>
+        <p data-i18n-html="privacy.s5.text">نضع ملف تعريف ارتباط HTTP-only آمن واحد (<code>cp_token</code>) عند تسجيل دخولك. يحتوي على رمز جلسة عشوائي — وليس كلمة مرورك أو أي بيانات شخصية. تنتهي صلاحيته بعد 30 يوماً أو عند تسجيل خروجك. لا نستخدم ملفات تعريف ارتباط إعلانية أو تتبع طرف ثالث.</p>
+
+        <h2 data-i18n="privacy.s6.title">٦. التحليلات</h2>
+        <p data-i18n-html="privacy.s6.text">نستخدم <strong>Google Analytics 4</strong> لفهم كيفية استخدام التطبيق بشكل إجمالي (مثل أي علامة تبويب الأكثر شيوعاً، وعدد عمليات الاستخراج الناجحة). هذه البيانات مجهولة الهوية وغير مرتبطة بحسابك. يمكنك إلغاء الاشتراك عبر الإضافات التي تحجب Google Analytics.</p>
+
+        <h2 data-i18n="privacy.s7.title">٧. تخزين البيانات وأمانها</h2>
+        <p data-i18n="privacy.s7.text">تُخزَّن بيانات الحساب في قاعدة بيانات MySQL مستضافة على Hostinger. نستخدم تجزئة bcrypt لكلمات المرور ورموز جلسة عشوائية مشفرة (256 بت) والتسليم عبر HTTPS فقط. تنتهي صلاحية رموز الجلسة تلقائياً بعد 30 يوماً.</p>
+        <p data-i18n="privacy.s7.noextract">لا تُكتب أي بيانات استخراج (التعليقات أو محتوى المنشور أو مفاتيح API) في قاعدة بياناتنا.</p>
+
+        <h2 data-i18n="privacy.s8.title">٨. الاحتفاظ بالبيانات</h2>
+        <p data-i18n="privacy.s8.text">تُحتفظ ببيانات حسابك طالما كان حسابك نشطاً. يمكنك طلب الحذف في أي وقت بالتواصل معنا — سنحذف بريدك الإلكتروني واسمك وهاش كلمة المرور بشكل دائم خلال 7 أيام.</p>
+
+        <h2 data-i18n="privacy.s9.title">٩. حقوقك</h2>
+        <p data-i18n="privacy.s9.intro">اعتماداً على موقعك، قد يكون لديك حقوق بموجب GDPR أو CCPA أو قوانين مماثلة، بما في ذلك:</p>
+        <ul data-i18n-html="privacy.s9.items"><li>الحق في <strong>الوصول</strong> إلى البيانات التي نحتفظ بها عنك.</li><li>الحق في <strong>تصحيح</strong> البيانات غير الدقيقة.</li><li>الحق في <strong>حذف</strong> حسابك وجميع البيانات المرتبطة به.</li><li>الحق في <strong>إمكانية نقل البيانات</strong> — نسخة من بياناتك بتنسيق يمكن قراءته آلياً.</li><li>الحق في <strong>سحب الموافقة</strong> في أي وقت.</li></ul>
+        <p data-i18n="privacy.s9.contact">لممارسة أي من هذه الحقوق، تواصل معنا على البريد الإلكتروني أدناه.</p>
+
+        <h2 data-i18n="privacy.s10.title">١٠. خدمات الطرف الثالث</h2>
+        <ul data-i18n-html="privacy.s10.items"><li><strong>Meta Graph API</strong> — يُستخدم مباشرة من متصفحك لجلب تعليقات فيسبوك وإنستغرام. خاضع لـ <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">سياسة خصوصية Meta</a>.</li><li><strong>YouTube Data API v3</strong> — يُستخدم مباشرة من متصفحك. خاضع لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li><li><strong>Google Analytics</strong> — تحليلات استخدام إجمالية. خاضعة لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li><li><strong>Hostinger</strong> — يخزن مزود الاستضافة بيانات الحساب في مراكز بياناتهم. خاضع لـ <a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener">سياسة خصوصية Hostinger</a>.</li></ul>
+
+        <h2 data-i18n="privacy.s11.title">١١. التغييرات على هذه السياسة</h2>
+        <p data-i18n="privacy.s11.text">قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر. عند القيام بذلك، سنراجع تاريخ "آخر تحديث" في الأعلى. يُعدّ استمرار استخدام CommentPull بعد نشر التغييرات قبولاً للسياسة المحدَّثة.</p>
+
+        <h2 data-i18n="privacy.s12.title">١٢. الاتصال</h2>
+        <p data-i18n-html="privacy.s12.text">يمكن إرسال الأسئلة وطلبات البيانات وطلبات الحذف إلى:<br><a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a></p>
+
+      </div>
+
     </div>
+  </main>
 
-    <div>
-      <h2 class="section-title">٢. ما نجمعه</h2>
-      <p>نجمع فقط الحد الأدنى من المعلومات اللازمة لتشغيل حسابك:</p>
-      <ul>
-        <li><strong>عنوان البريد الإلكتروني</strong> — يُستخدم لتعريف حسابك والرسائل التعاملية (مثل إعادة تعيين كلمة المرور).</li>
-        <li><strong>الاسم</strong> — يُعرض في واجهة التطبيق.</li>
-        <li><strong>كلمة المرور</strong> — مخزنة كهاش bcrypt (تكلفة 12). لا نخزن كلمة مرورك بالنص العادي.</li>
-        <li><strong>طوابع وقت الحساب</strong> — متى تم إنشاء حسابك وآخر تحديث.</li>
-      </ul>
-      <p style="margin-top:14px">لا <strong>نجمع</strong> معلومات الدفع. لا يلزم وجود بطاقة ائتمانية لاستخدام CommentPull.</p>
+  <!-- Footer -->
+  <footer class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
+    <div class="max-w-[1440px] mx-auto px-6">
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <p data-i18n="footer.index.copyright">© 2026 commentpull. جميع الحقوق محفوظة.</p>
+        <div class="flex gap-6">
+          <a href="/ar/about.html" class="hover:text-white transition-colors" data-i18n="footer.about">حول</a>
+          <a href="/ar/privacy.html" class="hover:text-white transition-colors" data-i18n="footer.privacy">سياسة الخصوصية</a>
+          <a href="/ar/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">الدعم</a>
+          <a href="/ar/contact.html" class="hover:text-white transition-colors" data-i18n="footer.contact">تواصل معنا</a>
+        </div>
+      </div>
     </div>
+  </footer>
 
-    <div>
-      <h2 class="section-title">٣. ما لا نجمعه</h2>
-      <ul>
-        <li>رموز الوصول <strong>لفيسبوك أو إنستغرام</strong> — تُدخَل في متصفحك وترسل مباشرة إلى خوادم Meta. لا تمر عبر خوادمنا.</li>
-        <li><strong>التعليقات وأسماء المستخدمين أو محتوى المنشورات</strong> التي تستخرجها — تتم معالجتها كلها في متصفحك وتذهب البيانات مباشرة إلى ملفك المحمَّل.</li>
-        <li><strong>مفتاح YouTube API</strong> — نفس الأمر، المتصفح فقط.</li>
-        <li><strong>سلوك التصفح</strong> أو تفاعلات الصفحة أو تسجيلات الجلسة بما يتجاوز التحليلات الأساسية.</li>
-      </ul>
-    </div>
-
-    <div>
-      <h2 class="section-title">٤. كيف نستخدم بياناتك</h2>
-      <ul>
-        <li>للمصادقة عليك والحفاظ على جلستك.</li>
-      </ul>
-      <p>لا نبيع أو نؤجر أو نشارك بياناتك الشخصية مع أطراف ثالثة لأغراض تسويقية.</p>
-    </div>
-
-    <div>
-      <h2 class="section-title">٥. ملفات تعريف الارتباط والجلسات</h2>
-      <p>نضع ملف تعريف ارتباط HTTP-only آمن واحد (<code>cp_token</code>) عند تسجيل دخولك. يحتوي على رمز جلسة عشوائي — وليس كلمة مرورك أو أي بيانات شخصية. تنتهي صلاحيته بعد 30 يوماً أو عند تسجيل خروجك. لا نستخدم ملفات تعريف ارتباط إعلانية أو تتبع طرف ثالث.</p>
-    </div>
-
-    <div>
-      <h2 class="section-title">٦. التحليلات</h2>
-      <p>نستخدم <strong>Google Analytics 4</strong> لفهم كيفية استخدام التطبيق بشكل إجمالي (مثل أي علامة تبويب الأكثر شيوعاً، وعدد عمليات الاستخراج الناجحة). هذه البيانات مجهولة الهوية وغير مرتبطة بحسابك. يمكنك إلغاء الاشتراك عبر الإضافات التي تحجب Google Analytics.</p>
-    </div>
-
-    <div>
-      <h2 class="section-title">٧. تخزين البيانات وأمانها</h2>
-      <p>تُخزَّن بيانات الحساب في قاعدة بيانات MySQL مستضافة على Hostinger. نستخدم تجزئة bcrypt لكلمات المرور ورموز جلسة عشوائية مشفرة (256 بت) والتسليم عبر HTTPS فقط. تنتهي صلاحية رموز الجلسة تلقائياً بعد 30 يوماً.</p>
-      <p>لا تُكتب أي بيانات استخراج (التعليقات أو محتوى المنشور أو مفاتيح API) في قاعدة بياناتنا.</p>
-    </div>
-
-    <div>
-      <h2 class="section-title">٨. الاحتفاظ بالبيانات</h2>
-      <p>تُحتفظ ببيانات حسابك طالما كان حسابك نشطاً. يمكنك طلب الحذف في أي وقت بالتواصل معنا — سنحذف بريدك الإلكتروني واسمك وهاش كلمة المرور بشكل دائم خلال 7 أيام.</p>
-    </div>
-
-    <div>
-      <h2 class="section-title">٩. حقوقك</h2>
-      <p>اعتماداً على موقعك، قد يكون لديك حقوق بموجب GDPR أو CCPA أو قوانين مماثلة، بما في ذلك:</p>
-      <ul>
-        <li>الحق في <strong>الوصول</strong> إلى البيانات التي نحتفظ بها عنك.</li>
-        <li>الحق في <strong>تصحيح</strong> البيانات غير الدقيقة.</li>
-        <li>الحق في <strong>حذف</strong> حسابك وجميع البيانات المرتبطة به.</li>
-        <li>الحق في <strong>إمكانية نقل البيانات</strong> — نسخة من بياناتك بتنسيق يمكن قراءته آلياً.</li>
-        <li>الحق في <strong>سحب الموافقة</strong> في أي وقت.</li>
-      </ul>
-      <p>لممارسة أي من هذه الحقوق، تواصل معنا على البريد الإلكتروني أدناه.</p>
-    </div>
-
-    <div>
-      <h2 class="section-title">١٠. خدمات الطرف الثالث</h2>
-      <ul>
-        <li><strong>Meta Graph API</strong> — يُستخدم مباشرة من متصفحك لجلب تعليقات فيسبوك وإنستغرام. خاضع لـ <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">سياسة خصوصية Meta</a>.</li>
-        <li><strong>YouTube Data API v3</strong> — يُستخدم مباشرة من متصفحك. خاضع لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li>
-        <li><strong>Google Analytics</strong> — تحليلات استخدام إجمالية. خاضعة لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li>
-        <li><strong>Hostinger</strong> — يخزن مزود الاستضافة بيانات الحساب في مراكز بياناتهم. خاضع لـ <a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener">سياسة خصوصية Hostinger</a>.</li>
-      </ul>
-    </div>
-
-    <div>
-      <h2 class="section-title">١١. التغييرات على هذه السياسة</h2>
-      <p>قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر. عند القيام بذلك، سنراجع تاريخ "آخر تحديث" في الأعلى. يُعدّ استمرار استخدام CommentPull بعد نشر التغييرات قبولاً للسياسة المحدَّثة.</p>
-    </div>
-
-    <div>
-      <h2 class="section-title">١٢. الاتصال</h2>
-      <p>يمكن إرسال الأسئلة وطلبات البيانات وطلبات الحذف إلى:<br>
-      <a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a></p>
-    </div>
-
-  </div>
-</div>
-
-<footer>
-  <span class="footer-left">© 2025 CommentPull</span>
-  <div class="footer-right">
-    <a href="/ar/about.html">حول</a>
-    <a href="/ar/privacy.html">سياسة الخصوصية</a>
-    <a href="/ar/">العودة للتطبيق</a>
-  </div>
-</footer>
-
-<script src="/lang.js"></script>
+  <script src="/lang.js"></script>
 </body>
 </html>

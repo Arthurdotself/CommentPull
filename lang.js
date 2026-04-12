@@ -24,6 +24,9 @@
       'footer.exports': 'Export Formats',
       'footer.how': 'How it Works',
       'footer.preview': 'Results Preview',
+      'nav.pricing': 'Pricing',
+      'nav.signin': 'Sign In',
+      'nav.signup': 'Sign Up',
 
       /* ── index hero ── */
       'index.hero.badge': 'Supports Facebook · Instagram · YouTube',
@@ -272,6 +275,9 @@
       'footer.exports': 'تنسيقات التصدير',
       'footer.how': 'كيف يعمل',
       'footer.preview': 'معاينة النتائج',
+      'nav.pricing': 'الأسعار',
+      'nav.signin': 'تسجيل الدخول',
+      'nav.signup': 'إنشاء حساب',
 
       /* ── index hero ── */
       'index.hero.badge': 'يدعم فيسبوك · إنستغرام · يوتيوب',

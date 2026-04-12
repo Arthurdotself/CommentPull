@@ -1,3 +1,4 @@
+<!-- AUTO-GENERATED — do not edit. Edit root source files and run: node build.js -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -12,10 +13,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>استخراج تعليقات وسائل التواصل الاجتماعي — CommentPull</title>
-  <meta name="description" content="استخرج تعليقات فيسبوك وإنستغرام ويوتيوب في ثوانٍ. أداة مجانية تعمل في المتصفح — بياناتك تبقى على جهازك.">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://commentpull.com/ar/">
+  <title>commentpull - استخراج تعليقات وسائل التواصل الاجتماعي</title>
+  <link rel="canonical" href="https://commentpull.com/">
   <link rel="alternate" hreflang="en" href="https://commentpull.com/">
   <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/">
   <link rel="alternate" hreflang="x-default" href="https://commentpull.com/">
@@ -177,7 +176,7 @@
     }
   </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body class="lang-ar antialiased min-h-screen flex flex-col">
 
   <!-- ─── Header ─── -->
   <header id="header" class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
@@ -186,21 +185,22 @@
         <span class="text-xl font-semibold tracking-tight">commentpull</span>
       </div>
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
-        <a href="support.html" class="hover:text-white transition-colors">دعم</a>
+        <a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">كيف يعمل</a>
+        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
+        <a href="/ar/support.html" class="hover:text-white transition-colors">Support</a>
       </nav>
       <div class="flex items-center gap-3">
         <button id="lang-toggle" onclick="toggleLang()"
           class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">
-          English
+          العربية
         </button>
         <a href="signin.html"
           class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium">
-          تسجيل الدخول
+          Sign In
         </a>
         <a href="signup.html"
           class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">
-          إنشاء حساب
+          Sign Up
         </a>
       </div>
     </div>
@@ -215,16 +215,16 @@
 
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel text-sm text-gray-300 mb-8 border border-white/10">
           <span class="w-2 h-2 rounded-full bg-green-500"></span>
-          <span data-i18n="index.hero.badge">Supports Facebook · Instagram · YouTube</span>
+          <span data-i18n="index.hero.badge">يدعم فيسبوك · إنستغرام · يوتيوب</span>
         </div>
 
         <h1 class="text-6xl md:text-7xl font-semibold tracking-tight mb-6 leading-[1.1]" data-i18n-html="index.hero.h1">
-          اسحب الفائز.<br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">بنقرة واحدة.</span>
+          Draw a Winner.<br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Instantly.</span>
         </h1>
 
         <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto" data-i18n="index.hero.subtitle">
-          من تعليقات الفيسبوك أو الإنستغرام أو اليوتيوب — بدون تعقيد، بدون تحيّز، بدون جهد.
+          Pick a winner from any post's comments with one click — no spreadsheets, no bias, no effort.
         </p>
 
         <!-- ── Tool container ── -->
@@ -238,7 +238,7 @@
               </div>
               <input type="text" id="hero-url"
                 data-i18n-placeholder="index.url.placeholder"
-                placeholder="Paste your Facebook, Instagram or YouTube URL here..."
+                placeholder="الصق رابط فيسبوك أو إنستغرام أو يوتيوب هنا..."
                 oninput="onHeroUrlInput()"
                 class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-base px-2 py-3 min-w-0">
               <span id="platform-badge" style="display:none"
@@ -260,7 +260,7 @@
                 class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
               <button id="btn-check-token" onclick="checkToken()"
                 class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0">
-                <span id="btn-check-text" data-i18n="index.token.check">Check token</span>
+                <span id="btn-check-text" data-i18n="index.token.check">فحص الرمز</span>
               </button>
               <a id="token-hint-link" href="#"
                 onclick="window.open('https://developers.facebook.com/tools/explorer/','_blank'); return false;"
@@ -302,7 +302,7 @@
               <button onclick="toggleFilters()"
                 class="text-xs text-gray-400 hover:text-white px-4 py-2.5 rounded-xl border border-white/10 hover:border-white/20 transition-colors flex items-center gap-2">
                 <i class="fa-solid fa-sliders text-xs"></i>
-                <span id="filter-badge" class="filter-badge" data-i18n="index.btn.filters">Filters</span>
+                <span id="filter-badge" class="filter-badge" data-i18n="index.btn.filters">المرشحات</span>
               </button>
               <button id="extract-btn" class="btn-extract bg-white text-black px-6 py-2.5 rounded-xl font-medium hover:bg-gray-100 transition-all flex items-center gap-2 shadow-lg" onclick="handleExtract()">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
@@ -310,7 +310,7 @@
                   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
                 <span class="spinner">⏳</span>
-                <span class="btn-label" data-i18n="index.btn.extract">Extract Comments</span>
+                <span class="btn-label" data-i18n="index.btn.extract">استخراج التعليقات</span>
               </button>
             </div>
           </div>
@@ -325,44 +325,44 @@
           <div id="filter-section" class="filter-section" style="display:none">
             <div class="mt-2 bg-white/5 rounded-[20px] border border-white/10 p-5 text-left">
               <div class="flex items-center justify-between mb-3 cursor-pointer" onclick="toggleFilters()">
-                <span class="text-sm font-medium text-gray-300" data-i18n="filter.title">Filter Rules</span>
-                <span class="text-xs text-gray-500" data-i18n="filter.collapse">click to collapse ↑</span>
+                <span class="text-sm font-medium text-gray-300" data-i18n="filter.title">قواعد التصفية</span>
+                <span class="text-xs text-gray-500" data-i18n="filter.collapse">انقر للطي ↑</span>
               </div>
               <div id="filter-rules" class="filter-rules">
                 <div class="filter-rule">
-                  <label><input type="checkbox" id="rule-keyword" onchange="onRuleToggle('rule-keyword')"> <span data-i18n="filter.keyword">Must contain keyword or hashtag</span></label>
+                  <label><input type="checkbox" id="rule-keyword" onchange="onRuleToggle('rule-keyword')"> <span data-i18n="filter.keyword">يجب أن يحتوي على كلمة مفتاحية أو هاشتاق</span></label>
                   <div id="inputs-rule-keyword" style="display:none">
-                    <input type="text" id="filter-keyword" data-i18n-placeholder="filter.keyword.placeholder" placeholder="e.g. #giveaway">
+                    <input type="text" id="filter-keyword" data-i18n-placeholder="filter.keyword.placeholder" placeholder="مثال: #giveaway">
                   </div>
                 </div>
                 <div class="filter-rule">
-                  <label><input type="checkbox" id="rule-mentions" onchange="onRuleToggle('rule-mentions')"> <span data-i18n="filter.mentions">Minimum @mentions</span></label>
+                  <label><input type="checkbox" id="rule-mentions" onchange="onRuleToggle('rule-mentions')"> <span data-i18n="filter.mentions">الحد الأدنى من الإشارات @</span></label>
                   <div id="inputs-rule-mentions" style="display:none" class="flex items-center gap-2">
                     <input type="number" id="filter-mentions" value="2" min="1" max="20">
-                    <span class="text-xs text-gray-500" data-i18n="filter.mentions.suffix">or more @mentions required</span>
+                    <span class="text-xs text-gray-500" data-i18n="filter.mentions.suffix">إشارة أو أكثر مطلوبة</span>
                   </div>
                 </div>
                 <div class="filter-rule">
-                  <label><input type="checkbox" id="rule-length" onchange="onRuleToggle('rule-length')"> <span data-i18n="filter.length">Minimum comment length</span></label>
+                  <label><input type="checkbox" id="rule-length" onchange="onRuleToggle('rule-length')"> <span data-i18n="filter.length">الحد الأدنى لطول التعليق</span></label>
                   <div id="inputs-rule-length" style="display:none" class="flex items-center gap-2">
                     <input type="number" id="filter-length" value="10" min="1" max="500">
-                    <span class="text-xs text-gray-500" data-i18n="filter.length.suffix">characters minimum</span>
+                    <span class="text-xs text-gray-500" data-i18n="filter.length.suffix">حرف كحد أدنى</span>
                   </div>
                 </div>
                 <div class="filter-rule">
-                  <label><input type="checkbox" id="rule-dedup" onchange="onRuleToggle('rule-dedup')"> <span data-i18n="filter.dedup">One entry per person</span></label>
+                  <label><input type="checkbox" id="rule-dedup" onchange="onRuleToggle('rule-dedup')"> <span data-i18n="filter.dedup">مشاركة واحدة لكل شخص</span></label>
                 </div>
                 <div class="filter-rule">
-                  <label><input type="checkbox" id="rule-daterange" onchange="onRuleToggle('rule-daterange')"> <span data-i18n="filter.daterange">Date range</span></label>
+                  <label><input type="checkbox" id="rule-daterange" onchange="onRuleToggle('rule-daterange')"> <span data-i18n="filter.daterange">نطاق التاريخ</span></label>
                   <div id="inputs-rule-daterange" style="display:none" class="flex items-center gap-2 flex-wrap">
-                    <span class="text-xs text-gray-500" data-i18n="filter.daterange.from">From</span>
+                    <span class="text-xs text-gray-500" data-i18n="filter.daterange.from">من</span>
                     <input type="date" id="filter-date-from" style="width:auto">
-                    <span class="text-xs text-gray-500" data-i18n="filter.daterange.to">To</span>
+                    <span class="text-xs text-gray-500" data-i18n="filter.daterange.to">إلى</span>
                     <input type="date" id="filter-date-to" style="width:auto">
                   </div>
                 </div>
                 <div class="filter-rule">
-                  <label><input type="checkbox" id="rule-exclude" onchange="onRuleToggle('rule-exclude')"> <span data-i18n="filter.exclude">Exclude specific users</span></label>
+                  <label><input type="checkbox" id="rule-exclude" onchange="onRuleToggle('rule-exclude')"> <span data-i18n="filter.exclude">استبعاد مستخدمين محددين</span></label>
                   <div id="inputs-rule-exclude" style="display:none">
                     <input type="text" id="filter-exclude" data-i18n-placeholder="filter.exclude.placeholder" placeholder="username1, username2, …">
                   </div>
@@ -374,7 +374,7 @@
 
         <!-- Trusted by -->
         <div class="mt-20 pt-12 border-t border-white/5">
-          <p class="text-sm text-gray-500 mb-8 uppercase tracking-wider font-medium" data-i18n="index.hero.trusted">Trusted by social media managers at</p>
+          <p class="text-sm text-gray-500 mb-8 uppercase tracking-wider font-medium" data-i18n="index.hero.trusted">يثق به مديرو وسائل التواصل الاجتماعي في</p>
           <div class="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
             <div class="flex items-center gap-2 text-xl font-bold"><i class="fa-brands fa-hubspot"></i> HubSpot</div>
             <div class="flex items-center gap-2 text-xl font-bold"><i class="fa-brands fa-buffer"></i> Buffer</div>
@@ -389,24 +389,24 @@
     <section id="how-it-works" class="py-24 bg-[#F8F9FA] text-black relative overflow-hidden">
       <div class="max-w-[1440px] mx-auto px-6">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-semibold tracking-tight mb-4" data-i18n="how.title">How it works</h2>
-          <p class="text-gray-500 text-lg max-w-2xl mx-auto" data-i18n="how.subtitle">Three simple steps to get your data ready for analysis.</p>
+          <h2 class="text-4xl font-semibold tracking-tight mb-4" data-i18n="how.title">كيف يعمل</h2>
+          <p class="text-gray-500 text-lg max-w-2xl mx-auto" data-i18n="how.subtitle">ثلاث خطوات بسيطة لتجهيز بياناتك للتحليل.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="bg-white p-8 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group hover:-translate-y-1 transition-transform duration-300">
             <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-paste"></i></div>
-            <h3 class="text-xl font-semibold mb-3" data-i18n="how.1.title">1. Paste URL</h3>
-            <p class="text-gray-500 leading-relaxed" data-i18n="how.1.desc">Paste any Facebook post, Instagram photo/reel, or YouTube video URL. Platform is detected automatically.</p>
+            <h3 class="text-xl font-semibold mb-3" data-i18n="how.1.title">١. الصق الرابط</h3>
+            <p class="text-gray-500 leading-relaxed" data-i18n="how.1.desc">الصق أي رابط منشور فيسبوك أو صورة/ريل إنستغرام أو فيديو يوتيوب. يتم اكتشاف المنصة تلقائياً.</p>
           </div>
           <div class="bg-white p-8 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group hover:-translate-y-1 transition-transform duration-300">
             <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-bolt"></i></div>
-            <h3 class="text-xl font-semibold mb-3" data-i18n="how.2.title">2. Extract</h3>
-            <p class="text-gray-500 leading-relaxed" data-i18n="how.2.desc">Add your API token and click Extract. All comments, replies, usernames, and timestamps are fetched in real-time.</p>
+            <h3 class="text-xl font-semibold mb-3" data-i18n="how.2.title">٢. استخراج</h3>
+            <p class="text-gray-500 leading-relaxed" data-i18n="how.2.desc">أضف رمز API وانقر على استخراج. يتم جلب جميع التعليقات والردود وأسماء المستخدمين والتواريخ في الوقت الفعلي.</p>
           </div>
           <div class="bg-white p-8 rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group hover:-translate-y-1 transition-transform duration-300">
             <div class="w-12 h-12 rounded-2xl bg-green-100 text-green-600 flex items-center justify-center text-xl mb-6"><i class="fa-solid fa-download"></i></div>
-            <h3 class="text-xl font-semibold mb-3" data-i18n="how.3.title">3. Export</h3>
-            <p class="text-gray-500 leading-relaxed" data-i18n="how.3.desc">Download your clean data in CSV, Excel, or JSON format — ready for sentiment analysis, reporting, or giveaway draws.</p>
+            <h3 class="text-xl font-semibold mb-3" data-i18n="how.3.title">٣. تصدير</h3>
+            <p class="text-gray-500 leading-relaxed" data-i18n="how.3.desc">حمّل بياناتك النظيفة بتنسيق CSV أو Excel أو JSON — جاهزة لتحليل المشاعر أو التقارير أو سحوبات الهدايا.</p>
           </div>
         </div>
       </div>
@@ -417,8 +417,8 @@
       <div class="max-w-[1440px] mx-auto px-6">
         <div class="flex flex-col md:flex-row justify-between items-end mb-12">
           <div>
-            <h2 class="text-4xl font-semibold tracking-tight mb-4" data-i18n="preview.title">Clean, structured data</h2>
-            <p class="text-gray-400 text-lg" data-i18n="preview.subtitle">Preview exactly what you'll get before exporting.</p>
+            <h2 class="text-4xl font-semibold tracking-tight mb-4" data-i18n="preview.title">بيانات نظيفة ومنظمة</h2>
+            <p class="text-gray-400 text-lg" data-i18n="preview.subtitle">معاينة ما ستحصل عليه بالضبط قبل التصدير.</p>
           </div>
           <div class="flex gap-3 mt-6 md:mt-0">
             <button onclick="setFmtAndDownload('csv')"
@@ -444,7 +444,7 @@
             <div class="flex items-center gap-2 flex-wrap">
               <input type="text" id="preview-search"
                 data-i18n-placeholder="preview.search.placeholder"
-                placeholder="Search name or comment…"
+                placeholder="البحث في الاسم أو التعليق…"
                 oninput="searchPreview()"
                 class="bg-[#1A1C23] border border-white/10 rounded-xl px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/20 w-44">
               <select id="fmt"
@@ -481,10 +481,10 @@
                 <thead class="bg-white/5 text-xs uppercase font-semibold text-gray-400 border-b border-white/10">
                   <tr>
                     <th class="px-4 py-4 w-10">#</th>
-                    <th class="px-6 py-4" data-i18n="preview.col.name">Name</th>
-                    <th class="px-6 py-4" data-i18n="preview.col.comment">Comment</th>
-                    <th class="px-6 py-4" data-i18n="preview.col.date">Date</th>
-                    <th class="px-6 py-4" data-i18n="preview.col.post">Post</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.name">الاسم</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.comment">التعليق</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.date">التاريخ</th>
+                    <th class="px-6 py-4" data-i18n="preview.col.post">المنشور</th>
                   </tr>
                 </thead>
                 <tbody id="preview-tbody" class="divide-y divide-white/5"></tbody>
@@ -509,11 +509,11 @@
             <table class="w-full text-left text-sm text-gray-300">
               <thead class="bg-white/5 text-xs uppercase font-semibold text-gray-400 border-b border-white/10">
                 <tr>
-                  <th class="px-6 py-4" data-i18n="preview.col.username">Username</th>
-                  <th class="px-6 py-4" data-i18n="preview.col.text">Comment Text</th>
-                  <th class="px-6 py-4" data-i18n="preview.col.likes">Likes</th>
-                  <th class="px-6 py-4" data-i18n="preview.col.date">Date</th>
-                  <th class="px-6 py-4" data-i18n="preview.col.status">Status</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.username">اسم المستخدم</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.text">نص التعليق</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.likes">الإعجابات</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.date">التاريخ</th>
+                  <th class="px-6 py-4" data-i18n="preview.col.status">الحالة</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
@@ -551,7 +551,7 @@
             </table>
           </div>
           <div class="bg-white/5 px-6 py-4 border-t border-white/10 flex justify-between items-center text-sm text-gray-400">
-            <span data-i18n="preview.placeholder">Paste a URL above to extract real comments</span>
+            <span data-i18n="preview.placeholder">الصق رابطاً أعلاه لاستخراج التعليقات الحقيقية</span>
             <button onclick="document.getElementById('hero-url').focus(); window.scrollTo({top:0,behavior:'smooth'})"
               class="text-white hover:text-indigo-400 transition-colors" data-i18n="preview.try">
               Try it now →
@@ -563,7 +563,7 @@
         <div id="rand-panel" style="display:none" class="mt-12 pt-12 border-t border-white/5">
           <div class="flex items-start justify-between mb-8 flex-wrap gap-4">
             <div>
-              <h2 class="text-3xl font-semibold tracking-tight mb-2" data-i18n="winner.title">Winner Randomizer</h2>
+              <h2 class="text-3xl font-semibold tracking-tight mb-2" data-i18n="winner.title">اختيار الفائز</h2>
               <p class="text-gray-400 text-sm"><span id="rand-pool-tag"></span></p>
             </div>
           </div>
@@ -571,7 +571,7 @@
           <div class="glass-panel rounded-[24px] border border-white/10 p-8">
             <div class="flex flex-wrap items-center gap-6 mb-6">
               <div class="flex items-center gap-3">
-                <span class="text-gray-300 text-sm" data-i18n="winner.winners">Winners:</span>
+                <span class="text-gray-300 text-sm" data-i18n="winner.winners">الفائزون:</span>
                 <button onclick="adjustWinners(-1)"
                   class="w-8 h-8 rounded-lg border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-colors flex items-center justify-center text-lg font-medium">−</button>
                 <span id="rand-winner-count" class="text-xl font-semibold w-8 text-center">1</span>
@@ -581,7 +581,7 @@
               <div class="flex-1 min-w-[200px]">
                 <input type="text" id="rand-exclude"
                   data-i18n-placeholder="winner.exclude.placeholder"
-                  placeholder="Exclude from draw: username1, username2, …"
+                  placeholder="استبعاد من السحب: username1, username2, …"
                   class="w-full bg-[#1A1C23] border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/20">
               </div>
               <button id="btn-draw" onclick="drawWinners()"
@@ -618,29 +618,31 @@
       </div>
     </section>
 
+
   </main>
 
   <!-- ─── Footer ─── -->
   <footer id="footer" class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
     <div class="max-w-[1440px] mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-        <div class="col-span-1 md:col-span-1">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
+        <div class="col-span-1 md:col-span-2">
           <div class="flex items-center gap-2 mb-6">
-            <span class="text-xl font-semibold tracking-tight">commentpull</span>
+          <span class="text-xl font-semibold tracking-tight">commentpull</span>
           </div>
           <p class="text-gray-400 text-sm leading-relaxed mb-6">
             The fastest way to extract, analyze, and export social media comments for marketers and researchers.
           </p>
         </div>
         <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="footer.product">Product</h4>
+          <h4 class="text-white font-semibold mb-4" data-i18n="footer.product">المنتج</h4>
           <ul class="space-y-3 text-sm text-gray-400">
-            <li><a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="footer.how">How it Works</a></li>
-            <li><a href="#preview" class="hover:text-white transition-colors" data-i18n="footer.preview">Results Preview</a></li>
+            <li><a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="footer.how">كيف يعمل</a></li>
+            <li><a href="#preview" class="hover:text-white transition-colors" data-i18n="footer.preview">معاينة النتائج</a></li>
+            <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing</a></li>
           </ul>
         </div>
         <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="footer.platforms">Platforms</h4>
+          <h4 class="text-white font-semibold mb-4" data-i18n="footer.platforms">المنصات</h4>
           <ul class="space-y-3 text-sm text-gray-400">
             <li class="flex items-center gap-2"><i class="fa-brands fa-facebook text-blue-400"></i> Facebook</li>
             <li class="flex items-center gap-2"><i class="fa-brands fa-instagram text-pink-400"></i> Instagram</li>
@@ -648,20 +650,22 @@
           </ul>
         </div>
         <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="footer.exports">Export Formats</h4>
+          <h4 class="text-white font-semibold mb-4">Company</h4>
           <ul class="space-y-3 text-sm text-gray-400">
-            <li>Excel (.xlsx)</li>
-            <li>CSV (.csv)</li>
-            <li>JSON (.json)</li>
+            <li><a href="/ar/about.html" class="hover:text-white transition-colors">About</a></li>
+            <li><a href="/ar/support.html" class="hover:text-white transition-colors">Support</a></li>
+            <li><a href="/ar/contact.html" class="hover:text-white transition-colors">Contact</a></li>
+            <li><a href="/ar/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
           </ul>
         </div>
       </div>
       <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-        <p data-i18n="footer.index.copyright">&copy; 2026 commentpull. All rights reserved.</p>
-        <div class="flex gap-4">
-          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter text-lg"></i></a>
-          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
-          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-lg"></i></a>
+        <p data-i18n="footer.index.copyright">© 2026 commentpull. جميع الحقوق محفوظة.</p>
+        <div class="flex gap-6">
+          <a href="/ar/about.html" class="hover:text-white transition-colors">About</a>
+          <a href="/ar/privacy.html" class="hover:text-white transition-colors">Privacy</a>
+          <a href="/ar/support.html" class="hover:text-white transition-colors">Support</a>
+          <a href="/ar/contact.html" class="hover:text-white transition-colors">Contact</a>
         </div>
       </div>
     </div>

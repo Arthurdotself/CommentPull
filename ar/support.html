@@ -1,306 +1,213 @@
+<!-- AUTO-GENERATED — do not edit. Edit root source files and run: node build.js -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-MMW3VEQWT2');
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الدعم — CommentPull</title>
-<meta name="description" content="احصل على مساعدة في CommentPull. إجابات للأسئلة الشائعة حول استخراج تعليقات فيسبوك وإنستغرام ويوتيوب.">
-<meta name="robots" content="index, follow">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="canonical" href="https://commentpull.com/ar/support.html">
-<link rel="alternate" hreflang="en" href="https://commentpull.com/support.html">
-<link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/support.html">
-<link rel="alternate" hreflang="x-default" href="https://commentpull.com/support.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,700;1,300&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0d0d0d; --surface: #161616; --surface2: #1e1e1e;
-    --border: #2a2a2a; --border-active: #444;
-    --text: #e8e8e8; --text-dim: #666; --text-muted: #3a3a3a;
-    --accent: #f0c060; --accent-glow: rgba(240,192,96,0.15);
-    --radius: 10px; --mono: 'DM Mono', monospace; --serif: 'Fraunces', serif;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; font-size: 14px; min-height: 100vh; overflow-x: hidden; }
-  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 999; opacity: 0.4; }
-
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: linear-gradient(to bottom, rgba(13,13,13,0.97) 0%, transparent 100%); backdrop-filter: blur(4px); }
-  .logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
-  .logo span { color: var(--text-dim); font-weight: 300; font-style: italic; }
-  .btn-nav { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: 'Cairo', sans-serif; font-size: 12px; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
-  .btn-nav:hover { border-color: var(--border-active); color: var(--text); }
-
-  .page { max-width: 720px; margin: 0 auto; padding: 120px 40px 80px; }
-
-  .page-eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
-  .page-title { font-family: 'Cairo', sans-serif; font-size: 48px; font-weight: 700; color: var(--text); line-height: 1.1; margin-bottom: 24px; }
-  .page-lead { font-size: 15px; color: var(--text-dim); line-height: 1.8; max-width: 560px; margin-bottom: 64px; }
-
-  .search-hint { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; font-size: 12px; color: var(--text-muted); margin-bottom: 48px; display: flex; align-items: center; gap: 10px; flex-direction: row-reverse; }
-  .search-hint strong { color: var(--text-dim); }
-
-  .faq-section { margin-bottom: 56px; }
-  .section-title { font-family: 'Cairo', sans-serif; font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 20px; }
-  .faq-list { display: flex; flex-direction: column; gap: 2px; }
-  .faq-item { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-  .faq-item + .faq-item { margin-top: 2px; }
-  .faq-q { width: 100%; background: var(--surface2); border: none; color: var(--text); font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 500; padding: 18px 20px; text-align: right; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: background 0.15s; flex-direction: row-reverse; }
-  .faq-q:hover { background: #222; }
-  .faq-q .chevron { color: var(--text-muted); font-size: 12px; flex-shrink: 0; transition: transform 0.2s; }
-  .faq-item.open .chevron { transform: rotate(180deg); }
-  .faq-a { display: none; padding: 0 20px 18px; background: var(--surface2); font-size: 13px; color: var(--text-muted); line-height: 1.75; text-align: right; }
-  .faq-a p + p { margin-top: 10px; }
-  .faq-item.open .faq-a { display: block; }
-  .faq-a code { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
-  .faq-a a { color: var(--accent); text-decoration: none; }
-  .faq-a a:hover { text-decoration: underline; }
-
-  .cta-block { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 40px; text-align: center; }
-  .cta-title { font-family: 'Cairo', sans-serif; font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
-  .cta-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.7; }
-  .btn-cta { display: inline-block; background: var(--accent); color: #0d0d0d; font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 500; padding: 13px 32px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
-  .btn-cta:hover { background: #f5d080; }
-  .btn-secondary { display: inline-block; background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: 'Cairo', sans-serif; font-size: 13px; padding: 13px 32px; border-radius: 8px; text-decoration: none; transition: all 0.2s; margin-right: 12px; }
-  .btn-secondary:hover { border-color: var(--border-active); color: var(--text); }
-
-  footer { border-top: 1px solid var(--border); padding: 32px 40px; max-width: 720px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .footer-left { font-size: 12px; color: var(--text-muted); }
-  .footer-right { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; flex-direction: row-reverse; }
-  .footer-right a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-  .footer-right a:hover { color: var(--text-dim); }
-
-  @media (max-width: 600px) {
-    nav { padding: 16px 20px; }
-    .page { padding: 100px 20px 60px; }
-    .page-title { font-size: 34px; }
-    footer { padding: 24px 20px; flex-direction: column; gap: 10px; }
-    .btn-secondary { margin-right: 0; margin-top: 10px; }
-  }
-</style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدعم — commentpull</title>
+  <meta name="description" content="احصل على المساعدة مع commentpull. اعثر على إجابات للأسئلة الشائعة.">
+  <link rel="canonical" href="https://commentpull.com/ar/support.html">
+  <link rel="alternate" hreflang="en" href="https://commentpull.com/support.html">
+  <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/support.html">
+  <link rel="alternate" hreflang="x-default" href="https://commentpull.com/support.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] .faq-question { text-align: right; flex-direction: row-reverse; }
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .faq-question { width: 100%; background: none; border: none; color: #fff; font-size: 15px; font-weight: 500; text-align: left; padding: 20px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: inherit; }
+    .faq-answer { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; font-size: 14px; color: #9ca3af; line-height: 1.8; padding-bottom: 0; }
+    .faq-answer.open { max-height: 600px; padding-bottom: 18px; }
+    .faq-answer p { margin-bottom: 0.75rem; }
+    .faq-answer p:last-child { margin-bottom: 0; }
+    .faq-answer code { background: rgba(255,255,255,0.07); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    .faq-icon { flex-shrink: 0; transition: transform 0.3s; color: #6366f1; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6366f1; margin-bottom: 4px; }
+  </style>
 </head>
-<body class="lang-ar">
+<body class="lang-ar antialiased min-h-screen flex flex-col">
 
-<nav>
-  <a href="/" class="logo">Comment<span>Pull</span></a>
-  <div style="display:flex;gap:8px;align-items:center">
-    <a href="/ar/support.html" class="btn-nav">دعم</a>
-    <button id="lang-toggle" onclick="toggleLang()" class="btn-nav">English</button>
-    <a href="/ar/" class="btn-nav">→ العودة للتطبيق</a>
-  </div>
-</nav>
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="/ar/index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="/ar/index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">كيف يعمل</a>
+        <a href="pricing.html" class="hover:text-white transition-colors" data-i18n="nav.pricing">الأسعار</a>
+        <a href="/ar/support.html" class="text-white transition-colors" data-i18n="footer.support">الدعم</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button id="lang-toggle" onclick="toggleLang()"
+          class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">العربية</button>
+        <a href="signin.html" class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium" data-i18n="nav.signin">تسجيل الدخول</a>
+        <a href="signup.html" class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" data-i18n="nav.signup">إنشاء حساب</a>
+      </div>
+    </div>
+  </header>
 
-<div class="page">
+  <main class="flex-grow pt-20">
+    <div class="max-w-3xl mx-auto px-6 py-24">
 
-  <p class="page-eyebrow">الدعم</p>
-  <h1 class="page-title">كيف يمكننا<br>مساعدتك؟</h1>
-  <p class="page-lead">ابحث عن إجابات للأسئلة الشائعة أدناه. إذا لم تجد ما تبحث عنه، تواصل معنا عبر صفحة الاتصال — نرد عادةً خلال يوم عمل واحد.</p>
+      <!-- Page heading -->
+      <div class="mb-14">
+        <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4" data-i18n="support.eyebrow">الدعم</span>
+        <h1 class="text-4xl md:text-5xl font-semibold leading-tight text-white mb-6" data-i18n-html="support.title">كيف يمكننا<br>مساعدتك؟</h1>
+        <p class="text-gray-400 text-lg leading-relaxed" data-i18n="support.lead">ابحث عن إجابات للأسئلة الشائعة أدناه. إذا لم تجد ما تبحث عنه، تواصل معنا عبر صفحة الاتصال — نرد عادةً خلال يوم عمل واحد.</p>
+      </div>
 
-  <div class="search-hint">
-    <span>💡</span>
-    <span>لم تجد إجابة؟ <strong><a href="/ar/contact.html" style="color:var(--accent);text-decoration:none">تواصل معنا مباشرة ←</a></strong></span>
-  </div>
+      <!-- Hint -->
+      <div class="rounded-xl border border-indigo-500/20 bg-indigo-500/5 px-5 py-4 mb-12 text-sm text-gray-400" data-i18n-html="support.hint">لم تجد إجابة؟ <strong><a href="/contact.html" style="color:var(--accent);text-decoration:none">تواصل معنا مباشرة ←</a></strong></div>
 
-  <!-- البدء -->
-  <div class="faq-section">
-    <h2 class="section-title">البدء</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>ما هي CommentPull وكيف تعمل؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>CommentPull أداة تعمل في المتصفح لاستخراج التعليقات من منشورات فيسبوك وإنستغرام ويوتيوب. تلصق رابط المنشور، وتجري الأداة استدعاءات API مباشرة من متصفحك — لا شيء يمر عبر خوادمنا.</p>
-          <p>تُعالَج التعليقات المستخرجة كلياً في ذاكرة متصفحك وتُصدَّر كملف Excel أو CSV أو JSON مباشرة إلى جهازك.</p>
-        </div>
+      <!-- Section 1: Getting started -->
+      <div class="mb-2">
+        <div class="section-label" data-i18n="support.s1.title">البدء</div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>هل أحتاج إلى إنشاء حساب؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>يمنحك الحساب المجاني الوصول إلى جميع الميزات بما في ذلك المرشحات وإلغاء التكرار والنطاقات الزمنية ومنتقي الفائز. يمكنك التسجيل ببريدك الإلكتروني فقط — لا بطاقة ائتمانية مطلوبة.</p>
-        </div>
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q1.q">ما هي CommentPull وكيف تعمل؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q1.a"><p>CommentPull أداة تعمل في المتصفح لاستخراج التعليقات من منشورات فيسبوك وإنستغرام ويوتيوب. تلصق رابط المنشور، وتجري الأداة استدعاءات API مباشرة من متصفحك — لا شيء يمر عبر خوادمنا.</p><p>تُعالَج التعليقات المستخرجة كلياً في ذاكرة متصفحك وتُصدَّر كملف Excel أو CSV أو JSON مباشرة إلى جهازك.</p></div>
       </div>
       <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>ما هي المنصات المدعومة؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>تدعم CommentPull <strong>فيسبوك</strong> و<strong>إنستغرام</strong> و<strong>يوتيوب</strong>. تتطلب كل منصة تقديم رمز وصول حتى يتمكن متصفحك من المصادقة مع API المعني.</p>
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q2.q">هل أحتاج إلى إنشاء حساب؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q2.a"><p>يمنحك الحساب المجاني الوصول إلى جميع الميزات بما في ذلك المرشحات وإلغاء التكرار والنطاقات الزمنية ومنتقي الفائز. يمكنك التسجيل ببريدك الإلكتروني فقط — لا بطاقة ائتمانية مطلوبة.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q3.q">ما هي المنصات المدعومة؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q3.a"><p>تدعم CommentPull <strong>فيسبوك</strong> و<strong>إنستغرام</strong> و<strong>يوتيوب</strong>. تتطلب كل منصة تقديم رمز وصول حتى يتمكن متصفحك من المصادقة مع API المعني.</p></div>
+      </div>
+
+      <!-- Section 2: API access -->
+      <div class="mt-10 mb-2">
+        <div class="section-label" data-i18n="support.s2.title">الوصول إلى API</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q4.q">من أين أحصل على رمز وصول فيسبوك أو إنستغرام؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q4.a"><p>تتضمن الأداة دليلاً خطوة بخطوة لإنشاء رموز الوصول مباشرة من Graph API Explorer الخاص بـ Meta. ستحتاج إلى حساب مطور Meta (مجاني) وتطبيق فيسبوك بالصلاحيات المناسبة. يرشدك الدليل الداخلي خلال كل خطوة.</p></div>
+      </div>
+
+      <!-- Section 3: Extraction & exports -->
+      <div class="mt-10 mb-2">
+        <div class="section-label" data-i18n-html="support.s3.title">الاستخراج والتصدير</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q5.q">ما تنسيقات الروابط المدعومة؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q5.a"><p>يدعم فيسبوك روابط المنشورات القياسية وروابط <code>pfbid</code> المشفرة. يدعم إنستغرام روابط <code>/p/</code> و<code>/reel/</code> و<code>/tv/</code>. يدعم يوتيوب روابط المشاهدة القياسية (<code>watch?v=</code>) وروابط <code>youtu.be</code> المختصرة.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q6.q">ما تنسيقات التصدير المتاحة؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q6.a"><p>يمكنك تصدير التعليقات كـ <strong>Excel (.xlsx)</strong> مع ورقة ملخص، أو <strong>CSV</strong>، أو <strong>JSON</strong>. تتضمن صادرات Excel بيانات وصفية مثل عدد التعليقات الإجمالي وتاريخ الاستخراج والمنصة.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q7.q">هل هناك حد لعدد التعليقات التي يمكنني استخراجها؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q7.a"><p>لا يوجد حد صارم لعدد التعليقات — ستصفح CommentPull استجابة API الكاملة. قد تستغرق عمليات الاستخراج الكبيرة جداً وقتاً أطول بسبب حدود معدل API التي تفرضها Meta أو Google.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q8.q">هل يمكنني استخراج التعليقات من منشورات متعددة في وقت واحد؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q8.a"><p>نعم. قم بتفعيل وضع الروابط المتعددة في منطقة الإدخال للصق روابط منشورات متعددة. ستُوضع في قائمة انتظار وتُستخرج بالتسلسل، مع دمج النتائج في ملف تصدير واحد.</p></div>
+      </div>
+
+      <!-- Section 4: Privacy & security -->
+      <div class="mt-10 mb-2">
+        <div class="section-label" data-i18n-html="support.s4.title">الخصوصية والأمان</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q9.q">هل بياناتي آمنة؟ هل تخزنون تعليقاتي؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q9.a"><p>لا. يتم كل الاستخراج مباشرة في متصفحك — لا تلمس بيانات التعليقات خوادمنا أبداً. نخزن فقط حسابك (البريد الإلكتروني + كلمة المرور المشفرة) وجلستك. لقد صممنا النظام بحيث لا نستطيع رؤية بياناتك المستخرجة حتى لو أردنا ذلك.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q10.q">إلى أين يذهب رمز الوصول الخاص بي؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q10.a"><p>يسافر رمز الوصول من متصفحك مباشرة إلى نقطة API الخاصة بـ Meta أو Google — ولا يمر أبداً عبر خوادم CommentPull. تعامل مع رموز الوصول ككلمات مرور: أعد إنشاءها إذا اعتقدت أنها تعرضت للاختراق.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q11.q">هل تلتزم CommentPull بشروط خدمة Meta؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q11.a"><p>تستخدم CommentPull Meta Graph API الرسمي وتتطلب منك المصادقة برمز وصولك الخاص. هذا يعني أنك تصل إلى البيانات المتاحة لحسابك عبر القنوات الرسمية لـ Meta. أنت مسؤول عن التأكد من أن استخدامك للبيانات يمتثل لشروط منصة Meta والقوانين المعمول بها.</p></div>
+      </div>
+
+      <!-- Section 5: Troubleshooting -->
+      <div class="mt-10 mb-2">
+        <div class="section-label" data-i18n="support.s5.title">استكشاف الأخطاء وإصلاحها</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q12.q">أحصل على خطأ "رمز غير صالح". ماذا أفعل؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q12.a"><p>رموز الوصول تنتهي صلاحيتها. تدوم الرموز قصيرة الأمد حوالي 1-2 ساعة؛ وتدوم الرموز طويلة الأمد حتى 60 يوماً. أنشئ رمزاً جديداً من Graph API Explorer وألصقه في حقل الرمز. تأكد من أن الرمز يملك الصلاحيات الصحيحة (<code>pages_read_engagement</code> لفيسبوك، <code>instagram_basic</code> لإنستغرام).</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q13.q">يتوقف الاستخراج في المنتصف. لماذا؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q13.a"><p>يحدث هذا عادةً بسبب حد معدل API من Meta أو Google. ستعرض الأداة النتائج الجزئية المجلوبة. حاول مرة أخرى بعد بضع دقائق. قد تتطلب المنشورات الكبيرة جداً جلسات استخراج متعددة.</p></div>
+      </div>
+      <div class="faq-item" style="border-bottom:none">
+        <button class="faq-question" onclick="toggleFaq(this)"><span data-i18n="support.q14.q">رابط منشوري غير معروف. ما التنسيقات الصحيحة؟</span><i class="fa-solid fa-plus faq-icon text-sm"></i></button>
+        <div class="faq-answer" data-i18n-html="support.q14.a"><p>تأكد من نسخ الرابط الكامل من شريط عنوان متصفحك. يجب أن تتضمن منشورات إنستغرام <code>/p/</code> أو <code>/reel/</code> أو <code>/tv/</code> في الرابط. إذا استمرت المشكلة، <a href="/contact.html">تواصل معنا</a> مع تنسيق الرابط وسنحقق في الأمر.</p></div>
+      </div>
+
+      <!-- CTA -->
+      <div class="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-10 text-center mt-16">
+        <h2 class="text-2xl font-semibold text-white mb-3" data-i18n="support.cta.title">لا تزال بحاجة للمساعدة؟</h2>
+        <p class="text-gray-400 text-sm mb-6" data-i18n="support.cta.desc">لم تجد إجابتك هنا؟ أرسل لنا رسالة وسنتواصل معك خلال يوم عمل واحد.</p>
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+          <a href="/ar/contact.html" class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-medium px-8 py-3 rounded-xl transition-colors text-sm" data-i18n="support.cta.btn">تواصل معنا ←</a>
+          <a href="/ar/index.html" class="text-gray-400 hover:text-white transition-colors text-sm" data-i18n="support.cta.back">العودة للتطبيق</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
+    <div class="max-w-[1440px] mx-auto px-6">
+      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <p data-i18n="footer.index.copyright">© 2026 commentpull. جميع الحقوق محفوظة.</p>
+        <div class="flex gap-6">
+          <a href="/ar/about.html" class="hover:text-white transition-colors" data-i18n="footer.about">حول</a>
+          <a href="/ar/privacy.html" class="hover:text-white transition-colors" data-i18n="footer.privacy">سياسة الخصوصية</a>
+          <a href="/ar/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">الدعم</a>
+          <a href="/ar/contact.html" class="hover:text-white transition-colors" data-i18n="footer.contact">تواصل معنا</a>
         </div>
       </div>
     </div>
-  </div>
+  </footer>
 
-  <!-- الوصول إلى API -->
-  <div class="faq-section">
-    <h2 class="section-title">الوصول إلى API</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>من أين أحصل على رمز وصول فيسبوك أو إنستغرام؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>تتضمن الأداة دليلاً خطوة بخطوة لإنشاء رموز الوصول مباشرة من Graph API Explorer الخاص بـ Meta. ستحتاج إلى حساب مطور Meta (مجاني) وتطبيق فيسبوك بالصلاحيات المناسبة. يرشدك الدليل الداخلي خلال كل خطوة.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <script>
+    function toggleFaq(btn) {
+      var item = btn.closest('.faq-item');
+      var answer = item.querySelector('.faq-answer');
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function(i) {
+        i.classList.remove('open');
+        i.querySelector('.faq-answer').classList.remove('open');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.classList.add('open');
+      }
+    }
+  </script>
 
-  <!-- الاستخراج والتصدير -->
-  <div class="faq-section">
-    <h2 class="section-title">الاستخراج والتصدير</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>ما تنسيقات الروابط المدعومة؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>يدعم فيسبوك روابط المنشورات القياسية وروابط <code>pfbid</code> المشفرة. يدعم إنستغرام روابط <code>/p/</code> و<code>/reel/</code> و<code>/tv/</code>. يدعم يوتيوب روابط المشاهدة القياسية (<code>watch?v=</code>) وروابط <code>youtu.be</code> المختصرة.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>ما تنسيقات التصدير المتاحة؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>يمكنك تصدير التعليقات كـ <strong>Excel (.xlsx)</strong> مع ورقة ملخص، أو <strong>CSV</strong>، أو <strong>JSON</strong>. تتضمن صادرات Excel بيانات وصفية مثل عدد التعليقات الإجمالي وتاريخ الاستخراج والمنصة.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>هل هناك حد لعدد التعليقات التي يمكنني استخراجها؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>لا يوجد حد صارم لعدد التعليقات — ستصفح CommentPull استجابة API الكاملة. قد تستغرق عمليات الاستخراج الكبيرة جداً وقتاً أطول بسبب حدود معدل API التي تفرضها Meta أو Google.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>هل يمكنني استخراج التعليقات من منشورات متعددة في وقت واحد؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>نعم. قم بتفعيل وضع الروابط المتعددة في منطقة الإدخال للصق روابط منشورات متعددة. ستُوضع في قائمة انتظار وتُستخرج بالتسلسل، مع دمج النتائج في ملف تصدير واحد.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- الخصوصية والأمان -->
-  <div class="faq-section">
-    <h2 class="section-title">الخصوصية والأمان</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>هل بياناتي آمنة؟ هل تخزنون تعليقاتي؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>لا. يتم كل الاستخراج مباشرة في متصفحك — لا تلمس بيانات التعليقات خوادمنا أبداً. نخزن فقط حسابك (البريد الإلكتروني + كلمة المرور المشفرة) وجلستك. لقد صممنا النظام بحيث لا نستطيع رؤية بياناتك المستخرجة حتى لو أردنا ذلك.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>إلى أين يذهب رمز الوصول الخاص بي؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>يسافر رمز الوصول من متصفحك مباشرة إلى نقطة API الخاصة بـ Meta أو Google — ولا يمر أبداً عبر خوادم CommentPull. تعامل مع رموز الوصول ككلمات مرور: أعد إنشاءها إذا اعتقدت أنها تعرضت للاختراق.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>هل تلتزم CommentPull بشروط خدمة Meta؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>تستخدم CommentPull Meta Graph API الرسمي وتتطلب منك المصادقة برمز وصولك الخاص. هذا يعني أنك تصل إلى البيانات المتاحة لحسابك عبر القنوات الرسمية لـ Meta. أنت مسؤول عن التأكد من أن استخدامك للبيانات يمتثل لشروط منصة Meta والقوانين المعمول بها.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- استكشاف الأخطاء -->
-  <div class="faq-section">
-    <h2 class="section-title">استكشاف الأخطاء وإصلاحها</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>أحصل على خطأ "رمز غير صالح". ماذا أفعل؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>رموز الوصول تنتهي صلاحيتها. تدوم الرموز قصيرة الأمد حوالي 1-2 ساعة؛ وتدوم الرموز طويلة الأمد حتى 60 يوماً. أنشئ رمزاً جديداً من Graph API Explorer وألصقه في حقل الرمز. تأكد من أن الرمز يملك الصلاحيات الصحيحة (<code>pages_read_engagement</code> لفيسبوك، <code>instagram_basic</code> لإنستغرام).</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>يتوقف الاستخراج في المنتصف. لماذا؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>يحدث هذا عادةً بسبب حد معدل API من Meta أو Google. ستعرض الأداة النتائج الجزئية المجلوبة. حاول مرة أخرى بعد بضع دقائق. قد تتطلب المنشورات الكبيرة جداً جلسات استخراج متعددة.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggle(this)">
-          <span>رابط منشوري غير معروف. ما التنسيقات الصحيحة؟</span>
-          <span class="chevron">▾</span>
-        </button>
-        <div class="faq-a">
-          <p>تأكد من نسخ الرابط الكامل من شريط عنوان متصفحك. يجب أن تتضمن منشورات إنستغرام <code>/p/</code> أو <code>/reel/</code> أو <code>/tv/</code> في الرابط. إذا استمرت المشكلة، <a href="/ar/contact.html">تواصل معنا</a> مع تنسيق الرابط وسنحقق في الأمر.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="cta-block">
-    <div class="cta-title">لا تزال بحاجة للمساعدة؟</div>
-    <p class="cta-desc">لم تجد إجابتك هنا؟ أرسل لنا رسالة وسنتواصل معك خلال يوم عمل واحد.</p>
-    <a href="/ar/contact.html" class="btn-cta">تواصل معنا ←</a>
-    <a href="/ar/" class="btn-secondary">العودة للتطبيق</a>
-  </div>
-
-</div>
-
-<footer>
-  <span class="footer-left">© 2025 CommentPull</span>
-  <div class="footer-right">
-    <a href="/ar/about.html">حول</a>
-    <a href="/ar/support.html">الدعم</a>
-    <a href="/ar/contact.html">تواصل معنا</a>
-    <a href="/ar/privacy.html">سياسة الخصوصية</a>
-    <a href="/ar/">العودة للتطبيق</a>
-  </div>
-</footer>
-
-<script>
-function toggle(btn) {
-  const item = btn.closest('.faq-item');
-  item.classList.toggle('open');
-}
-</script>
-<script src="/lang.js"></script>
-
+  <script src="/lang.js"></script>
 </body>
 </html>

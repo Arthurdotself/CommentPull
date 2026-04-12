@@ -1042,8 +1042,20 @@ async function gql(path) { return gqlRaw(`${GRAPH}${path}`); }
 async function gqlRaw(url) {
   const res = await fetch(url);
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  if (data.error) throw new Error(friendlyMetaError(data.error));
   return data;
+}
+function friendlyMetaError(err) {
+  const code = err.code;
+  const msg  = err.message || '';
+  if (code === 190)  return `Token expired or invalid — please generate a new token in Graph API Explorer.`;
+  if (code === 10)   return `Missing permission: your token needs "pages_read_engagement". Regenerate it in Graph API Explorer and make sure that permission is checked before generating.`;
+  if (code === 200)  return `Permission denied — your token does not have access to this page or post.`;
+  if (code === 100)  return `Invalid ID or parameter — check your Page ID and post URL are correct.`;
+  if (code === 4 || code === 17 || code === 32) return `Rate limit reached — wait a few minutes then try again.`;
+  if (code === 803)  return `Post not found — the URL may be wrong or the post was deleted.`;
+  // fallback: clean up the raw Meta message
+  return msg.replace(/^\(#\d+\)\s*/, '');
 }
 function enc(s) { return encodeURIComponent(s); }
 
@@ -1702,6 +1714,7 @@ async function handleExtract() {
   btn.classList.add('loading');
   const all = [];
   let anyError = false;
+  let lastErrorMsg = '';
 
   try {
     if (platform === 'fb') {
@@ -1724,7 +1737,7 @@ async function handleExtract() {
           });
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
-        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`); anyError = true; }
+        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`); anyError = true; lastErrorMsg = e.message; }
       }
 
     } else if (platform === 'yt') {
@@ -1753,8 +1766,8 @@ async function handleExtract() {
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
-          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
-          anyError = true;
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`);
+          anyError = true; lastErrorMsg = e.message;
         }
       }
 
@@ -1797,8 +1810,8 @@ async function handleExtract() {
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
-          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
-          anyError = true;
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`);
+          anyError = true; lastErrorMsg = e.message;
         }
       }
     }
@@ -1811,7 +1824,7 @@ async function handleExtract() {
 
   if (all.length === 0) {
     const tip = anyError
-      ? `Check your token has the right permissions and your Page/Account IDs are correct.`
+      ? `<div style="margin-top:4px">${escHtml(lastErrorMsg)}</div>`
       : `No comments found — the posts may be empty.`;
     setStatus('error', 'No comments collected', tip);
     return;

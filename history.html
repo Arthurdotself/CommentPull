@@ -51,6 +51,13 @@
     .badge-ig { background: rgba(244,114,182,0.12); color: #f472b6; border: 1px solid rgba(244,114,182,0.2); }
     .badge-yt { background: rgba(239,68,68,0.12);   color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
 
+    /* Scheduled export status badges */
+    .badge-sched-pending    { background: rgba(234,179,8,0.12);  color: #facc15; border: 1px solid rgba(234,179,8,0.25); }
+    .badge-sched-processing { background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.25); }
+    .badge-sched-completed  { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+    .badge-sched-failed     { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+    .badge-scheduled-label  { background: rgba(99,102,241,0.10); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2); }
+
     /* Detail modal */
     #detail-modal {
       display: none;
@@ -116,6 +123,7 @@
         <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
         <a href="support.html" class="hover:text-white transition-colors">Support</a>
         <a href="history.html" class="text-indigo-400 font-semibold">History</a>
+        <a href="scheduled-exports.html" class="hover:text-white transition-colors">Scheduled</a>
       </nav>
       <div class="flex items-center gap-3" id="nav-auth">
         <!-- filled by JS -->
@@ -226,6 +234,30 @@
             class="px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:border-white/20 hover:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none">
             Next →
           </button>
+        </div>
+
+        <!-- ── Scheduled Exports subsection ── -->
+        <div id="sched-section" class="mt-16 pt-10 border-t border-white/5">
+          <div class="flex items-center gap-3 mb-6">
+            <h2 class="text-xl font-semibold">Scheduled Exports</h2>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">Pro</span>
+          </div>
+
+          <!-- Loading -->
+          <div id="sched-loading" class="flex items-center gap-2 text-sm text-gray-500 py-4">
+            <svg class="spin w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40" stroke-linecap="round"/>
+            </svg>
+            Loading…
+          </div>
+
+          <!-- Empty -->
+          <div id="sched-hist-empty" style="display:none" class="text-sm text-gray-500 py-4">
+            No scheduled exports yet. <a href="/" class="text-indigo-400 hover:text-indigo-300 transition-colors">Schedule one →</a>
+          </div>
+
+          <!-- List -->
+          <div id="sched-hist-list" class="flex flex-col gap-3"></div>
         </div>
 
       </div><!-- /history-content -->
@@ -387,6 +419,7 @@
       document.getElementById('pro-gate').classList.add('hidden');
       document.getElementById('history-content').classList.remove('hidden');
       loadPage(1);
+      loadSchedHistory();
     }
 
     function showGate(state) {
@@ -712,6 +745,126 @@
       const d = new Date(iso.replace(' ', 'T') + (iso.includes('T') ? '' : 'Z'));
       return d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' })
         + ' ' + d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+    }
+
+    // ── Scheduled Exports ────────────────────────────────────────
+    async function loadSchedHistory() {
+      const token = getToken();
+      if (!token) return;
+
+      const loadingEl = document.getElementById('sched-loading');
+      const emptyEl   = document.getElementById('sched-hist-empty');
+      const listEl    = document.getElementById('sched-hist-list');
+
+      try {
+        const data = await apiGet('/scheduled-exports.php');
+        loadingEl.style.display = 'none';
+
+        if (!data.exports || data.exports.length === 0) {
+          emptyEl.style.display = '';
+          return;
+        }
+
+        const PLABELS = { fb: 'Facebook', ig: 'Instagram', yt: 'YouTube' };
+        const PBADGES  = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
+        const PICONS   = { fb: 'fa-facebook', ig: 'fa-instagram', yt: 'fa-youtube' };
+        const SBADGES  = {
+          pending:    'badge-sched-pending',
+          processing: 'badge-sched-processing',
+          completed:  'badge-sched-completed',
+          failed:     'badge-sched-failed',
+        };
+        const STATUS_LABEL = {
+          pending:    '⏳ Pending',
+          processing: '⟳ Processing',
+          completed:  '✓ Completed',
+          failed:     '✕ Failed',
+        };
+
+        data.exports.forEach(exp => {
+          const card = document.createElement('div');
+          card.className = 'run-card';
+
+          const pLabel   = PLABELS[exp.platform]  || exp.platform;
+          const pBadge   = PBADGES[exp.platform]  || '';
+          const pIcon    = PICONS[exp.platform]   || 'fa-globe';
+          const sBadge   = SBADGES[exp.status]    || '';
+          const sLabel   = STATUS_LABEL[exp.status] || exp.status;
+          const schedStr = formatDate(exp.scheduled_at);
+          const shortUrl = exp.post_url.length > 55 ? exp.post_url.slice(0, 52) + '…' : exp.post_url;
+
+          let errorHtml = '';
+          if (exp.status === 'failed' && exp.error_message) {
+            errorHtml = `<div class="text-xs text-red-400 mt-1 truncate">${escHtml(exp.error_message)}</div>`;
+          }
+
+          let countHtml = '';
+          if (exp.status === 'completed') {
+            countHtml = `<div class="flex items-baseline gap-1.5 mb-2">
+              <span class="text-white font-semibold">${exp.total_count}</span>
+              <span class="text-gray-400 text-sm">comment${exp.total_count !== 1 ? 's' : ''}</span>
+            </div>`;
+          }
+
+          let actionBtn = '';
+          if (exp.status === 'pending') {
+            actionBtn = `<button onclick="event.stopPropagation(); schedHistCancel(${exp.id}, this)"
+              class="text-gray-600 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-400/10"
+              title="Cancel scheduled export">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>`;
+          }
+
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap mb-2">
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-md border ${pBadge}">
+                    <i class="fab ${pIcon} mr-1"></i>${escHtml(pLabel)}
+                  </span>
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-md border badge-scheduled-label">
+                    <i class="fa-regular fa-clock mr-1"></i>Scheduled
+                  </span>
+                  <span class="text-xs font-semibold px-2 py-0.5 rounded-md border ${sBadge}">${sLabel}</span>
+                </div>
+                <div class="text-xs text-gray-500 mb-1">Runs: <span class="text-gray-300">${escHtml(schedStr)}</span></div>
+                ${countHtml}
+                <div class="text-xs text-gray-500 font-mono truncate">${escHtml(shortUrl)}</div>
+                ${errorHtml}
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0 mt-1">
+                ${actionBtn}
+              </div>
+            </div>
+          `;
+          listEl.appendChild(card);
+        });
+
+      } catch(e) {
+        // Silently hide the section on error (e.g. user is free plan)
+        document.getElementById('sched-section').style.display = 'none';
+      }
+    }
+
+    async function schedHistCancel(id, btn) {
+      if (!confirm('Cancel this scheduled export?')) return;
+      btn.disabled = true;
+      try {
+        await apiDelete('/scheduled-exports.php?id=' + id);
+        const card = btn.closest('.run-card');
+        card.style.opacity = '0';
+        card.style.transition = 'opacity 0.2s';
+        setTimeout(() => {
+          card.remove();
+          const list = document.getElementById('sched-hist-list');
+          if (!list.children.length) {
+            document.getElementById('sched-hist-empty').style.display = '';
+          }
+        }, 200);
+      } catch(e) {
+        btn.disabled = false;
+        alert('Could not cancel: ' + e.message);
+      }
     }
 
     // ── Start ─────────────────────────────────────────────────────

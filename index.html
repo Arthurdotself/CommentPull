@@ -187,17 +187,19 @@
         <a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
         <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
         <a href="support.html" class="hover:text-white transition-colors">Support</a>
+        <a href="history.html" id="nav-history-link" class="hidden text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">History</a>
       </nav>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3" id="nav-auth-area">
         <button id="lang-toggle" onclick="toggleLang()"
           class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">
           العربية
         </button>
-        <a href="signin.html"
+        <!-- Auth buttons — replaced by JS when signed in -->
+        <a href="signin.html" id="nav-signin"
           class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium">
           Sign In
         </a>
-        <a href="signup.html"
+        <a href="signup.html" id="nav-signup"
           class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">
           Sign Up
         </a>
@@ -1849,6 +1851,36 @@ async function handleExtract() {
   _hasExtracted = true;
   resetExtractBtn();
   showPreview(all, qualified, filtersActive);
+
+  // ── Save to History for Pro users ──────────────────────────
+  {
+    const _histUrls = [...document.querySelectorAll('.' + platform + '-url')]
+      .map(i => i.value.trim()).filter(Boolean);
+    const _histFilters = {};
+    if (document.getElementById('rule-keyword').checked) {
+      const kw = document.getElementById('filter-keyword').value.trim();
+      if (kw) _histFilters.keyword = kw;
+    }
+    if (document.getElementById('rule-mentions').checked)
+      _histFilters.mentions = document.getElementById('filter-mentions').value;
+    if (document.getElementById('rule-length').checked)
+      _histFilters.length = document.getElementById('filter-length').value;
+    if (document.getElementById('rule-dedup').checked)
+      _histFilters.dedup = true;
+    if (document.getElementById('rule-daterange').checked) {
+      _histFilters.dateFrom = document.getElementById('filter-date-from').value;
+      _histFilters.dateTo   = document.getElementById('filter-date-to').value;
+    }
+    if (document.getElementById('rule-exclude').checked) {
+      const ex = document.getElementById('filter-exclude').value.trim();
+      if (ex) _histFilters.exclude = ex;
+    }
+    _cpSaveRunToHistory(
+      platform, _histUrls, totalCount, qualifiedCount,
+      Object.keys(_histFilters).length ? _histFilters : null,
+      all
+    );
+  }
 }
 
 // ────────────────────────────────────────────────────────────
@@ -2310,6 +2342,101 @@ function stopConfetti() {
         }
         history.replaceState({}, '', window.location.pathname);
       }
+    })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- Auth state + History save (Pro users)                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <script>
+    // Cached user profile (null = not fetched yet, false = not signed in)
+    window._cpUser = null;
+
+    async function _cpLoadUser() {
+      const token = localStorage.getItem('cp_token');
+      if (!token) { window._cpUser = false; return false; }
+      try {
+        const res = await fetch('/backend/api/me.php', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) { window._cpUser = false; return false; }
+        window._cpUser = await res.json();
+        return window._cpUser;
+      } catch(e) { window._cpUser = false; return false; }
+    }
+
+    function _cpUpdateNav(user) {
+      if (!user) return;
+      // Show History link for pro users
+      if (user.plan === 'pro') {
+        const hl = document.getElementById('nav-history-link');
+        if (hl) hl.classList.remove('hidden');
+      }
+      // Swap Sign In / Sign Up for a greeting + Sign Out
+      const signIn  = document.getElementById('nav-signin');
+      const signUp  = document.getElementById('nav-signup');
+      if (signIn) signIn.style.display = 'none';
+      if (signUp) signUp.style.display = 'none';
+
+      const area = document.getElementById('nav-auth-area');
+      if (area) {
+        const greeting = document.createElement('span');
+        greeting.className = 'hidden md:inline text-sm text-gray-300';
+        greeting.textContent = user.name || user.email;
+
+        const btn = document.createElement('button');
+        btn.className = 'text-sm text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/10 hover:border-white/20';
+        btn.textContent = 'Sign Out';
+        btn.onclick = function() {
+          localStorage.removeItem('cp_token');
+          localStorage.removeItem('cp_name');
+          window.location.href = '/signin.html';
+        };
+
+        area.appendChild(greeting);
+        area.appendChild(btn);
+      }
+    }
+
+    async function _cpSaveRunToHistory(platform, postUrls, totalCount, qualifiedCount, filters, comments) {
+      const token = localStorage.getItem('cp_token');
+      if (!token) return;
+
+      // Ensure user is loaded
+      if (window._cpUser === null) await _cpLoadUser();
+      if (!window._cpUser || window._cpUser.plan !== 'pro') return;
+
+      try {
+        await fetch('/backend/api/history.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            platform,
+            post_urls:       postUrls,
+            total_count:     totalCount,
+            qualified_count: qualifiedCount,
+            filters:         filters,
+            comments:        comments
+          })
+        });
+        // Subtle "Saved" indicator in the status panel
+        const savedBadge = document.createElement('div');
+        savedBadge.style.cssText = 'margin-top:8px;font-size:11px;color:#818cf8;display:flex;align-items:center;gap:5px;';
+        savedBadge.innerHTML = '<svg style="width:12px;height:12px;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Saved to <a href="history.html" style="color:#818cf8;text-decoration:underline;">History</a>';
+        const panel = document.getElementById('status');
+        if (panel) panel.appendChild(savedBadge);
+      } catch(e) {
+        // Silently ignore save errors — don't interrupt the user's workflow
+      }
+    }
+
+    // ── Boot: load user on page load ──
+    (async function() {
+      const user = await _cpLoadUser();
+      _cpUpdateNav(user);
     })();
   </script>
 </body>

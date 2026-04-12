@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email               VARCHAR(255)  NOT NULL UNIQUE,
     password_hash       VARCHAR(255)  NOT NULL,
     name                VARCHAR(100)  NOT NULL DEFAULT '',
-    plan                ENUM('free')  NOT NULL DEFAULT 'free',
+    plan                ENUM('free','pro')  NOT NULL DEFAULT 'free',
     created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -21,7 +21,23 @@ CREATE TABLE IF NOT EXISTS users (
 -- ALTER TABLE users DROP COLUMN stripe_customer_id;
 -- ALTER TABLE users DROP COLUMN stripe_subscription_id;
 -- ALTER TABLE users DROP COLUMN plan_expires_at;
+-- ALTER TABLE users MODIFY plan ENUM('free','pro') NOT NULL DEFAULT 'free';
 
+
+CREATE TABLE IF NOT EXISTS runs (
+    id              INT UNSIGNED  AUTO_INCREMENT PRIMARY KEY,
+    user_id         INT UNSIGNED  NOT NULL,
+    platform        ENUM('fb','ig','yt') NOT NULL,
+    post_urls       JSON          NOT NULL,
+    total_count     INT UNSIGNED  NOT NULL DEFAULT 0,
+    qualified_count INT UNSIGNED  NOT NULL DEFAULT 0,
+    filters         JSON,
+    comments        MEDIUMTEXT,
+    created_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_runs_user_id  (user_id),
+    INDEX idx_runs_created  (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS sessions (
     id          INT UNSIGNED  AUTO_INCREMENT PRIMARY KEY,

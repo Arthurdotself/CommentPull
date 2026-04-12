@@ -1,3 +1,4 @@
+<!-- SOURCE FILE: Edit this file. Run `node build.js` to regenerate /ar/history.html -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -14,7 +15,7 @@
   <title>Run History — commentpull</title>
   <meta name="robots" content="noindex, nofollow">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- SheetJS for Excel export -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -32,6 +33,10 @@
   </script>
   <style>
     body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] .comment-table th, [dir="rtl"] .comment-table td { text-align: right; }
     ::-webkit-scrollbar { display: none; }
     .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
 
@@ -119,11 +124,11 @@
         <span class="text-xl font-semibold tracking-tight">commentpull</span>
       </a>
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="/" class="hover:text-white transition-colors">Tool</a>
-        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
-        <a href="support.html" class="hover:text-white transition-colors">Support</a>
-        <a href="history.html" class="text-indigo-400 font-semibold">History</a>
-        <a href="scheduled-exports.html" class="hover:text-white transition-colors">Scheduled</a>
+        <a href="/" class="hover:text-white transition-colors" data-i18n="nav.tool">Tool</a>
+        <a href="pricing.html" class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
+        <a href="support.html" class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
+        <a href="history.html" class="text-indigo-400 font-semibold" data-i18n="nav.history">History</a>
+        <a href="scheduled-exports.html" class="hover:text-white transition-colors" data-i18n="nav.scheduled">Scheduled</a>
       </nav>
       <div class="flex items-center gap-3" id="nav-auth">
         <!-- filled by JS -->
@@ -136,8 +141,8 @@
 
       <!-- Page title -->
       <div class="mb-10">
-        <h1 class="text-3xl font-bold mb-2">Run History</h1>
-        <p class="text-gray-400 text-sm">Every extraction you've run — comments saved automatically for Pro members.</p>
+        <h1 class="text-3xl font-bold mb-2" data-i18n="history.title">Run History</h1>
+        <p class="text-gray-400 text-sm" data-i18n="history.subtitle">Every extraction you've run — comments saved automatically for Pro members.</p>
       </div>
 
       <!-- Pro gate — shown to non-pro visitors, hidden for pro users by JS -->
@@ -147,7 +152,7 @@
           <svg class="spin w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40" stroke-linecap="round"/>
           </svg>
-          <span class="text-sm text-gray-500">Checking your plan…</span>
+          <span class="text-sm text-gray-500" data-i18n="history.gate.loading">Checking your plan…</span>
         </div>
 
         <!-- Pro-only banner (shown when not pro) -->
@@ -158,11 +163,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
               </svg>
             </div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-4">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-4" data-i18n="history.gate.badge">
               Pro feature
             </div>
-            <h2 class="text-xl font-bold mb-2">Run History is for Pro members</h2>
-            <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8" id="gate-subtext">
+            <h2 class="text-xl font-bold mb-2" data-i18n="history.gate.heading">Run History is for Pro members</h2>
+            <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8" id="gate-subtext" data-i18n="history.gate.desc">
               Every extraction you run gets saved automatically. Re-download results anytime — no re-running required.
             </p>
             <div class="flex items-center justify-center gap-3 flex-wrap" id="gate-actions">
@@ -175,22 +180,22 @@
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1">Saved forever</div>
-                <div class="text-xs text-gray-500">Every run is stored so you can come back anytime.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="history.f1.title">Saved forever</div>
+                <div class="text-xs text-gray-500" data-i18n="history.f1.desc">Every run is stored so you can come back anytime.</div>
               </div>
               <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1">Re-download</div>
-                <div class="text-xs text-gray-500">Export CSV, JSON, or Excel from any past run.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="history.f2.title">Re-download</div>
+                <div class="text-xs text-gray-500" data-i18n="history.f2.desc">Export CSV, JSON, or Excel from any past run.</div>
               </div>
               <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1">Search & filter</div>
-                <div class="text-xs text-gray-500">Find specific comments across all your saved runs.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="history.f3.title">Search & filter</div>
+                <div class="text-xs text-gray-500" data-i18n="history.f3.desc">Find specific comments across all your saved runs.</div>
               </div>
             </div>
           </div>
@@ -215,9 +220,9 @@
         <!-- Empty state -->
         <div id="empty-state" class="hidden text-center py-20">
           <div class="text-5xl mb-5">📭</div>
-          <h3 class="text-lg font-semibold mb-2">No runs yet</h3>
-          <p class="text-gray-400 text-sm mb-8">Go to the tool and run an extraction — it'll appear here automatically.</p>
-          <a href="/" class="inline-block bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">Go to Tool</a>
+          <h3 class="text-lg font-semibold mb-2" data-i18n="history.empty.heading">No runs yet</h3>
+          <p class="text-gray-400 text-sm mb-8" data-i18n="history.empty.desc">Go to the tool and run an extraction — it'll appear here automatically.</p>
+          <a href="/" class="inline-block bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" data-i18n="history.empty.btn">Go to Tool</a>
         </div>
 
         <!-- Run list -->
@@ -226,12 +231,12 @@
         <!-- Pagination -->
         <div id="pagination" class="hidden flex items-center justify-center gap-3 mt-8">
           <button id="btn-prev" onclick="loadPage(currentPage - 1)"
-            class="px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:border-white/20 hover:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none">
+            class="px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:border-white/20 hover:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none" data-i18n="history.pagination.prev">
             ← Previous
           </button>
           <span id="page-label" class="text-sm text-gray-400"></span>
           <button id="btn-next" onclick="loadPage(currentPage + 1)"
-            class="px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:border-white/20 hover:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none">
+            class="px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:border-white/20 hover:text-white transition-colors disabled:opacity-30 disabled:pointer-events-none" data-i18n="history.pagination.next">
             Next →
           </button>
         </div>
@@ -239,7 +244,7 @@
         <!-- ── Scheduled Exports subsection ── -->
         <div id="sched-section" class="mt-16 pt-10 border-t border-white/5">
           <div class="flex items-center gap-3 mb-6">
-            <h2 class="text-xl font-semibold">Scheduled Exports</h2>
+            <h2 class="text-xl font-semibold" data-i18n="history.sched.heading">Scheduled Exports</h2>
             <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">Pro</span>
           </div>
 
@@ -248,12 +253,12 @@
             <svg class="spin w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40" stroke-linecap="round"/>
             </svg>
-            Loading…
+            <span data-i18n="history.sched.loading">Loading…</span>
           </div>
 
           <!-- Empty -->
           <div id="sched-hist-empty" style="display:none" class="text-sm text-gray-500 py-4">
-            No scheduled exports yet. <a href="/" class="text-indigo-400 hover:text-indigo-300 transition-colors">Schedule one →</a>
+            <span data-i18n="history.sched.empty">No scheduled exports yet.</span> <a href="/" class="text-indigo-400 hover:text-indigo-300 transition-colors">Schedule one →</a>
           </div>
 
           <!-- List -->
@@ -302,7 +307,7 @@
       <!-- Search + export row -->
       <div class="flex items-center gap-3 mb-5 flex-wrap">
         <input type="text" id="modal-search" class="search-input flex-1 min-w-[180px]"
-          placeholder="Search comments…" oninput="filterModalComments()">
+          placeholder="Search comments…" data-i18n-placeholder="history.modal.search" oninput="filterModalComments()">
         <div class="flex items-center gap-2">
           <button onclick="exportModalCSV()" title="Download CSV"
             class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/10 text-xs text-gray-300 hover:border-white/20 hover:text-white transition-colors">
@@ -335,9 +340,9 @@
           <thead>
             <tr>
               <th class="td-num">#</th>
-              <th style="min-width:110px">Name</th>
-              <th>Comment</th>
-              <th>Date</th>
+              <th style="min-width:110px" data-i18n="preview.col.name">Name</th>
+              <th data-i18n="preview.col.comment">Comment</th>
+              <th data-i18n="preview.col.date">Date</th>
             </tr>
           </thead>
           <tbody id="modal-tbody"></tbody>
@@ -870,5 +875,6 @@
     // ── Start ─────────────────────────────────────────────────────
     boot();
   </script>
+  <script src="/lang.js"></script>
 </body>
 </html>

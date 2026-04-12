@@ -1,3 +1,4 @@
+<!-- SOURCE FILE: Edit this file. Run `node build.js` to regenerate /ar/scheduled-exports.html -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -14,7 +15,7 @@
   <title>Scheduled Exports — commentpull</title>
   <meta name="robots" content="noindex, nofollow">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script>
     tailwind.config = {
@@ -30,6 +31,10 @@
   </script>
   <style>
     body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] input, [dir="rtl"] select, [dir="rtl"] textarea { text-align: right; }
     ::-webkit-scrollbar { display: none; }
     .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
 
@@ -83,11 +88,11 @@
         <span class="text-xl font-semibold tracking-tight">commentpull</span>
       </a>
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="/" class="hover:text-white transition-colors">Tool</a>
-        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
-        <a href="support.html" class="hover:text-white transition-colors">Support</a>
-        <a href="history.html" class="hover:text-white transition-colors">History</a>
-        <a href="scheduled-exports.html" class="text-indigo-400 font-semibold">Scheduled</a>
+        <a href="/" class="hover:text-white transition-colors" data-i18n="nav.tool">Tool</a>
+        <a href="pricing.html" class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
+        <a href="support.html" class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
+        <a href="history.html" class="hover:text-white transition-colors" data-i18n="nav.history">History</a>
+        <a href="scheduled-exports.html" class="text-indigo-400 font-semibold" data-i18n="nav.scheduled">Scheduled</a>
       </nav>
       <div class="flex items-center gap-3" id="nav-auth">
         <!-- filled by JS -->
@@ -101,10 +106,10 @@
       <!-- Page title -->
       <div class="mb-10">
         <div class="flex items-center gap-3 mb-2">
-          <h1 class="text-3xl font-bold">Scheduled Exports</h1>
+          <h1 class="text-3xl font-bold" data-i18n="sched.title">Scheduled Exports</h1>
           <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">Pro</span>
         </div>
-        <p class="text-gray-400 text-sm">Schedule a comment export for any future date — we'll run it automatically and save it to your History.</p>
+        <p class="text-gray-400 text-sm" data-i18n="sched.subtitle">Schedule a comment export for any future date — we'll run it automatically and save it to your History.</p>
       </div>
 
       <!-- ── Pro gate ── -->
@@ -114,7 +119,7 @@
           <svg class="spin w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40" stroke-linecap="round"/>
           </svg>
-          <span class="text-sm text-gray-500">Checking your plan…</span>
+          <span class="text-sm text-gray-500" data-i18n="sched.gate.loading">Checking your plan…</span>
         </div>
 
         <!-- Gate banner (non-pro) -->
@@ -125,11 +130,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
               </svg>
             </div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-4">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-4" data-i18n="sched.gate.badge">
               Pro feature
             </div>
-            <h2 class="text-xl font-bold mb-2">Scheduled Exports is a Pro feature</h2>
-            <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8" id="gate-subtext">
+            <h2 class="text-xl font-bold mb-2" data-i18n="sched.gate.heading">Scheduled Exports is a Pro feature</h2>
+            <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8" id="gate-subtext" data-i18n="sched.gate.desc">
               Upgrade to Pro to schedule comment exports for any future date and time.
             </p>
             <div class="flex items-center justify-center gap-3 flex-wrap" id="gate-actions"></div>
@@ -140,22 +145,22 @@
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1">Set it & forget it</div>
-                <div class="text-xs text-gray-500">Pick a date and time — the export runs automatically.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f1.title">Set it & forget it</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f1.desc">Pick a date and time — the export runs automatically.</div>
               </div>
               <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1">Token validated</div>
-                <div class="text-xs text-gray-500">We check your token will still be active at export time.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f2.title">Token validated</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f2.desc">We check your token will still be active at export time.</div>
               </div>
               <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1">Saved to History</div>
-                <div class="text-xs text-gray-500">Results appear in History marked as Scheduled.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f3.title">Saved to History</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f3.desc">Results appear in History marked as Scheduled.</div>
               </div>
             </div>
           </div>
@@ -171,14 +176,14 @@
             <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            New Scheduled Export
+            <span data-i18n="sched.form.heading">New Scheduled Export</span>
           </h2>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
             <!-- Platform -->
             <div>
-              <label class="block text-xs font-medium text-gray-400 mb-2">Platform</label>
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.platform">Platform</label>
               <select id="s-platform" onchange="onPlatformChange()"
                 class="field-input cursor-pointer">
                 <option value="fb">Facebook</option>
@@ -189,7 +194,7 @@
 
             <!-- Export format -->
             <div>
-              <label class="block text-xs font-medium text-gray-400 mb-2">Export Format</label>
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.format">Export Format</label>
               <select id="s-format" class="field-input cursor-pointer">
                 <option value="xlsx">Excel (.xlsx)</option>
                 <option value="csv">CSV (.csv)</option>
@@ -199,42 +204,42 @@
 
             <!-- Post URL — full width -->
             <div class="sm:col-span-2">
-              <label class="block text-xs font-medium text-gray-400 mb-2">Post / Video URL</label>
-              <input type="url" id="s-post-url" placeholder="Paste the Facebook, Instagram, or YouTube URL…"
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.url">Post / Video URL</label>
+              <input type="url" id="s-post-url" placeholder="Paste the Facebook, Instagram, or YouTube URL…" data-i18n-placeholder="sched.form.url.placeholder"
                 class="field-input">
             </div>
 
             <!-- FB: Page ID -->
             <div id="f-fb">
-              <label class="block text-xs font-medium text-gray-400 mb-2">Facebook Page ID</label>
-              <input type="text" id="s-page-id" placeholder="e.g. 123456789" class="field-input">
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.fbid">Facebook Page ID</label>
+              <input type="text" id="s-page-id" placeholder="e.g. 123456789" data-i18n-placeholder="sched.form.fbid.placeholder" class="field-input">
             </div>
 
             <!-- IG: IG Business Account ID -->
             <div id="f-ig" style="display:none">
-              <label class="block text-xs font-medium text-gray-400 mb-2">Instagram Business Account ID</label>
-              <input type="text" id="s-ig-user-id" placeholder="e.g. 17841400000000000" class="field-input">
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.igid">Instagram Business Account ID</label>
+              <input type="text" id="s-ig-user-id" placeholder="e.g. 17841400000000000" data-i18n-placeholder="sched.form.igid.placeholder" class="field-input">
             </div>
 
             <!-- YT: API Key (replaces token for YouTube) -->
             <div id="f-yt" style="display:none">
-              <label class="block text-xs font-medium text-gray-400 mb-2">YouTube Data API v3 Key</label>
-              <input type="text" id="s-yt-api-key" placeholder="Paste your API key…" class="field-input">
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.ytkey">YouTube Data API v3 Key</label>
+              <input type="text" id="s-yt-api-key" placeholder="Paste your API key…" data-i18n-placeholder="sched.form.ytkey.placeholder" class="field-input">
             </div>
 
             <!-- Access token (FB / IG only) -->
             <div id="f-token">
               <label class="block text-xs font-medium text-gray-400 mb-2">
-                Access Token
-                <span class="text-gray-600 font-normal">(Page or User token)</span>
+                <span data-i18n="sched.form.token">Access Token</span>
+                <span class="text-gray-600 font-normal" data-i18n="sched.form.token.hint">(Page or User token)</span>
               </label>
-              <input type="text" id="s-token" placeholder="Paste your access token…"
+              <input type="text" id="s-token" placeholder="Paste your access token…" data-i18n-placeholder="sched.form.token.placeholder"
                 onblur="onTokenBlur()" class="field-input">
             </div>
 
             <!-- Scheduled date / time -->
             <div>
-              <label class="block text-xs font-medium text-gray-400 mb-2">Schedule Date &amp; Time</label>
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.datetime">Schedule Date &amp; Time</label>
               <input type="datetime-local" id="s-datetime" class="field-input"
                 onchange="onTokenBlur()">
             </div>
@@ -242,7 +247,7 @@
             <!-- Include replies (FB / IG only) -->
             <div id="f-replies" class="flex items-center gap-3 pt-5">
               <input type="checkbox" id="s-replies" class="w-4 h-4 accent-indigo-500 cursor-pointer">
-              <label for="s-replies" class="text-sm text-gray-300 cursor-pointer select-none">Include replies</label>
+              <label for="s-replies" class="text-sm text-gray-300 cursor-pointer select-none" data-i18n="sched.form.replies">Include replies</label>
             </div>
 
           </div><!-- /grid -->
@@ -258,7 +263,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
-              Schedule Export
+              <span data-i18n="sched.form.submit">Schedule Export</span>
             </button>
             <span id="submit-msg" class="text-sm"></span>
           </div>
@@ -267,7 +272,7 @@
         <!-- Existing scheduled exports -->
         <div>
           <div class="flex items-center justify-between mb-5">
-            <h2 class="text-lg font-semibold">Your Scheduled Exports</h2>
+            <h2 class="text-lg font-semibold" data-i18n="sched.list.heading">Your Scheduled Exports</h2>
             <button onclick="loadList()" title="Refresh"
               class="text-gray-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -285,8 +290,8 @@
           <!-- Empty state -->
           <div id="list-empty" style="display:none" class="text-center py-16">
             <div class="text-4xl mb-4">🕐</div>
-            <h3 class="text-base font-semibold mb-2">No scheduled exports yet</h3>
-            <p class="text-gray-400 text-sm">Use the form above to schedule your first export.</p>
+            <h3 class="text-base font-semibold mb-2" data-i18n="sched.list.empty.heading">No scheduled exports yet</h3>
+            <p class="text-gray-400 text-sm" data-i18n="sched.list.empty.desc">Use the form above to schedule your first export.</p>
           </div>
 
           <!-- Export cards -->
@@ -641,5 +646,6 @@
 
     boot();
   </script>
+  <script src="/lang.js"></script>
 </body>
 </html>

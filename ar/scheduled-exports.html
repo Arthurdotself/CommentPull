@@ -1,0 +1,651 @@
+<!-- AUTO-GENERATED — do not edit. Edit root source files and run: node build.js -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الصادرات المجدولة — commentpull</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { dark: '#0F1115', light: '#F8F9FA', accent: '#FF4C60', border: '#2E3038', muted: '#A1A1AA' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] input, [dir="rtl"] select, [dir="rtl"] textarea { text-align: right; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+
+    /* Export cards */
+    .export-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .export-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); }
+
+    /* Platform badges */
+    .badge-fb { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .badge-ig { background: rgba(244,114,182,0.12); color: #f472b6; border: 1px solid rgba(244,114,182,0.2); }
+    .badge-yt { background: rgba(239,68,68,0.12);   color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+    /* Status badges */
+    .badge-pending    { background: rgba(234,179,8,0.12);  color: #facc15; border: 1px solid rgba(234,179,8,0.25); }
+    .badge-processing { background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.25); }
+    .badge-completed  { background: rgba(34,197,94,0.12);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+    .badge-failed     { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+
+    /* Form inputs */
+    .field-input {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 10px 14px; font-size: 13px; color: #fff;
+      outline: none; box-sizing: border-box; font-family: 'Inter', sans-serif;
+      transition: border-color 0.15s;
+    }
+    .field-input:focus { border-color: rgba(99,102,241,0.5); }
+    .field-input::placeholder { color: #4b5563; }
+    .field-input[type="datetime-local"] { color-scheme: dark; cursor: pointer; }
+
+    /* Skeleton loader */
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 10px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Spinner */
+    .spin { animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="lang-ar antialiased min-h-screen flex flex-col">
+
+  <!-- ─── Header ─── -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
+    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <span class="text-xl font-semibold tracking-tight">commentpull</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="/" class="hover:text-white transition-colors" data-i18n="nav.tool">الأداة</a>
+        <a href="pricing.html" class="hover:text-white transition-colors" data-i18n="nav.pricing">الأسعار</a>
+        <a href="/ar/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">الدعم</a>
+        <a href="/ar/history.html" class="hover:text-white transition-colors" data-i18n="nav.history">السجل</a>
+        <a href="/ar/scheduled-exports.html" class="text-indigo-400 font-semibold" data-i18n="nav.scheduled">المجدولة</a>
+      </nav>
+      <div class="flex items-center gap-3" id="nav-auth">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow pt-20">
+    <div class="max-w-[860px] mx-auto px-6 py-16">
+
+      <!-- Page title -->
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-2">
+          <h1 class="text-3xl font-bold" data-i18n="sched.title">الصادرات المجدولة</h1>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">Pro</span>
+        </div>
+        <p class="text-gray-400 text-sm" data-i18n="sched.subtitle">جدول تصدير تعليقات لأي تاريخ مستقبلي — سنشغّله تلقائياً ونحفظه في سجلك.</p>
+      </div>
+
+      <!-- ── Pro gate ── -->
+      <div id="pro-gate" class="mb-10">
+        <!-- Loading spinner -->
+        <div id="gate-loading" class="flex items-center gap-3 py-6">
+          <svg class="spin w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40" stroke-linecap="round"/>
+          </svg>
+          <span class="text-sm text-gray-500" data-i18n="sched.gate.loading">جاري التحقق من خطتك…</span>
+        </div>
+
+        <!-- Gate banner (non-pro) -->
+        <div id="gate-banner" class="hidden">
+          <div class="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 px-8 py-10 text-center">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-5">
+              <svg class="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-4" data-i18n="sched.gate.badge">
+              Pro feature
+            </div>
+            <h2 class="text-xl font-bold mb-2" data-i18n="sched.gate.heading">الصادرات المجدولة ميزة Pro</h2>
+            <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8" id="gate-subtext" data-i18n="sched.gate.desc">
+              Upgrade to Pro to schedule comment exports for any future date and time.
+            </p>
+            <div class="flex items-center justify-center gap-3 flex-wrap" id="gate-actions"></div>
+
+            <!-- Feature callouts -->
+            <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left max-w-xl mx-auto">
+              <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
+                <div class="text-indigo-400 mb-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f1.title">اضبط وانسَ</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f1.desc">اختر تاريخاً ووقتاً — يعمل التصدير تلقائياً.</div>
+              </div>
+              <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
+                <div class="text-indigo-400 mb-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f2.title">التحقق من الرمز</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f2.desc">نتحقق من أن رمزك سيبقى نشطاً وقت التصدير.</div>
+              </div>
+              <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
+                <div class="text-indigo-400 mb-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                </div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f3.title">محفوظ في السجل</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f3.desc">تظهر النتائج في السجل مُعلَّمةً بـ «مجدول».</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Pro content ── -->
+      <div id="page-content" class="hidden">
+
+        <!-- New Scheduled Export form -->
+        <div class="glass-panel rounded-[24px] border border-white/10 p-8 mb-10">
+          <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span data-i18n="sched.form.heading">تصدير مجدول جديد</span>
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Platform -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.platform">المنصة</label>
+              <select id="s-platform" onchange="onPlatformChange()"
+                class="field-input cursor-pointer">
+                <option value="fb">Facebook</option>
+                <option value="ig">Instagram</option>
+                <option value="yt">YouTube</option>
+              </select>
+            </div>
+
+            <!-- Export format -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.format">صيغة التصدير</label>
+              <select id="s-format" class="field-input cursor-pointer">
+                <option value="xlsx">Excel (.xlsx)</option>
+                <option value="csv">CSV (.csv)</option>
+                <option value="json">JSON (.json)</option>
+              </select>
+            </div>
+
+            <!-- Post URL — full width -->
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.url">رابط المنشور / الفيديو</label>
+              <input type="url" id="s-post-url" placeholder="الصق رابط فيسبوك أو إنستغرام أو يوتيوب…" data-i18n-placeholder="sched.form.url.placeholder"
+                class="field-input">
+            </div>
+
+            <!-- FB: Page ID -->
+            <div id="f-fb">
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.fbid">معرّف صفحة فيسبوك</label>
+              <input type="text" id="s-page-id" placeholder="مثال: 123456789" data-i18n-placeholder="sched.form.fbid.placeholder" class="field-input">
+            </div>
+
+            <!-- IG: IG Business Account ID -->
+            <div id="f-ig" style="display:none">
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.igid">معرّف حساب إنستغرام التجاري</label>
+              <input type="text" id="s-ig-user-id" placeholder="مثال: 17841400000000000" data-i18n-placeholder="sched.form.igid.placeholder" class="field-input">
+            </div>
+
+            <!-- YT: API Key (replaces token for YouTube) -->
+            <div id="f-yt" style="display:none">
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.ytkey">مفتاح YouTube Data API v3</label>
+              <input type="text" id="s-yt-api-key" placeholder="الصق مفتاح API…" data-i18n-placeholder="sched.form.ytkey.placeholder" class="field-input">
+            </div>
+
+            <!-- Access token (FB / IG only) -->
+            <div id="f-token">
+              <label class="block text-xs font-medium text-gray-400 mb-2">
+                <span data-i18n="sched.form.token">رمز الوصول</span>
+                <span class="text-gray-600 font-normal" data-i18n="sched.form.token.hint">(رمز الصفحة أو المستخدم)</span>
+              </label>
+              <input type="text" id="s-token" placeholder="الصق رمز الوصول…" data-i18n-placeholder="sched.form.token.placeholder"
+                onblur="onTokenBlur()" class="field-input">
+            </div>
+
+            <!-- Scheduled date / time -->
+            <div>
+              <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.datetime">تاريخ ووقت الجدولة</label>
+              <input type="datetime-local" id="s-datetime" class="field-input"
+                onchange="onTokenBlur()">
+            </div>
+
+            <!-- Include replies (FB / IG only) -->
+            <div id="f-replies" class="flex items-center gap-3 pt-5">
+              <input type="checkbox" id="s-replies" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+              <label for="s-replies" class="text-sm text-gray-300 cursor-pointer select-none" data-i18n="sched.form.replies">تضمين الردود</label>
+            </div>
+
+          </div><!-- /grid -->
+
+          <!-- Token expiry notice -->
+          <div id="token-notice" style="display:none"
+            class="mt-5 text-sm rounded-xl px-4 py-3 border"></div>
+
+          <!-- Submit row -->
+          <div class="mt-6 flex items-center gap-4 flex-wrap">
+            <button id="btn-submit" onclick="submitSchedule()"
+              class="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span data-i18n="sched.form.submit">جدولة التصدير</span>
+            </button>
+            <span id="submit-msg" class="text-sm"></span>
+          </div>
+        </div>
+
+        <!-- Existing scheduled exports -->
+        <div>
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-semibold" data-i18n="sched.list.heading">صاداراتك المجدولة</h2>
+            <button onclick="loadList()" title="Refresh"
+              class="text-gray-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Skeleton -->
+          <div id="list-loading" class="flex flex-col gap-3">
+            <div class="skeleton h-20 w-full"></div>
+            <div class="skeleton h-20 w-full"></div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="list-empty" style="display:none" class="text-center py-16">
+            <div class="text-4xl mb-4">🕐</div>
+            <h3 class="text-base font-semibold mb-2" data-i18n="sched.list.empty.heading">لا توجد صادرات مجدولة بعد</h3>
+            <p class="text-gray-400 text-sm" data-i18n="sched.list.empty.desc">استخدم النموذج أعلاه لجدولة أول تصدير لك.</p>
+          </div>
+
+          <!-- Export cards -->
+          <div id="export-list" class="flex flex-col gap-3"></div>
+        </div>
+
+      </div><!-- /page-content -->
+
+    </div>
+  </main>
+
+  <script>
+    const API      = '/backend/api';
+    const GRAPH    = 'https://graph.facebook.com/v19.0';
+
+    function getToken() { return localStorage.getItem('cp_token') || null; }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function apiFetch(path, options = {}) {
+      const token = getToken();
+      const res = await fetch(API + path, {
+        ...options,
+        headers: { ...(options.headers || {}), ...(token ? { 'Authorization': 'Bearer ' + token } : {}) }
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed (' + res.status + ')');
+      return data;
+    }
+
+    // ── Platform toggle ────────────────────────────────────────────
+    function onPlatformChange() {
+      const p = document.getElementById('s-platform').value;
+      document.getElementById('f-fb').style.display      = p === 'fb' ? '' : 'none';
+      document.getElementById('f-ig').style.display      = p === 'ig' ? '' : 'none';
+      document.getElementById('f-yt').style.display      = p === 'yt' ? '' : 'none';
+      document.getElementById('f-token').style.display   = p !== 'yt' ? '' : 'none';
+      document.getElementById('f-replies').style.display = p !== 'yt' ? '' : 'none';
+      hideTokenNotice();
+    }
+
+    // ── Token expiry check ─────────────────────────────────────────
+    async function onTokenBlur() {
+      const p     = document.getElementById('s-platform').value;
+      const token = document.getElementById('s-token').value.trim();
+      if (p === 'yt' || !token) { hideTokenNotice(); return; }
+
+      try {
+        const res  = await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(token)}&access_token=${encodeURIComponent(token)}`);
+        const json = await res.json();
+        if (!json.data) { hideTokenNotice(); return; }
+
+        const exp     = json.data.expires_at ?? null;
+        const dtVal   = document.getElementById('s-datetime').value;
+        const schedTs = dtVal ? new Date(dtVal).getTime() / 1000 : null;
+
+        if (exp === null) { hideTokenNotice(); return; }
+
+        if (exp === 0) {
+          showTokenNotice('ok', '✓ Long-lived token — will not expire before the scheduled time.');
+        } else {
+          const expiryStr = new Date(exp * 1000).toLocaleString();
+          if (schedTs && exp < schedTs) {
+            showTokenNotice('err', `✕ Your token expires on ${expiryStr}, before the scheduled date. Please use a long-lived token.`);
+          } else {
+            showTokenNotice('ok', `✓ Token expires on ${expiryStr} — valid for the scheduled time.`);
+          }
+        }
+      } catch(_) { hideTokenNotice(); }
+    }
+
+    function showTokenNotice(state, msg) {
+      const el = document.getElementById('token-notice');
+      el.className = state === 'err'
+        ? 'mt-5 text-sm rounded-xl px-4 py-3 border bg-red-500/10 border-red-500/20 text-red-400'
+        : 'mt-5 text-sm rounded-xl px-4 py-3 border bg-green-500/10 border-green-500/20 text-green-400';
+      el.textContent = msg;
+      el.style.display = '';
+    }
+    function hideTokenNotice() {
+      document.getElementById('token-notice').style.display = 'none';
+    }
+
+    // ── Submit ─────────────────────────────────────────────────────
+    async function submitSchedule() {
+      const btn    = document.getElementById('btn-submit');
+      const msgEl  = document.getElementById('submit-msg');
+      const p      = document.getElementById('s-platform').value;
+      const postUrl = document.getElementById('s-post-url').value.trim();
+      const dtVal  = document.getElementById('s-datetime').value;
+      const format = document.getElementById('s-format').value;
+
+      msgEl.textContent = '';
+
+      if (!postUrl)  { showMsg('err', 'Post URL is required.');                         return; }
+      if (!dtVal)    { showMsg('err', 'Please select a scheduled date and time.');       return; }
+
+      const schedTs = new Date(dtVal).getTime() / 1000;
+      if (schedTs <= Date.now() / 1000 + 60) {
+        showMsg('err', 'Scheduled time must be at least 1 minute in the future.');
+        return;
+      }
+
+      const cpToken = getToken();
+      if (!cpToken)  { showMsg('err', 'You must be signed in to schedule an export.');  return; }
+
+      const payload = {
+        platform:      p,
+        post_url:      postUrl,
+        export_format: format,
+        scheduled_at:  new Date(dtVal).toISOString(),
+      };
+
+      if (p === 'fb') {
+        const pageId = document.getElementById('s-page-id').value.trim();
+        if (!pageId) { showMsg('err', 'Facebook Page ID is required.'); return; }
+        payload.page_id         = pageId;
+        payload.access_token    = document.getElementById('s-token').value.trim();
+        payload.include_replies = document.getElementById('s-replies').checked;
+      } else if (p === 'ig') {
+        const igId = document.getElementById('s-ig-user-id').value.trim();
+        if (!igId) { showMsg('err', 'Instagram Business Account ID is required.'); return; }
+        payload.ig_user_id      = igId;
+        payload.access_token    = document.getElementById('s-token').value.trim();
+        payload.include_replies = document.getElementById('s-replies').checked;
+      } else if (p === 'yt') {
+        const apiKey = document.getElementById('s-yt-api-key').value.trim();
+        if (!apiKey) { showMsg('err', 'YouTube API key is required.'); return; }
+        payload.access_token = apiKey;
+      }
+
+      if (p !== 'yt' && !payload.access_token) {
+        showMsg('err', 'Access token is required.'); return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Scheduling…';
+
+      try {
+        await apiFetch('/scheduled-exports.php', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(payload),
+        });
+
+        showMsg('ok', '✓ Scheduled! The export will run automatically at the chosen time and appear in History.');
+
+        // Reset form
+        document.getElementById('s-post-url').value  = '';
+        document.getElementById('s-datetime').value  = '';
+        document.getElementById('s-token').value     = '';
+        document.getElementById('s-page-id').value   = '';
+        document.getElementById('s-ig-user-id').value = '';
+        document.getElementById('s-yt-api-key').value = '';
+        document.getElementById('s-replies').checked = false;
+        hideTokenNotice();
+
+        loadList();
+
+      } catch(e) {
+        showMsg('err', '✕ ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Schedule Export`;
+      }
+    }
+
+    function showMsg(state, text) {
+      const el = document.getElementById('submit-msg');
+      el.textContent = text;
+      el.className = state === 'ok' ? 'text-sm text-green-400' : 'text-sm text-red-400';
+    }
+
+    // ── Load and render list ───────────────────────────────────────
+    async function loadList() {
+      const loadingEl = document.getElementById('list-loading');
+      const emptyEl   = document.getElementById('list-empty');
+      const listEl    = document.getElementById('export-list');
+
+      loadingEl.style.display = '';
+      emptyEl.style.display   = 'none';
+      listEl.innerHTML        = '';
+
+      try {
+        const data = await apiFetch('/scheduled-exports.php');
+        loadingEl.style.display = 'none';
+        renderList(data.exports || []);
+      } catch(e) {
+        loadingEl.style.display = 'none';
+        listEl.innerHTML = `<p class="text-sm text-red-400">Could not load exports: ${escHtml(e.message)}</p>`;
+      }
+    }
+
+    function renderList(exports) {
+      const listEl = document.getElementById('export-list');
+      const emptyEl = document.getElementById('list-empty');
+
+      if (!exports.length) { emptyEl.style.display = ''; return; }
+
+      const PLABELS = { fb: 'Facebook', ig: 'Instagram', yt: 'YouTube' };
+      const PBADGE  = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
+      const PICON   = { fb: 'fa-facebook', ig: 'fa-instagram', yt: 'fa-youtube' };
+      const SBADGE  = { pending: 'badge-pending', processing: 'badge-processing', completed: 'badge-completed', failed: 'badge-failed' };
+      const SLABEL  = { pending: '⏳ Pending', processing: '⟳ Processing', completed: '✓ Completed', failed: '✕ Failed' };
+
+      exports.forEach(exp => {
+        const card = document.createElement('div');
+        card.className = 'export-card';
+
+        const schedStr = formatDate(exp.scheduled_at);
+        const shortUrl = exp.post_url.length > 60 ? exp.post_url.slice(0, 57) + '…' : exp.post_url;
+
+        let extra = '';
+        if (exp.status === 'completed') {
+          extra = `<div class="text-xs text-gray-400 mt-1.5">${exp.total_count} comment${exp.total_count !== 1 ? 's' : ''} extracted</div>`;
+        } else if (exp.status === 'failed' && exp.error_message) {
+          extra = `<div class="text-xs text-red-400 mt-1.5 truncate">${escHtml(exp.error_message)}</div>`;
+        }
+
+        let actionBtn = '';
+        if (exp.status === 'pending') {
+          actionBtn = `
+            <button onclick="cancelExport(${exp.id}, this)"
+              class="text-gray-600 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-400/10"
+              title="Cancel this scheduled export">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>`;
+        }
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center flex-wrap gap-2 mb-2">
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-md border ${PBADGE[exp.platform] || ''}">
+                  <i class="fab ${PICON[exp.platform] || 'fa-globe'} mr-1"></i>${escHtml(PLABELS[exp.platform] || exp.platform)}
+                </span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-md border ${SBADGE[exp.status] || ''}">
+                  ${SLABEL[exp.status] || exp.status}
+                </span>
+                <span class="text-xs font-medium px-2 py-0.5 rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
+                  <i class="fa-regular fa-clock mr-1"></i>Scheduled · ${escHtml(schedStr)}
+                </span>
+              </div>
+              <div class="text-xs text-gray-500 font-mono truncate">${escHtml(shortUrl)}</div>
+              <div class="text-xs text-gray-600 mt-1 capitalize">${escHtml(exp.export_format)} export</div>
+              ${extra}
+            </div>
+            <div class="flex-shrink-0 flex items-center gap-1 mt-0.5">${actionBtn}</div>
+          </div>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    async function cancelExport(id, btn) {
+      if (!confirm('Cancel this scheduled export? This cannot be undone.')) return;
+      btn.disabled = true;
+      try {
+        await apiFetch('/scheduled-exports.php?id=' + id, { method: 'DELETE' });
+        const card = btn.closest('.export-card');
+        card.style.opacity = '0';
+        card.style.transition = 'opacity 0.2s';
+        setTimeout(() => {
+          card.remove();
+          if (!document.querySelectorAll('#export-list .export-card').length) {
+            document.getElementById('list-empty').style.display = '';
+          }
+        }, 200);
+      } catch(e) {
+        btn.disabled = false;
+        alert('Could not cancel: ' + e.message);
+      }
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso.replace(' ', 'T') + (iso.includes('T') ? '' : 'Z'));
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+        + ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ── Auth + boot ────────────────────────────────────────────────
+    function signOut() {
+      localStorage.removeItem('cp_token');
+      localStorage.removeItem('cp_name');
+      window.location.reload();
+    }
+
+    async function boot() {
+      const token = getToken();
+
+      if (!token) {
+        showGate('not-signed-in');
+        return;
+      }
+
+      let user;
+      try {
+        user = await apiFetch('/me.php');
+      } catch(e) {
+        showGate('not-signed-in');
+        return;
+      }
+
+      // Update nav
+      const navAuth = document.getElementById('nav-auth');
+      navAuth.innerHTML = `
+        <span class="hidden md:inline text-sm text-gray-300">${escHtml(user.name || user.email)}</span>
+        <button onclick="signOut()" class="text-sm text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/10 hover:border-white/20">Sign Out</button>
+      `;
+
+      if (user.plan !== 'pro') {
+        showGate('free');
+        return;
+      }
+
+      // Pro — show content
+      document.getElementById('pro-gate').classList.add('hidden');
+      document.getElementById('page-content').classList.remove('hidden');
+
+      // Set minimum datetime to now + 5 minutes
+      const dt  = document.getElementById('s-datetime');
+      dt.min = new Date(Date.now() + 5 * 60 * 1000).toISOString().slice(0, 16);
+
+      loadList();
+    }
+
+    function showGate(state) {
+      document.getElementById('gate-loading').classList.add('hidden');
+      document.getElementById('gate-banner').classList.remove('hidden');
+
+      const actions = document.getElementById('gate-actions');
+      if (state === 'not-signed-in') {
+        document.getElementById('gate-subtext').textContent =
+          'Sign in and upgrade to Pro to schedule comment exports.';
+        actions.innerHTML = `
+          <a href="signin.html" class="inline-block px-5 py-2.5 rounded-full text-sm font-medium border border-white/15 text-gray-200 hover:border-white/30 hover:text-white transition-colors">Sign In</a>
+          <a href="pricing.html" class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors">Upgrade to Pro</a>
+        `;
+      } else {
+        document.getElementById('gate-subtext').textContent =
+          'Upgrade to Pro to schedule comment exports for any future date and time.';
+        actions.innerHTML = `
+          <a href="pricing.html" class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors">Upgrade to Pro</a>
+        `;
+      }
+    }
+
+    boot();
+  </script>
+  <script src="/lang.js"></script>
+</body>
+</html>

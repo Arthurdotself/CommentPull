@@ -24,18 +24,20 @@ const T = new Function('return ' + tMatch[1])();
 
 /* ── 2. Page metadata (title / description / canonical) ─────────────────── */
 const META = {
-  'about.html':   { title: { ar: 'حول — commentpull' },          desc: { ar: 'تعرف على commentpull — الأسرع في استخراج وتحليل وتصدير تعليقات وسائل التواصل الاجتماعي.' } },
-  'contact.html': { title: { ar: 'تواصل معنا — commentpull' },   desc: { ar: 'تواصل مع فريق commentpull. نرد خلال يوم عمل واحد.' } },
-  'support.html': { title: { ar: 'الدعم — commentpull' },        desc: { ar: 'احصل على المساعدة مع commentpull. اعثر على إجابات للأسئلة الشائعة.' } },
-  'privacy.html': { title: { ar: 'سياسة الخصوصية — commentpull' }, desc: { ar: 'سياسة خصوصية commentpull — كيف نجمع بياناتك ونستخدمها ونحميها.' } },
-  'index.html':   { title: { ar: 'commentpull - استخراج تعليقات وسائل التواصل الاجتماعي' }, desc: { ar: 'استخرج وصفّ وصدّر التعليقات من فيسبوك وإنستغرام ويوتيوب بنقرة واحدة.' } },
+  'about.html':             { title: { ar: 'حول — commentpull' },                 desc: { ar: 'تعرف على commentpull — الأسرع في استخراج وتحليل وتصدير تعليقات وسائل التواصل الاجتماعي.' } },
+  'contact.html':           { title: { ar: 'تواصل معنا — commentpull' },          desc: { ar: 'تواصل مع فريق commentpull. نرد خلال يوم عمل واحد.' } },
+  'support.html':           { title: { ar: 'الدعم — commentpull' },               desc: { ar: 'احصل على المساعدة مع commentpull. اعثر على إجابات للأسئلة الشائعة.' } },
+  'privacy.html':           { title: { ar: 'سياسة الخصوصية — commentpull' },     desc: { ar: 'سياسة خصوصية commentpull — كيف نجمع بياناتك ونستخدمها ونحميها.' } },
+  'index.html':             { title: { ar: 'commentpull - استخراج تعليقات وسائل التواصل الاجتماعي' }, desc: { ar: 'استخرج وصفّ وصدّر التعليقات من فيسبوك وإنستغرام ويوتيوب بنقرة واحدة.' } },
+  'history.html':           { title: { ar: 'سجل التشغيل — commentpull' },        desc: { ar: '' } },
+  'scheduled-exports.html': { title: { ar: 'الصادرات المجدولة — commentpull' }, desc: { ar: '' } },
 };
 
 /* Pages that have /ar/ versions — used to rewrite internal href links */
-const AR_PAGES = new Set(['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html']);
+const AR_PAGES = new Set(['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html']);
 
 /* Pages to generate */
-const PAGES = ['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html'];
+const PAGES = ['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html'];
 
 /* ── 3. Core transformation ─────────────────────────────────────────────── */
 function generateAr(filename) {

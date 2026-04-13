@@ -259,6 +259,7 @@
               <input type="text" id="token-input"
                 placeholder="EAABsbCS4IUA… (Page Access Token)"
                 autocomplete="off" spellcheck="false"
+                oninput="onTokenInput()"
                 class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
               <button id="btn-check-token" onclick="checkToken()"
                 class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0">
@@ -897,6 +898,104 @@ async function igAutoDetect() {
     document.getElementById('ig-page-id').dataset.igUserId = igId;
   } catch(e) { setHint('ig-pageid-hint', 'err', `✕ ${e.message}`); }
   finally { btn.textContent = 'Auto-detect →'; btn.disabled = false; }
+}
+
+// ────────────────────────────────────────────────────────────
+//  TOKEN INPUT HANDLER — retry page detection once token arrives
+// ────────────────────────────────────────────────────────────
+function onTokenInput() {
+  const token = document.getElementById('token-input').value.trim();
+  if (!token) return;
+  const url = (document.getElementById('hero-url') || {}).value || '';
+  if (!url.trim()) return;
+
+  if (platform === 'fb') {
+    // If there was a pending slug that couldn't be resolved without a token, resolve it now
+    const pageIdEl = document.getElementById('fb-page-id');
+    const pending  = pageIdEl.dataset.pendingSlug;
+    if (pending && !pageIdEl.value) {
+      delete pageIdEl.dataset.pendingSlug;
+      setHint('fb-pageid-hint', 'info', `Resolving page "${pending}"…`);
+      gql(`/${enc(pending)}?fields=id,name&access_token=${enc(token)}`)
+        .then(data => {
+          pageIdEl.value = data.id;
+          setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
+        })
+        .catch(e => setHint('fb-pageid-hint', 'err', `Could not resolve "${pending}": ${e.message}`));
+    }
+  }
+  if (platform === 'ig') {
+    const pageIdEl = document.getElementById('ig-page-id');
+    if (!pageIdEl.value) igAutoDetect();
+  }
+}
+
+// ────────────────────────────────────────────────────────────
+//  AUTO-DETECT PAGE ID FROM PASTED URL
+// ────────────────────────────────────────────────────────────
+
+/** Extract a numeric Facebook Page ID directly from the URL (no API call needed). */
+function extractFbPageIdFromUrl(url) {
+  try {
+    const params = new URL(url).searchParams;
+    const id = params.get('id');
+    if (id && /^\d+$/.test(id)) return id;
+  } catch(_) {}
+  // Also handles mobile URLs with raw query string
+  const m = url.match(/[?&]id=(\d+)/);
+  return m ? m[1] : null;
+}
+
+/** Extract a human-readable page slug from the URL path (may need API to resolve to numeric ID). */
+function extractFbPageSlugFromUrl(url) {
+  const m = url.match(/facebook\.com\/([^/?#]+)\/(?:posts|videos|photos|reels|permalink)\//i);
+  if (!m) return null;
+  const slug = m[1];
+  // Ignore non-page path segments
+  const reserved = new Set(['groups','pages','watch','events','marketplace','story.php','permalink.php','profile.php']);
+  return reserved.has(slug.toLowerCase()) ? null : slug;
+}
+
+/**
+ * Called whenever a new post URL is entered or a token becomes available.
+ * Fills the Page ID field automatically where possible.
+ */
+async function tryAutoDetectPageId(url) {
+  if (platform === 'yt') return;
+
+  const token = document.getElementById('token-input').value.trim();
+
+  if (platform === 'fb') {
+    // 1. Numeric ID directly in URL (permalink.php?id=, story.php?id=) — no API call needed
+    const numericId = extractFbPageIdFromUrl(url);
+    if (numericId) {
+      document.getElementById('fb-page-id').value = numericId;
+      setHint('fb-pageid-hint', 'ok', `✓ Page ID detected from URL (${numericId})`);
+      return;
+    }
+
+    // 2. Page slug in URL path — resolve to numeric ID via API if token available
+    const slug = extractFbPageSlugFromUrl(url);
+    if (slug && token) {
+      setHint('fb-pageid-hint', 'info', `Resolving page "${slug}"…`);
+      try {
+        const data = await gql(`/${enc(slug)}?fields=id,name&access_token=${enc(token)}`);
+        document.getElementById('fb-page-id').value = data.id;
+        setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
+      } catch(e) {
+        setHint('fb-pageid-hint', 'err', `Could not resolve "${slug}": ${e.message}`);
+      }
+    } else if (slug) {
+      // Slug found but no token yet — show hint, will retry once token is entered
+      setHint('fb-pageid-hint', 'info', `Page "${slug}" detected — token needed to resolve ID`);
+      document.getElementById('fb-page-id').dataset.pendingSlug = slug;
+    }
+  }
+
+  if (platform === 'ig' && token) {
+    // Instagram post URLs don't embed a page ID — use existing auto-detect if token available
+    await igAutoDetect();
+  }
 }
 
 // ────────────────────────────────────────────────────────────
@@ -2358,6 +2457,9 @@ function stopConfetti() {
 
       // Show filter section container (collapsed by default)
       filterSec.style.display = 'block';
+
+      // Auto-detect page ID from the pasted URL (silently, no spinner blocking UI)
+      tryAutoDetectPageId(url);
     }
 
     // Override showPreview to hide the placeholder sample table when real data loads
@@ -2538,9 +2640,11 @@ function stopConfetti() {
         window._metaConnection = data;
         if (data.connected && data.token) {
           document.getElementById('token-input').value = data.token;
-          // Silently validate if a platform URL is already entered
-          const url = document.getElementById('hero-url');
-          if (url && url.value.trim() && (platform === 'fb' || platform === 'ig')) {
+          // If a URL is already entered, re-run page ID detection now that we have a token
+          const heroUrl = document.getElementById('hero-url');
+          const urlVal  = heroUrl ? heroUrl.value.trim() : '';
+          if (urlVal && (platform === 'fb' || platform === 'ig')) {
+            tryAutoDetectPageId(urlVal);
             checkToken();
           }
         }

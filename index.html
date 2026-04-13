@@ -305,6 +305,19 @@
               </div>
             </div>
 
+            <!-- Row 3a: Facebook Page Selector (FB only, shown when connected with multiple pages) -->
+            <div id="hero-fbpage-row" style="display:none"
+              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
+              <div class="pl-4 text-blue-400 flex-shrink-0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>
+              </div>
+              <select id="fb-page-select"
+                class="flex-grow bg-transparent border-none text-white text-sm px-2 py-3 focus:outline-none focus:ring-0 cursor-pointer">
+                <option value="">Select a page…</option>
+              </select>
+            </div>
+            <div id="fb-page-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
+
             <!-- Row 3: Page ID (hidden until URL entered; hidden for YouTube) -->
             <div id="hero-pageid-row" style="display:none"
               class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
@@ -1094,33 +1107,50 @@ function friendlyMetaError(err) {
 function enc(s) { return encodeURIComponent(s); }
 
 // ────────────────────────────────────────────────────────────
-//  FACEBOOK — EXTRACT PAGE SLUG FROM POST URL
+//  FACEBOOK — LOAD MANAGED PAGES + PAGE SELECTOR
 // ────────────────────────────────────────────────────────────
-function extractPageSlugFromUrl(url) {
-  // permalink.php?story_fbid=X&id=NUMERIC_PAGE_ID
-  const idParam = url.match(/[?&]id=(\d+)/);
-  if (idParam) return idParam[1];
-
-  // /pagename/posts/, /pagename/videos/, /pagename/photos/, /pagename/reels/
-  const slugMatch = url.match(/facebook\.com\/([^/?]+)\/(?:posts|videos|photos|reels?)\//);
-  if (slugMatch) return slugMatch[1];
-
-  return null;
+async function loadFbPages() {
+  window._fbPages = null;
+  window._fbSelectedPage = null;
+  setHint('fb-page-hint', '', '');
+  try {
+    const cpToken = localStorage.getItem('cp_token');
+    const headers = cpToken ? { 'Authorization': 'Bearer ' + cpToken } : {};
+    const res  = await fetch('/backend/api/meta-pages.php', { headers });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load pages');
+    window._fbPages = data.pages || [];
+    _updateFbPageSelector();
+  } catch(e) {
+    setHint('fb-page-hint', 'err', `Could not load pages: ${e.message}`);
+  }
 }
 
-// ────────────────────────────────────────────────────────────
-//  FACEBOOK — RESOLVE PAGE ACCESS TOKEN FROM SLUG OR NUMERIC ID
-// ────────────────────────────────────────────────────────────
-async function resolvePageToken(pageSlugOrId, userToken) {
-  const data = await gql(`/${pageSlugOrId}?fields=id,name,access_token&access_token=${enc(userToken)}`);
-  if (!data.access_token) {
-    const name = data.name ?? pageSlugOrId;
-    throw new Error(
-      `You are not an admin of "${name}". Only page admins can extract comments — ` +
-      `please connect with a Facebook account that manages this page.`
-    );
+function _updateFbPageSelector() {
+  const pages = window._fbPages;
+  const row   = document.getElementById('hero-fbpage-row');
+  if (!pages || platform !== 'fb' || !window._metaConnection?.connected) {
+    if (row) row.style.display = 'none';
+    return;
   }
-  return { pageId: data.id, pageToken: data.access_token, pageName: data.name };
+  if (pages.length === 0) {
+    setHint('fb-page-hint', 'err', 'No Facebook Pages found. Make sure you manage at least one Facebook Page.');
+    if (row) row.style.display = 'none';
+    return;
+  }
+  if (pages.length === 1) {
+    window._fbSelectedPage = pages[0];
+    setHint('fb-page-hint', 'ok', `✓ Page: ${pages[0].name}`);
+    if (row) row.style.display = 'none';
+    return;
+  }
+  // Multiple pages: show dropdown
+  const sel = document.getElementById('fb-page-select');
+  sel.innerHTML = pages.map(p => `<option value="${p.id}">${escHtml(p.name)}</option>`).join('');
+  window._fbSelectedPage = pages[0];
+  sel.value    = pages[0].id;
+  sel.onchange = () => { window._fbSelectedPage = pages.find(p => p.id === sel.value) || null; };
+  if (row) row.style.display = 'flex';
 }
 
 // ────────────────────────────────────────────────────────────
@@ -1785,26 +1815,19 @@ async function handleExtract() {
       const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
 
-      // Auto-extract page identifier from the first URL
-      const pageSlug = extractPageSlugFromUrl(urls[0]);
-      if (!pageSlug) {
-        setStatus('error', 'Cannot identify page', 'Could not extract the page name from your post URL. Use a direct post URL like facebook.com/pagename/posts/…');
+      if (!window._fbSelectedPage) {
+        setStatus('error', 'No Facebook Page selected',
+          window._metaConnection?.connected
+            ? 'Select a page from the dropdown above.'
+            : 'Connect your Facebook account first, then select a page.');
         btn.classList.remove('loading'); return;
       }
+
+      const pageId    = window._fbSelectedPage.id;
+      const pageToken = window._fbSelectedPage.access_token;
 
       setStatus('info', `Connecting to Facebook Graph API…`, '');
       const filter = includeReplies ? 'stream' : 'toplevel';
-
-      // Resolve the page access token for the page that owns the post
-      let pageId, pageToken;
-      try {
-        setProgItem('pg-token', 'active', `Fetching page access token for "${pageSlug}"…`);
-        ({ pageId, pageToken } = await resolvePageToken(pageSlug, token));
-        setProgItem('pg-token', 'done', `Page access token obtained.`);
-      } catch(e) {
-        setProgItem('pg-token', 'err', `Could not get page token: ${e.message}`);
-        btn.classList.remove('loading'); return;
-      }
 
       for (let i = 0; i < urls.length; i++) {
         const link = urls[i], fullId = buildFullPostId(link, pageId);
@@ -2385,6 +2408,14 @@ function stopConfetti() {
         _updateMetaConnectRow();
       }
 
+      // Show FB page selector if platform switched to FB
+      if (p === 'fb') {
+        _updateFbPageSelector();
+      } else {
+        const fbRow = document.getElementById('hero-fbpage-row');
+        if (fbRow) fbRow.style.display = 'none';
+      }
+
       // Show/hide page ID row (not needed for YouTube or Facebook — FB page is auto-resolved from URL)
       if (p === 'yt' || p === 'fb') {
         pageIdRow.style.display = 'none';
@@ -2574,6 +2605,9 @@ function stopConfetti() {
 
     // Cached connection state: null = not fetched, { connected, saved, expires_at, token }
     window._metaConnection = null;
+    // Cached list of managed FB pages and the currently selected one
+    window._fbPages        = null;
+    window._fbSelectedPage = null;
 
     async function loadMetaToken() {
       try {
@@ -2589,6 +2623,8 @@ function stopConfetti() {
           if (url && url.value.trim() && (platform === 'fb' || platform === 'ig')) {
             checkToken();
           }
+          // Load managed pages for the FB page selector
+          loadFbPages();
         }
       } catch(_) {
         window._metaConnection = { connected: false };
@@ -2633,6 +2669,10 @@ function stopConfetti() {
       } catch(_) {}
       document.getElementById('token-input').value = '';
       window._metaConnection = { connected: false };
+      window._fbPages        = null;
+      window._fbSelectedPage = null;
+      document.getElementById('hero-fbpage-row').style.display = 'none';
+      setHint('fb-page-hint', '', '');
       _updateMetaConnectRow();
     }
 

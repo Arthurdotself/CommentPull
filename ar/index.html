@@ -306,6 +306,19 @@
               </div>
             </div>
 
+            <!-- Row 3a: Facebook Page Selector (FB only, shown when connected with multiple pages) -->
+            <div id="hero-fbpage-row" style="display:none"
+              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
+              <div class="pl-4 text-blue-400 flex-shrink-0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>
+              </div>
+              <select id="fb-page-select"
+                class="flex-grow bg-transparent border-none text-white text-sm px-2 py-3 focus:outline-none focus:ring-0 cursor-pointer">
+                <option value="">Select a page…</option>
+              </select>
+            </div>
+            <div id="fb-page-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
+
             <!-- Row 3: Page ID (hidden until URL entered; hidden for YouTube) -->
             <div id="hero-pageid-row" style="display:none"
               class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
@@ -1095,6 +1108,58 @@ function friendlyMetaError(err) {
 function enc(s) { return encodeURIComponent(s); }
 
 // ────────────────────────────────────────────────────────────
+//  FACEBOOK — LOAD MANAGED PAGES + PAGE SELECTOR
+// ────────────────────────────────────────────────────────────
+async function loadFbPages() {
+  window._fbPages = null;
+  window._fbSelectedPage = null;
+  setHint('fb-page-hint', '', '');
+  try {
+    const cpToken = localStorage.getItem('cp_token');
+    const headers = cpToken ? { 'Authorization': 'Bearer ' + cpToken } : {};
+    const res  = await fetch('/backend/api/meta-pages.php', { headers });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load pages');
+    window._fbPages = data.pages || [];
+    _updateFbPageSelector();
+  } catch(e) {
+    setHint('fb-page-hint', 'err', `Could not load pages: ${e.message}`);
+  }
+}
+
+function _updateFbPageSelector() {
+  const pages = window._fbPages;
+  const row   = document.getElementById('hero-fbpage-row');
+  if (!pages || (platform !== 'fb' && platform !== 'ig') || !window._metaConnection?.connected) {
+    if (row) row.style.display = 'none';
+    return;
+  }
+  if (pages.length === 0) {
+    setHint('fb-page-hint', 'err', 'No Facebook Pages found. Make sure you manage at least one Facebook Page.');
+    if (row) row.style.display = 'none';
+    return;
+  }
+  const label = platform === 'ig' ? 'Facebook Page (linked to Instagram)' : 'Page';
+  if (pages.length === 1) {
+    window._fbSelectedPage = pages[0];
+    setHint('fb-page-hint', 'ok', `✓ ${label}: ${pages[0].name}`);
+    if (row) row.style.display = 'none';
+    return;
+  }
+  // Multiple pages: show dropdown
+  const sel = document.getElementById('fb-page-select');
+  sel.innerHTML = pages.map(p => `<option value="${p.id}">${escHtml(p.name)}</option>`).join('');
+  window._fbSelectedPage = pages[0];
+  sel.value    = pages[0].id;
+  sel.onchange = () => {
+    window._fbSelectedPage = pages.find(p => p.id === sel.value) || null;
+    // Clear cached IG user ID when page changes
+    document.getElementById('ig-page-id').dataset.igUserId = '';
+  };
+  if (row) row.style.display = 'flex';
+}
+
+// ────────────────────────────────────────────────────────────
 //  STATUS / PROGRESS HELPERS
 // ────────────────────────────────────────────────────────────
 function setStatus(type, title, body = '') {
@@ -1753,10 +1818,19 @@ async function handleExtract() {
 
   try {
     if (platform === 'fb') {
-      const pageId = document.getElementById('fb-page-id').value.trim();
-      if (!pageId) { setStatus('error','Page ID required','Enter your Page ID or click Auto-detect.'); btn.classList.remove('loading'); return; }
       const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
+
+      if (!window._fbSelectedPage) {
+        setStatus('error', 'No Facebook Page selected',
+          window._metaConnection?.connected
+            ? 'Select a page from the dropdown above.'
+            : 'Connect your Facebook account first, then select a page.');
+        btn.classList.remove('loading'); return;
+      }
+
+      const pageId    = window._fbSelectedPage.id;
+      const pageToken = window._fbSelectedPage.access_token;
 
       setStatus('info', `Connecting to Facebook Graph API…`, '');
       const filter = includeReplies ? 'stream' : 'toplevel';
@@ -1767,7 +1841,7 @@ async function handleExtract() {
         const pid = `p${i}`;
         setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — connecting…`);
         try {
-          const comments = await fetchFbComments(fullId, token, filter, n => {
+          const comments = await fetchFbComments(fullId, pageToken, filter, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
           });
           all.push(...comments);
@@ -1807,17 +1881,26 @@ async function handleExtract() {
       }
 
     } else {
-      const fbPageId = document.getElementById('ig-page-id').value.trim();
-      if (!fbPageId) { setStatus('error','Page ID required','Enter your Facebook Page ID or click Auto-detect.'); btn.classList.remove('loading'); return; }
       const urls = [...document.querySelectorAll('.ig-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Instagram post URL.'); btn.classList.remove('loading'); return; }
+
+      if (!window._fbSelectedPage) {
+        setStatus('error', 'No Facebook Page selected',
+          window._metaConnection?.connected
+            ? 'Select a page from the dropdown above.'
+            : 'Connect your Facebook account first, then select a page.');
+        btn.classList.remove('loading'); return;
+      }
+
+      const fbPageId  = window._fbSelectedPage.id;
+      const pageToken = window._fbSelectedPage.access_token;
 
       setStatus('info', 'Connecting to Instagram Graph API…', '');
 
       let igUserId;
       try {
         setProgItem('ig-resolve', 'active', 'Resolving Instagram Business Account ID…');
-        igUserId = await resolveIgUserId(fbPageId, token);
+        igUserId = await resolveIgUserId(fbPageId, pageToken);
         setProgItem('ig-resolve', 'done', `Instagram Business Account: ${igUserId}`);
       } catch(e) {
         setProgItem('ig-resolve', 'err', `Could not resolve IG account: ${e.message}`);
@@ -1837,9 +1920,9 @@ async function handleExtract() {
 
         setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — looking up media ID…`);
         try {
-          const mediaId = await resolveIgMediaId(shortcode, igUserId, token);
+          const mediaId = await resolveIgMediaId(shortcode, igUserId, pageToken);
           setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
-          const comments = await fetchIgComments(mediaId, token, includeReplies, n => {
+          const comments = await fetchIgComments(mediaId, pageToken, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
           });
           all.push(...comments);
@@ -2340,19 +2423,16 @@ function stopConfetti() {
         _updateMetaConnectRow();
       }
 
-      // Show/hide page ID row (not needed for YouTube)
-      if (p === 'yt') {
-        pageIdRow.style.display = 'none';
+      // Show page selector for FB and IG; hide for YouTube
+      if (p === 'fb' || p === 'ig') {
+        _updateFbPageSelector();
       } else {
-        pageIdRow.style.display = 'flex';
-        // Show the correct page ID input + auto-detect button + hint
-        document.getElementById('fb-page-id').style.display    = p === 'fb' ? '' : 'none';
-        document.getElementById('ig-page-id').style.display    = p === 'ig' ? '' : 'none';
-        document.getElementById('btn-fb-auto').style.display   = p === 'fb' ? '' : 'none';
-        document.getElementById('btn-ig-auto').style.display   = p === 'ig' ? '' : 'none';
-        document.getElementById('fb-pageid-hint').style.display = p === 'fb' ? '' : 'none';
-        document.getElementById('ig-pageid-hint').style.display = p === 'ig' ? '' : 'none';
+        const fbRow = document.getElementById('hero-fbpage-row');
+        if (fbRow) fbRow.style.display = 'none';
       }
+
+      // Page ID row is no longer needed — page is selected via the page selector above
+      pageIdRow.style.display = 'none';
 
       // Show action row (Filters button + Extract button)
       actionRow.style.display = 'flex';
@@ -2529,6 +2609,9 @@ function stopConfetti() {
 
     // Cached connection state: null = not fetched, { connected, saved, expires_at, token }
     window._metaConnection = null;
+    // Cached list of managed FB pages and the currently selected one
+    window._fbPages        = null;
+    window._fbSelectedPage = null;
 
     async function loadMetaToken() {
       try {
@@ -2544,6 +2627,8 @@ function stopConfetti() {
           if (url && url.value.trim() && (platform === 'fb' || platform === 'ig')) {
             checkToken();
           }
+          // Load managed pages for the FB page selector
+          loadFbPages();
         }
       } catch(_) {
         window._metaConnection = { connected: false };
@@ -2588,6 +2673,10 @@ function stopConfetti() {
       } catch(_) {}
       document.getElementById('token-input').value = '';
       window._metaConnection = { connected: false };
+      window._fbPages        = null;
+      window._fbSelectedPage = null;
+      document.getElementById('hero-fbpage-row').style.display = 'none';
+      setHint('fb-page-hint', '', '');
       _updateMetaConnectRow();
     }
 

@@ -1129,7 +1129,7 @@ async function loadFbPages() {
 function _updateFbPageSelector() {
   const pages = window._fbPages;
   const row   = document.getElementById('hero-fbpage-row');
-  if (!pages || platform !== 'fb' || !window._metaConnection?.connected) {
+  if (!pages || (platform !== 'fb' && platform !== 'ig') || !window._metaConnection?.connected) {
     if (row) row.style.display = 'none';
     return;
   }
@@ -1138,9 +1138,10 @@ function _updateFbPageSelector() {
     if (row) row.style.display = 'none';
     return;
   }
+  const label = platform === 'ig' ? 'Facebook Page (linked to Instagram)' : 'Page';
   if (pages.length === 1) {
     window._fbSelectedPage = pages[0];
-    setHint('fb-page-hint', 'ok', `✓ Page: ${pages[0].name}`);
+    setHint('fb-page-hint', 'ok', `✓ ${label}: ${pages[0].name}`);
     if (row) row.style.display = 'none';
     return;
   }
@@ -1149,7 +1150,11 @@ function _updateFbPageSelector() {
   sel.innerHTML = pages.map(p => `<option value="${p.id}">${escHtml(p.name)}</option>`).join('');
   window._fbSelectedPage = pages[0];
   sel.value    = pages[0].id;
-  sel.onchange = () => { window._fbSelectedPage = pages.find(p => p.id === sel.value) || null; };
+  sel.onchange = () => {
+    window._fbSelectedPage = pages.find(p => p.id === sel.value) || null;
+    // Clear cached IG user ID when page changes
+    document.getElementById('ig-page-id').dataset.igUserId = '';
+  };
   if (row) row.style.display = 'flex';
 }
 
@@ -1875,17 +1880,26 @@ async function handleExtract() {
       }
 
     } else {
-      const fbPageId = document.getElementById('ig-page-id').value.trim();
-      if (!fbPageId) { setStatus('error','Page ID required','Enter your Facebook Page ID or click Auto-detect.'); btn.classList.remove('loading'); return; }
       const urls = [...document.querySelectorAll('.ig-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Instagram post URL.'); btn.classList.remove('loading'); return; }
+
+      if (!window._fbSelectedPage) {
+        setStatus('error', 'No Facebook Page selected',
+          window._metaConnection?.connected
+            ? 'Select a page from the dropdown above.'
+            : 'Connect your Facebook account first, then select a page.');
+        btn.classList.remove('loading'); return;
+      }
+
+      const fbPageId  = window._fbSelectedPage.id;
+      const pageToken = window._fbSelectedPage.access_token;
 
       setStatus('info', 'Connecting to Instagram Graph API…', '');
 
       let igUserId;
       try {
         setProgItem('ig-resolve', 'active', 'Resolving Instagram Business Account ID…');
-        igUserId = await resolveIgUserId(fbPageId, token);
+        igUserId = await resolveIgUserId(fbPageId, pageToken);
         setProgItem('ig-resolve', 'done', `Instagram Business Account: ${igUserId}`);
       } catch(e) {
         setProgItem('ig-resolve', 'err', `Could not resolve IG account: ${e.message}`);
@@ -1905,9 +1919,9 @@ async function handleExtract() {
 
         setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — looking up media ID…`);
         try {
-          const mediaId = await resolveIgMediaId(shortcode, igUserId, token);
+          const mediaId = await resolveIgMediaId(shortcode, igUserId, pageToken);
           setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
-          const comments = await fetchIgComments(mediaId, token, includeReplies, n => {
+          const comments = await fetchIgComments(mediaId, pageToken, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
           });
           all.push(...comments);
@@ -2408,27 +2422,16 @@ function stopConfetti() {
         _updateMetaConnectRow();
       }
 
-      // Show FB page selector if platform switched to FB
-      if (p === 'fb') {
+      // Show page selector for FB and IG; hide for YouTube
+      if (p === 'fb' || p === 'ig') {
         _updateFbPageSelector();
       } else {
         const fbRow = document.getElementById('hero-fbpage-row');
         if (fbRow) fbRow.style.display = 'none';
       }
 
-      // Show/hide page ID row (not needed for YouTube or Facebook — FB page is auto-resolved from URL)
-      if (p === 'yt' || p === 'fb') {
-        pageIdRow.style.display = 'none';
-      } else {
-        // Only show page ID row for Instagram
-        pageIdRow.style.display = 'flex';
-        document.getElementById('fb-page-id').style.display    = 'none';
-        document.getElementById('ig-page-id').style.display    = '';
-        document.getElementById('btn-fb-auto').style.display   = 'none';
-        document.getElementById('btn-ig-auto').style.display   = '';
-        document.getElementById('fb-pageid-hint').style.display = 'none';
-        document.getElementById('ig-pageid-hint').style.display = '';
-      }
+      // Page ID row is no longer needed — page is selected via the page selector above
+      pageIdRow.style.display = 'none';
 
       // Show action row (Filters button + Extract button)
       actionRow.style.display = 'flex';

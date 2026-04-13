@@ -9,7 +9,10 @@
 require_once __DIR__ . '/../middleware/cors.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../helpers.php';
+
+session_start();
 
 $user = require_auth();
 
@@ -78,12 +81,6 @@ if ($method === 'POST') {
         json_error(422, 'post_url is required');
     }
 
-    // Access token
-    $accessToken = trim($data['access_token'] ?? '');
-    if (!$accessToken) {
-        json_error(422, 'access_token is required');
-    }
-
     // Export format
     $exportFormat = $data['export_format'] ?? 'xlsx';
     if (!in_array($exportFormat, ['csv', 'json', 'xlsx'], true)) {
@@ -101,43 +98,60 @@ if ($method === 'POST') {
     }
     $scheduledAtDb = date('Y-m-d H:i:s', $schedTs);
 
-    // Platform-specific params
-    $params = [];
-    if ($platform === 'fb') {
+    // ── Platform-specific params + server-side token retrieval ────────
+    $params      = [];
+    $accessToken = null;
+
+    if ($platform === 'yt') {
+        // YouTube: API key comes from the request (no OAuth for YouTube)
+        $accessToken = trim($data['access_token'] ?? '');
+        if (!$accessToken) json_error(422, 'access_token (YouTube API key) is required for YouTube');
+    } else {
+        // FB / IG: retrieve stored OAuth token from DB or session — never from request body
+        $userToken = null;
+        $userRow   = db()->prepare('SELECT meta_access_token, meta_token_expires FROM users WHERE id = :id LIMIT 1');
+        $userRow->execute([':id' => (int) $user['id']]);
+        $tokenRow = $userRow->fetch();
+        if ($tokenRow && $tokenRow['meta_access_token'] && strtotime($tokenRow['meta_token_expires']) > time()) {
+            try { $userToken = decrypt_token($tokenRow['meta_access_token']); } catch (Throwable $_) {}
+        }
+        if (!$userToken) {
+            $st = $_SESSION['meta_token'] ?? null;
+            $se = $_SESSION['meta_token_expires'] ?? null;
+            if ($st && $se && strtotime($se) > time()) $userToken = $st;
+        }
+        if (!$userToken) {
+            json_error(401, 'Not connected to Facebook. Please connect your account and try again.');
+        }
+
+        // Require page_id from the request (selected from page selector — not sensitive)
         $pageId = trim($data['page_id'] ?? '');
-        if (!$pageId) json_error(422, 'page_id is required for Facebook');
-        $params['page_id']         = $pageId;
-        $params['include_replies'] = (bool) ($data['include_replies'] ?? false);
-    } elseif ($platform === 'ig') {
-        $igUserId = trim($data['ig_user_id'] ?? '');
-        if (!$igUserId) json_error(422, 'ig_user_id is required for Instagram');
-        $params['ig_user_id']      = $igUserId;
-        $params['include_replies'] = (bool) ($data['include_replies'] ?? false);
-    }
-    // YouTube: access_token holds the API key; no extra params needed
+        if (!$pageId) json_error(422, 'page_id is required');
 
-    // ── Token validation (FB / IG only) ────────────────────────────
-    if ($platform !== 'yt') {
-        // Basic validity check
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL            => 'https://graph.facebook.com/v19.0/me?fields=id&access_token=' . urlencode($accessToken),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 10,
-        ]);
-        $res   = curl_exec($ch);
-        $errno = curl_errno($ch);
-        curl_close($ch);
+        // Get page-specific access token server-side
+        $ptRes = schedGraphGet(
+            'https://graph.facebook.com/v19.0/' . rawurlencode($pageId)
+            . '?fields=access_token&access_token=' . urlencode($userToken)
+        );
+        $accessToken = $ptRes['access_token'] ?? null;
+        if (!$accessToken) json_error(422, 'Could not retrieve page access token. Make sure you manage this Facebook Page.');
 
-        if ($errno) {
-            json_error(503, 'Could not validate access token: network error');
-        }
-        $json = json_decode($res, true) ?? [];
-        if (!empty($json['error'])) {
-            json_error(422, 'Access token is invalid: ' . ($json['error']['message'] ?? 'unknown error'));
+        if ($platform === 'fb') {
+            $params['page_id']         = $pageId;
+            $params['include_replies'] = (bool) ($data['include_replies'] ?? false);
+        } else {
+            // IG: resolve Instagram Business Account ID server-side
+            $igRes    = schedGraphGet(
+                'https://graph.facebook.com/v19.0/' . rawurlencode($pageId)
+                . '?fields=instagram_business_account&access_token=' . urlencode($accessToken)
+            );
+            $igUserId = $igRes['instagram_business_account']['id'] ?? null;
+            if (!$igUserId) json_error(422, 'No Instagram Business Account linked to this Facebook Page.');
+            $params['ig_user_id']      = $igUserId;
+            $params['include_replies'] = (bool) ($data['include_replies'] ?? false);
         }
 
-        // Expiry check — compare token expiry against scheduled time
+        // ── Token expiry check vs scheduled time ───────────────────
         $ch2 = curl_init();
         curl_setopt_array($ch2, [
             CURLOPT_URL            => 'https://graph.facebook.com/v19.0/debug_token?input_token=' . urlencode($accessToken) . '&access_token=' . urlencode($accessToken),
@@ -152,7 +166,7 @@ if ($method === 'POST') {
 
         if ($expiresAt !== null && $expiresAt > 0 && $expiresAt < $schedTs) {
             $expiryStr = date('Y-m-d H:i', $expiresAt);
-            json_error(422, "Your access token expires on {$expiryStr} UTC, before the scheduled export time. Please generate a long-lived token.");
+            json_error(422, "Your Facebook connection expires on {$expiryStr} UTC, before the scheduled export time. Please reconnect your account to refresh the token.");
         }
     }
 
@@ -200,3 +214,23 @@ if ($method === 'DELETE') {
 }
 
 json_error(405, 'Method not allowed');
+
+// ── Graph API helper (used during POST validation) ──────────────────
+function schedGraphGet(string $url): array {
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL            => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 15,
+        CURLOPT_HTTPHEADER     => ['User-Agent: CommentPull/1.0'],
+    ]);
+    $res   = curl_exec($ch);
+    $errno = curl_errno($ch);
+    curl_close($ch);
+
+    if ($errno) json_error(503, "Could not connect to Facebook (cURL #{$errno})");
+    $data = json_decode($res ?: '{}', true);
+    if (!is_array($data)) json_error(502, 'Invalid response from Facebook API');
+    if (!empty($data['error'])) json_error(422, $data['error']['message'] ?? 'Facebook API error');
+    return $data;
+}

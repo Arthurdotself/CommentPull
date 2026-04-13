@@ -1,11 +1,12 @@
 <?php
 /**
  * GET /backend/api/meta-pages.php
- * Returns the Facebook Pages the connected user manages, each with its own page access token.
- * Uses the stored user access token to call /me/accounts.
+ * Returns the Facebook Pages the connected user manages (id and name only).
+ * Access tokens are never returned to the client — they are retrieved server-side
+ * by fetch-comments.php and scheduled-exports.php when needed.
  *
  * Response:
- *   { "pages": [{ "id": "...", "name": "...", "access_token": "..." }, ...] }
+ *   { "pages": [{ "id": "...", "name": "..." }, ...] }
  */
 require_once __DIR__ . '/../middleware/cors.php';
 require_once __DIR__ . '/../middleware/auth.php';
@@ -50,7 +51,7 @@ if (!$token) {
 
 // ── Fetch managed pages from Meta Graph API ──────────────────────────
 $url = 'https://graph.facebook.com/v19.0/me/accounts?' . http_build_query([
-    'fields'       => 'id,name,access_token',
+    'fields'       => 'id,name',
     'access_token' => $token,
     'limit'        => '100',
 ]);

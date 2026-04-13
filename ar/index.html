@@ -251,27 +251,6 @@
               </span>
             </div>
 
-            <!-- Row 2: Token input (hidden until URL entered) -->
-            <div id="hero-token-row" style="display:none"
-              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
-              <div class="pl-4 text-gray-400 flex-shrink-0">
-                <i class="fa-solid fa-key"></i>
-              </div>
-              <input type="text" id="token-input"
-                placeholder="EAABsbCS4IUA… (Page Access Token)"
-                autocomplete="off" spellcheck="false"
-                class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
-              <button id="btn-check-token" onclick="checkToken()"
-                class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0">
-                <span id="btn-check-text" data-i18n="index.token.check">فحص الرمز</span>
-              </button>
-              <a id="token-hint-link" href="#"
-                onclick="window.open('https://developers.facebook.com/tools/explorer/','_blank'); return false;"
-                class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors whitespace-nowrap pr-2 flex-shrink-0" data-i18n="index.token.get">
-                Get token →
-              </a>
-            </div>
-
             <!-- Meta Connect row (FB/IG only, hidden until URL entered) -->
             <div id="meta-connect-row" style="display:none"
               class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5 min-h-[42px]">
@@ -319,32 +298,22 @@
             </div>
             <div id="fb-page-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
 
-            <!-- Row 3: Page ID (hidden until URL entered; hidden for YouTube) -->
-            <div id="hero-pageid-row" style="display:none"
+            <!-- Row 3: YouTube API Key (shown only for YouTube) -->
+            <div id="hero-ytkey-row" style="display:none"
               class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
-              <div class="pl-4 text-gray-400 flex-shrink-0">
-                <i class="fa-solid fa-hashtag"></i>
+              <div class="pl-4 text-red-400 flex-shrink-0">
+                <i class="fa-brands fa-youtube"></i>
               </div>
-              <input type="text" id="fb-page-id"
-                placeholder="Facebook Page ID (e.g. 968441023XXXX)"
-                spellcheck="false"
+              <input type="text" id="yt-api-key"
+                placeholder="YouTube Data API v3 Key (AIzaSy…)"
+                autocomplete="off" spellcheck="false"
                 class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
-              <input type="text" id="ig-page-id"
-                placeholder="Facebook Page ID (linked to your Instagram)"
-                spellcheck="false" style="display:none"
-                class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
-              <button id="btn-fb-auto" onclick="fbAutoDetect()"
-                class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0" data-i18n="index.btn.autodetect.fb">
-                Auto-detect →
-              </button>
-              <button id="btn-ig-auto" onclick="igAutoDetect()" style="display:none"
-                class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0" data-i18n="index.btn.autodetect.ig">
-                Auto-detect →
-              </button>
+              <a href="#"
+                onclick="window.open('https://console.developers.google.com/','_blank'); return false;"
+                class="text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap pr-2 flex-shrink-0">
+                Get API key →
+              </a>
             </div>
-            <!-- Page ID hints -->
-            <div id="fb-pageid-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
-            <div id="ig-pageid-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
 
             <!-- Row 4: Filters + Extract button (hidden until URL entered) -->
             <div id="hero-action-row" style="display:none"
@@ -802,24 +771,13 @@ function selectPlatform(p) {
   document.getElementById('api-badge').textContent = badgeMap[p] || 'Meta Graph API v19.0';
 
   const labelEl   = document.getElementById('token-label-text');
-  const inputEl   = document.getElementById('token-input');
   const tooltipEl = document.getElementById('token-tooltip');
-  const hintLink  = document.getElementById('token-hint-link');
-  const checkBtn  = document.getElementById('btn-check-token');
   if (p === 'yt') {
-    labelEl.textContent   = '02 — YouTube Data API Key';
-    inputEl.placeholder   = 'AIzaSy…';
-    tooltipEl.textContent = 'Go to console.developers.google.com → Create a project → Enable YouTube Data API v3 → Credentials → Create API key.';
-    hintLink.textContent  = 'Get API key →';
-    hintLink.onclick      = () => window.open('https://console.developers.google.com/','_blank');
-    checkBtn.style.display = 'none';
+    if (labelEl)   labelEl.textContent   = '02 — YouTube Data API Key';
+    if (tooltipEl) tooltipEl.textContent = 'Go to console.developers.google.com → Create a project → Enable YouTube Data API v3 → Credentials → Create API key.';
   } else {
-    labelEl.textContent   = '02 — Page Access Token';
-    inputEl.placeholder   = 'EAABsbCS4IUA…';
-    tooltipEl.textContent = 'Go to developers.facebook.com → Graph API Explorer. Select your App, then your Page.';
-    hintLink.textContent  = 'Get token →';
-    hintLink.onclick      = () => window.open('https://developers.facebook.com/tools/explorer/','_blank');
-    checkBtn.style.display = '';
+    if (labelEl)   labelEl.textContent   = '02 — Facebook Connection';
+    if (tooltipEl) tooltipEl.textContent = 'Connect your Facebook account using the button below — no token entry needed.';
   }
 
   const repliesCard = document.getElementById('opt-replies');
@@ -876,44 +834,6 @@ function removeUrl(btn) {
 }
 
 // ────────────────────────────────────────────────────────────
-//  FACEBOOK — AUTO DETECT PAGE ID
-// ────────────────────────────────────────────────────────────
-async function fbAutoDetect() {
-  const token = document.getElementById('token-input').value.trim();
-  if (!token) { setHint('fb-pageid-hint', 'err', 'Enter your token first.'); return; }
-  const btn = document.getElementById('btn-fb-auto');
-  btn.textContent = 'Detecting…'; btn.disabled = true;
-  try {
-    const data = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
-    document.getElementById('fb-page-id').value = data.id;
-    setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
-  } catch(e) { setHint('fb-pageid-hint', 'err', `✕ ${e.message}`); }
-  finally { btn.textContent = 'Auto-detect →'; btn.disabled = false; }
-}
-
-// ────────────────────────────────────────────────────────────
-//  INSTAGRAM — AUTO DETECT
-// ────────────────────────────────────────────────────────────
-async function igAutoDetect() {
-  const token = document.getElementById('token-input').value.trim();
-  if (!token) { setHint('ig-pageid-hint', 'err', 'Enter your token first.'); return; }
-  const btn = document.getElementById('btn-ig-auto');
-  btn.textContent = 'Detecting…'; btn.disabled = true;
-  try {
-    const meData = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
-    const fbPageId = meData.id;
-    document.getElementById('ig-page-id').value = fbPageId;
-    setHint('ig-pageid-hint', 'info', `→ Facebook Page: ${meData.name} (${fbPageId}) — checking linked Instagram…`);
-    const igData = await gql(`/${fbPageId}?fields=instagram_business_account&access_token=${enc(token)}`);
-    const igId = igData.instagram_business_account?.id;
-    if (!igId) throw new Error('No Instagram Business Account linked to this Facebook Page.');
-    setHint('ig-pageid-hint', 'ok', `✓ Facebook Page: ${meData.name} · Instagram Business ID: ${igId}`);
-    document.getElementById('ig-page-id').dataset.igUserId = igId;
-  } catch(e) { setHint('ig-pageid-hint', 'err', `✕ ${e.message}`); }
-  finally { btn.textContent = 'Auto-detect →'; btn.disabled = false; }
-}
-
-// ────────────────────────────────────────────────────────────
 //  FACEBOOK — POST ID PARSER
 // ────────────────────────────────────────────────────────────
 function buildFullPostId(link, pageId) {
@@ -938,94 +858,6 @@ function extractIgShortcode(url) {
   return m ? m[1] : null;
 }
 
-async function resolveIgMediaId(shortcode, igUserId, token) {
-  let url = `${GRAPH}/${igUserId}/media?fields=id,shortcode,permalink&limit=50&access_token=${enc(token)}`;
-  while (url) {
-    const data = await gqlRaw(url);
-    for (const item of (data.data || [])) {
-      if (item.shortcode === shortcode || (item.permalink && item.permalink.includes(`/${shortcode}/`))) {
-        return item.id;
-      }
-    }
-    url = data.paging?.next || null;
-  }
-  throw new Error(`Could not find media with shortcode "${shortcode}" in your Instagram account's posts.`);
-}
-
-async function resolveIgUserId(fbPageId, token) {
-  const stored = document.getElementById('ig-page-id').dataset.igUserId;
-  if (stored) return stored;
-  const data = await gql(`/${fbPageId}?fields=instagram_business_account&access_token=${enc(token)}`);
-  const igId = data.instagram_business_account?.id;
-  if (!igId) throw new Error('No Instagram Business Account found linked to this Facebook Page.');
-  document.getElementById('ig-page-id').dataset.igUserId = igId;
-  return igId;
-}
-
-// ────────────────────────────────────────────────────────────
-//  FETCH ALL COMMENTS — Facebook
-// ────────────────────────────────────────────────────────────
-async function fetchFbComments(fullPostId, token, filter, onUpdate, maxComments = Infinity) {
-  const results = [];
-  let url = `${GRAPH}/${fullPostId}/comments?` + new URLSearchParams({
-    access_token: token, fields: 'id,from,message,created_time', filter, limit: '100',
-  });
-  while (url) {
-    const data = await gqlRaw(url);
-    if (data.error) throw new Error(data.error.message);
-    for (const c of (data.data || [])) {
-      if (results.length >= maxComments) break;
-      results.push({
-        post_id: fullPostId,
-        commenter_name: c.from?.name ?? 'Unknown',
-        commenter_id:   c.from?.id   ?? '',
-        comment_text:   c.message    ?? '',
-        timestamp:      c.created_time ?? '',
-        comment_id:     c.id         ?? '',
-      });
-    }
-    if (onUpdate) onUpdate(results.length);
-    if (results.length >= maxComments) break;
-    url = data.paging?.next ?? null;
-  }
-  return results;
-}
-
-// ────────────────────────────────────────────────────────────
-//  FETCH ALL COMMENTS — Instagram
-// ────────────────────────────────────────────────────────────
-async function fetchIgComments(mediaId, token, includeReplies, onUpdate, maxComments = Infinity) {
-  const results = [];
-  let url = `${GRAPH}/${mediaId}/comments?` + new URLSearchParams({
-    access_token: token,
-    fields: 'id,username,text,timestamp,replies{id,username,text,timestamp}',
-    limit: '100',
-  });
-  while (url) {
-    const data = await gqlRaw(url);
-    if (data.error) throw new Error(data.error.message);
-    for (const c of (data.data || [])) {
-      if (results.length >= maxComments) break;
-      results.push({
-        post_id: mediaId, commenter_name: c.username ?? 'Unknown', commenter_id: c.id ?? '',
-        comment_text: c.text ?? '', timestamp: c.timestamp ?? '', comment_id: c.id ?? '', reply_to: '',
-      });
-      if (includeReplies && c.replies?.data) {
-        for (const r of c.replies.data) {
-          if (results.length >= maxComments) break;
-          results.push({
-            post_id: mediaId, commenter_name: r.username ?? 'Unknown', commenter_id: r.id ?? '',
-            comment_text: r.text ?? '', timestamp: r.timestamp ?? '', comment_id: r.id ?? '', reply_to: c.id,
-          });
-        }
-      }
-    }
-    if (onUpdate) onUpdate(results.length);
-    if (results.length >= maxComments) break;
-    url = data.paging?.next ?? null;
-  }
-  return results;
-}
 
 // ────────────────────────────────────────────────────────────
 //  YOUTUBE — VIDEO ID + FETCH COMMENTS
@@ -1153,8 +985,6 @@ function _updateFbPageSelector() {
   sel.value    = pages[0].id;
   sel.onchange = () => {
     window._fbSelectedPage = pages.find(p => p.id === sel.value) || null;
-    // Clear cached IG user ID when page changes
-    document.getElementById('ig-page-id').dataset.igUserId = '';
   };
   if (row) row.style.display = 'flex';
 }
@@ -1244,116 +1074,6 @@ function exportJSON(rows) {
   a.download = `commentpull_${platform}_${new Date().toISOString().slice(0,10)}.json`; a.click();
 }
 
-// ────────────────────────────────────────────────────────────
-//  TOKEN HEALTH CHECK
-// ────────────────────────────────────────────────────────────
-const REQUIRED_PERMS = {
-  fb: [{ perm: 'pages_read_engagement', label: 'Read page comments' }],
-  ig: [
-    { perm: 'pages_read_engagement',     label: 'Read page engagement' },
-    { perm: 'instagram_basic',           label: 'Instagram basic access' },
-    { perm: 'instagram_manage_comments', label: 'Read Instagram comments' },
-  ],
-};
-
-async function checkToken() {
-  const token = document.getElementById('token-input').value.trim();
-  const card  = document.getElementById('token-health-card');
-  const btn   = document.getElementById('btn-check-token');
-  const label = document.getElementById('btn-check-text');
-
-  if (!token) {
-    card.className = 'token-health-card err';
-    card.innerHTML = '<div class="thc-err">Enter your token first.</div>';
-    card.style.display = 'block';
-    return;
-  }
-
-  btn.disabled = true;
-  label.textContent = 'Checking…';
-  card.style.display = 'none';
-
-  try {
-    const me = await gql(`/me?fields=id,name&access_token=${enc(token)}`);
-
-    let grantedSet = new Set();
-    let permsLoaded = false;
-    try {
-      const permsData = await gql(`/me/permissions?access_token=${enc(token)}`);
-      (permsData.data || []).forEach(p => { if (p.status === 'granted') grantedSet.add(p.permission); });
-      permsLoaded = grantedSet.size > 0;
-    } catch(_) {}
-
-    let expiresAt = null;
-    let isShortLived = false;
-    try {
-      const debug = await gqlRaw(`${GRAPH}/debug_token?input_token=${enc(token)}&access_token=${enc(token)}`);
-      if (debug.data) {
-        expiresAt    = debug.data.expires_at ?? null;
-        isShortLived = expiresAt > 0 && (expiresAt - Date.now() / 1000) < 3600;
-      }
-    } catch(_) {}
-
-    const required = REQUIRED_PERMS[platform] || REQUIRED_PERMS.fb;
-    const missing  = permsLoaded ? required.filter(r => !grantedSet.has(r.perm)) : [];
-
-    let state = 'ok';
-    if (missing.length > 0) state = 'err';
-    else if (isShortLived)  state = 'warn';
-
-    let html = `<div class="thc-name">${escHtml(me.name)} <span style="color:#6b7280;font-weight:400;font-size:11px">· ID ${escHtml(me.id)}</span></div>`;
-
-    if (permsLoaded) {
-      html += '<div class="thc-perms">';
-      for (const { perm, label: desc } of required) {
-        const ok = grantedSet.has(perm);
-        html += `<div class="thc-perm">
-          <span class="thc-perm-dot ${ok ? 'ok' : 'miss'}"></span>
-          <code style="font-size:11px">${perm}</code>
-          <span style="color:#6b7280;font-size:10px">— ${desc}</span>
-          <span class="${ok ? 'thc-ok' : 'thc-err'}" style="margin-left:auto;font-size:10px">${ok ? 'granted' : 'MISSING'}</span>
-        </div>`;
-      }
-      html += '</div>';
-    } else {
-      html += `<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Permission details unavailable for Page Access Tokens — this is normal. Your token is valid.</div>`;
-    }
-
-    html += '<div class="thc-expiry">';
-    if (expiresAt === null) {
-      html += `<span style="color:#9ca3af;font-size:11px">Expiry info unavailable for Page Access Tokens. Page tokens are typically long-lived.</span>`;
-    } else if (expiresAt === 0) {
-      html += `<span class="thc-ok">✓ Long-lived token — no expiry</span>`;
-    } else {
-      const secsLeft  = expiresAt - Date.now() / 1000;
-      const hoursLeft = (secsLeft / 3600).toFixed(1);
-      const expiryStr = new Date(expiresAt * 1000).toLocaleString();
-      html += isShortLived
-        ? `<span class="thc-warn">⚠ Expires soon: ${expiryStr} (${hoursLeft}h left)</span>`
-        : `<span class="thc-ok">✓ Expires: ${expiryStr} (${hoursLeft}h remaining)</span>`;
-    }
-    html += '</div>';
-
-    if (missing.length > 0) {
-      html += `<div class="thc-action">Missing ${missing.length} permission${missing.length > 1 ? 's' : ''}. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Re-generate token →</a></div>`;
-    }
-
-    card.className    = `token-health-card ${state}`;
-    card.innerHTML    = html;
-    card.style.display = 'block';
-
-  } catch(e) {
-    card.className    = 'token-health-card err';
-    card.innerHTML    = `
-      <div class="thc-err" style="font-weight:500;margin-bottom:6px">✕ Token invalid or expired</div>
-      <div style="font-size:11px;color:#d1d5db">${escHtml(e.message)}</div>
-      <div class="thc-action"><a href="https://developers.facebook.com/tools/explorer/" target="_blank">Get a new token →</a></div>`;
-    card.style.display = 'block';
-  } finally {
-    btn.disabled      = false;
-    label.textContent = 'Check token';
-  }
-}
 
 // ────────────────────────────────────────────────────────────
 //  FILTER RULES
@@ -1802,13 +1522,16 @@ async function reDownload(which) {
 // ────────────────────────────────────────────────────────────
 //  MAIN EXTRACTION HANDLER
 // ────────────────────────────────────────────────────────────
+// Returns auth headers for backend API calls
+function authHeaders() {
+  const t = localStorage.getItem('cp_token');
+  return t ? { 'Authorization': 'Bearer ' + t } : {};
+}
+
 async function handleExtract() {
-  const token = document.getElementById('token-input').value.trim();
   const includeReplies = document.getElementById('opt-replies').classList.contains('selected');
 
   gtag('event', 'extract_started', { platform });
-
-  if (!token) { setStatus('error','Access token required','Please enter your Page Access Token.'); return; }
 
   const btn = document.getElementById('extract-btn');
   btn.classList.add('loading');
@@ -1829,29 +1552,33 @@ async function handleExtract() {
         btn.classList.remove('loading'); return;
       }
 
-      const pageId    = window._fbSelectedPage.id;
-      const pageToken = window._fbSelectedPage.access_token;
-
-      setStatus('info', `Connecting to Facebook Graph API…`, '');
-      const filter = includeReplies ? 'stream' : 'toplevel';
+      const pageId = window._fbSelectedPage.id;
+      setStatus('info', `Connecting to Facebook…`, '');
 
       for (let i = 0; i < urls.length; i++) {
-        const link = urls[i], fullId = buildFullPostId(link, pageId);
+        const link  = urls[i];
         const label = link.length > 44 ? '…'+link.slice(-41) : link;
-        const pid = `p${i}`;
-        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — connecting…`);
+        const pid   = `p${i}`;
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
         try {
-          const comments = await fetchFbComments(fullId, pageToken, filter, n => {
-            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          const res  = await fetch('/backend/api/fetch-comments.php', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', ...authHeaders() },
+            body:    JSON.stringify({ platform: 'fb', post_url: link, page_id: pageId, include_replies: includeReplies }),
           });
+          const json = await res.json();
+          if (!res.ok) throw new Error(json.error || 'Server error');
+          const comments = json.comments || [];
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`); anyError = true; lastErrorMsg = e.message; }
       }
 
     } else if (platform === 'yt') {
-      const apiKey = document.getElementById('token-input').value.trim();
-      const urls   = [...document.querySelectorAll('.yt-url')].map(i => i.value.trim()).filter(Boolean);
+      const apiKey = document.getElementById('yt-api-key').value.trim();
+      if (!apiKey) { setStatus('error','API Key required','Please enter your YouTube Data API v3 key.'); btn.classList.remove('loading'); return; }
+
+      const urls = [...document.querySelectorAll('.yt-url')].map(i => i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No video URL','Paste at least one YouTube video URL.'); btn.classList.remove('loading'); return; }
 
       setStatus('info', 'Connecting to YouTube Data API…', '');
@@ -1881,6 +1608,7 @@ async function handleExtract() {
       }
 
     } else {
+      // Instagram
       const urls = [...document.querySelectorAll('.ig-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Instagram post URL.'); btn.classList.remove('loading'); return; }
 
@@ -1892,39 +1620,23 @@ async function handleExtract() {
         btn.classList.remove('loading'); return;
       }
 
-      const fbPageId  = window._fbSelectedPage.id;
-      const pageToken = window._fbSelectedPage.access_token;
-
-      setStatus('info', 'Connecting to Instagram Graph API…', '');
-
-      let igUserId;
-      try {
-        setProgItem('ig-resolve', 'active', 'Resolving Instagram Business Account ID…');
-        igUserId = await resolveIgUserId(fbPageId, pageToken);
-        setProgItem('ig-resolve', 'done', `Instagram Business Account: ${igUserId}`);
-      } catch(e) {
-        setProgItem('ig-resolve', 'err', `Could not resolve IG account: ${e.message}`);
-        btn.classList.remove('loading'); return;
-      }
+      const pageId = window._fbSelectedPage.id;
+      setStatus('info', 'Connecting to Instagram…', '');
 
       for (let i = 0; i < urls.length; i++) {
-        const url = urls[i];
-        const shortcode = extractIgShortcode(url);
+        const url   = urls[i];
         const label = url.length > 44 ? '…'+url.slice(-41) : url;
-        const pid = `p${i}`;
-
-        if (!shortcode) {
-          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Could not extract shortcode from URL`);
-          anyError = true; continue;
-        }
-
-        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — looking up media ID…`);
+        const pid   = `p${i}`;
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
         try {
-          const mediaId = await resolveIgMediaId(shortcode, igUserId, pageToken);
-          setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
-          const comments = await fetchIgComments(mediaId, pageToken, includeReplies, n => {
-            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
+          const res  = await fetch('/backend/api/fetch-comments.php', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', ...authHeaders() },
+            body:    JSON.stringify({ platform: 'ig', post_url: url, page_id: pageId, include_replies: includeReplies }),
           });
+          const json = await res.json();
+          if (!res.ok) throw new Error(json.error || 'Server error');
+          const comments = json.comments || [];
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
@@ -2380,16 +2092,17 @@ function stopConfetti() {
 
     // Called on every keystroke in the hero URL input
     function onHeroUrlInput() {
-      const url       = document.getElementById('hero-url').value.trim();
-      const tokenRow      = document.getElementById('hero-token-row');
+      const url            = document.getElementById('hero-url').value.trim();
       const metaConnectRow = document.getElementById('meta-connect-row');
-      const pageIdRow     = document.getElementById('hero-pageid-row');
-      const actionRow     = document.getElementById('hero-action-row');
-      const filterSec     = document.getElementById('filter-section');
-      const badge         = document.getElementById('platform-badge');
+      const ytKeyRow       = document.getElementById('hero-ytkey-row');
+      const actionRow      = document.getElementById('hero-action-row');
+      const filterSec      = document.getElementById('filter-section');
+      const badge          = document.getElementById('platform-badge');
 
       if (!url) {
-        [tokenRow, metaConnectRow, pageIdRow, actionRow].forEach(el => el.style.display = 'none');
+        [metaConnectRow, ytKeyRow, actionRow].forEach(el => el.style.display = 'none');
+        const fbRow = document.getElementById('hero-fbpage-row');
+        if (fbRow) fbRow.style.display = 'none';
         filterSec.style.display = 'none';
         badge.style.display = 'none';
         return;
@@ -2397,7 +2110,7 @@ function stopConfetti() {
 
       const p = detectPlatform(url);
 
-      // Update the JS engine's platform state (updates token placeholder, etc.)
+      // Update the JS engine's platform state
       selectPlatform(p);
 
       // Populate the hidden platform-specific URL input
@@ -2413,26 +2126,17 @@ function stopConfetti() {
       badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 ' + badgeCls[p];
       badge.style.display = 'flex';
 
-      // Show token row
-      tokenRow.style.display = 'flex';
-
-      // Show Meta connect row for Facebook/Instagram only
+      // YouTube: show API key row; FB/IG: show connect row
       if (p === 'yt') {
+        ytKeyRow.style.display = 'flex';
         metaConnectRow.style.display = 'none';
-      } else {
-        _updateMetaConnectRow();
-      }
-
-      // Show page selector for FB and IG; hide for YouTube
-      if (p === 'fb' || p === 'ig') {
-        _updateFbPageSelector();
-      } else {
         const fbRow = document.getElementById('hero-fbpage-row');
         if (fbRow) fbRow.style.display = 'none';
+      } else {
+        ytKeyRow.style.display = 'none';
+        _updateMetaConnectRow();
+        _updateFbPageSelector();
       }
-
-      // Page ID row is no longer needed — page is selected via the page selector above
-      pageIdRow.style.display = 'none';
 
       // Show action row (Filters button + Extract button)
       actionRow.style.display = 'flex';
@@ -2620,13 +2324,7 @@ function stopConfetti() {
         const res  = await fetch('/backend/api/meta-token.php', { headers });
         const data = await res.json();
         window._metaConnection = data;
-        if (data.connected && data.token) {
-          document.getElementById('token-input').value = data.token;
-          // Silently validate if a platform URL is already entered
-          const url = document.getElementById('hero-url');
-          if (url && url.value.trim() && (platform === 'fb' || platform === 'ig')) {
-            checkToken();
-          }
+        if (data.connected) {
           // Load managed pages for the FB page selector
           loadFbPages();
         }
@@ -2671,7 +2369,6 @@ function stopConfetti() {
         if (cpToken) headers['Authorization'] = 'Bearer ' + cpToken;
         await fetch('/backend/api/meta-disconnect.php', { method: 'POST', headers });
       } catch(_) {}
-      document.getElementById('token-input').value = '';
       window._metaConnection = { connected: false };
       window._fbPages        = null;
       window._fbSelectedPage = null;

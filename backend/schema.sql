@@ -7,11 +7,17 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash       VARCHAR(255)  NOT NULL,
     name                VARCHAR(100)  NOT NULL DEFAULT '',
     plan                ENUM('free','pro')  NOT NULL DEFAULT 'free',
+    meta_access_token   TEXT          DEFAULT NULL,   -- AES-256-GCM encrypted
+    meta_token_expires  DATETIME      DEFAULT NULL,   -- when the long-lived token expires
     created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Migration for existing databases (run once):
+-- ALTER TABLE users ADD COLUMN meta_access_token TEXT DEFAULT NULL;
+-- ALTER TABLE users ADD COLUMN meta_token_expires DATETIME DEFAULT NULL;
 
 
 CREATE TABLE IF NOT EXISTS sessions (

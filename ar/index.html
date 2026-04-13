@@ -272,6 +272,40 @@
               </a>
             </div>
 
+            <!-- Meta Connect row (FB/IG only, hidden until URL entered) -->
+            <div id="meta-connect-row" style="display:none"
+              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5 min-h-[42px]">
+
+              <!-- Not connected state -->
+              <div id="meta-not-connected" class="flex items-center gap-2 w-full">
+                <div class="pl-3 text-blue-400 flex-shrink-0">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>
+                </div>
+                <span class="text-xs text-gray-400 flex-grow">Connect your Facebook account — skip pasting a token every time.</span>
+                <a href="/backend/api/oauth-meta.php"
+                  class="text-xs text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap pr-2 flex-shrink-0 font-medium">
+                  Connect Facebook →
+                </a>
+              </div>
+
+              <!-- Connected state -->
+              <div id="meta-is-connected" style="display:none" class="flex items-center gap-2 w-full">
+                <div class="pl-3 text-green-400 flex-shrink-0">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <span class="text-xs text-gray-300 flex-grow">
+                  Connected to Facebook
+                  <span id="meta-save-nudge" style="display:none" class="text-gray-500"> · session only ·
+                    <a href="/signin.html" class="text-indigo-400 hover:text-indigo-300">Sign in to save</a>
+                  </span>
+                </span>
+                <button onclick="metaDisconnect()"
+                  class="text-xs text-gray-500 hover:text-red-400 transition-colors whitespace-nowrap pr-2 flex-shrink-0">
+                  Disconnect
+                </button>
+              </div>
+            </div>
+
             <!-- Row 3: Page ID (hidden until URL entered; hidden for YouTube) -->
             <div id="hero-pageid-row" style="display:none"
               class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
@@ -1043,8 +1077,20 @@ async function gql(path) { return gqlRaw(`${GRAPH}${path}`); }
 async function gqlRaw(url) {
   const res = await fetch(url);
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  if (data.error) throw new Error(friendlyMetaError(data.error));
   return data;
+}
+function friendlyMetaError(err) {
+  const code = err.code;
+  const msg  = err.message || '';
+  if (code === 190)  return `Token expired or invalid — please generate a new token in Graph API Explorer.`;
+  if (code === 10)   return `Missing permission: your token needs "pages_read_engagement". Regenerate it in Graph API Explorer and make sure that permission is checked before generating.`;
+  if (code === 200)  return `Permission denied — your token does not have access to this page or post.`;
+  if (code === 100)  return `Invalid ID or parameter — check your Page ID and post URL are correct.`;
+  if (code === 4 || code === 17 || code === 32) return `Rate limit reached — wait a few minutes then try again.`;
+  if (code === 803)  return `Post not found — the URL may be wrong or the post was deleted.`;
+  // fallback: clean up the raw Meta message
+  return msg.replace(/^\(#\d+\)\s*/, '');
 }
 function enc(s) { return encodeURIComponent(s); }
 
@@ -1703,6 +1749,7 @@ async function handleExtract() {
   btn.classList.add('loading');
   const all = [];
   let anyError = false;
+  let lastErrorMsg = '';
 
   try {
     if (platform === 'fb') {
@@ -1725,7 +1772,7 @@ async function handleExtract() {
           });
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
-        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`); anyError = true; }
+        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`); anyError = true; lastErrorMsg = e.message; }
       }
 
     } else if (platform === 'yt') {
@@ -1754,8 +1801,8 @@ async function handleExtract() {
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
-          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
-          anyError = true;
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`);
+          anyError = true; lastErrorMsg = e.message;
         }
       }
 
@@ -1798,8 +1845,8 @@ async function handleExtract() {
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) {
-          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — Error: ${e.message}`);
-          anyError = true;
+          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`);
+          anyError = true; lastErrorMsg = e.message;
         }
       }
     }
@@ -1812,7 +1859,7 @@ async function handleExtract() {
 
   if (all.length === 0) {
     const tip = anyError
-      ? `Check your token has the right permissions and your Page/Account IDs are correct.`
+      ? `<div style="margin-top:4px">${escHtml(lastErrorMsg)}</div>`
       : `No comments found — the posts may be empty.`;
     setStatus('error', 'No comments collected', tip);
     return;
@@ -2251,14 +2298,15 @@ function stopConfetti() {
     // Called on every keystroke in the hero URL input
     function onHeroUrlInput() {
       const url       = document.getElementById('hero-url').value.trim();
-      const tokenRow  = document.getElementById('hero-token-row');
-      const pageIdRow = document.getElementById('hero-pageid-row');
-      const actionRow = document.getElementById('hero-action-row');
-      const filterSec = document.getElementById('filter-section');
-      const badge     = document.getElementById('platform-badge');
+      const tokenRow      = document.getElementById('hero-token-row');
+      const metaConnectRow = document.getElementById('meta-connect-row');
+      const pageIdRow     = document.getElementById('hero-pageid-row');
+      const actionRow     = document.getElementById('hero-action-row');
+      const filterSec     = document.getElementById('filter-section');
+      const badge         = document.getElementById('platform-badge');
 
       if (!url) {
-        [tokenRow, pageIdRow, actionRow].forEach(el => el.style.display = 'none');
+        [tokenRow, metaConnectRow, pageIdRow, actionRow].forEach(el => el.style.display = 'none');
         filterSec.style.display = 'none';
         badge.style.display = 'none';
         return;
@@ -2284,6 +2332,13 @@ function stopConfetti() {
 
       // Show token row
       tokenRow.style.display = 'flex';
+
+      // Show Meta connect row for Facebook/Instagram only
+      if (p === 'yt') {
+        metaConnectRow.style.display = 'none';
+      } else {
+        _updateMetaConnectRow();
+      }
 
       // Show/hide page ID row (not needed for YouTube)
       if (p === 'yt') {
@@ -2332,7 +2387,7 @@ function stopConfetti() {
 
   <script src="/lang.js"></script>
   <script>
-    // Handle Google OAuth redirect back to homepage
+    // Handle Google/GitHub OAuth redirect back to homepage
     (function () {
       const params = new URLSearchParams(window.location.search);
       if (params.get('oauth') === 'success') {
@@ -2344,7 +2399,47 @@ function stopConfetti() {
         }
         history.replaceState({}, '', window.location.pathname);
       }
+
+      // Handle Meta OAuth redirect
+      if (params.get('meta_connected') === '1') {
+        history.replaceState({}, '', window.location.pathname);
+        // Show success toast after the page settles
+        window.addEventListener('load', function() {
+          _showMetaToast();
+        });
+      }
+      if (params.get('meta_error')) {
+        history.replaceState({}, '', window.location.pathname);
+        window.addEventListener('load', function() {
+          _showMetaToast(params.get('meta_error'));
+        });
+      }
     })();
+
+    function _showMetaToast(errorMsg) {
+      const toast = document.createElement('div');
+      const isError = !!errorMsg;
+      toast.style.cssText = [
+        'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%)',
+        'z-index:9999', 'padding:12px 20px', 'border-radius:12px',
+        'font-size:13px', 'font-weight:500', 'color:#fff',
+        'box-shadow:0 4px 20px rgba(0,0,0,.4)',
+        'transition:opacity .3s',
+        isError ? 'background:#ef4444' : 'background:#22c55e',
+      ].join(';');
+
+      const loggedIn = !!localStorage.getItem('cp_token');
+      if (isError) {
+        toast.textContent = 'Facebook connection failed: ' + errorMsg;
+      } else if (loggedIn) {
+        toast.textContent = '✓ Facebook account connected and saved!';
+      } else {
+        toast.innerHTML = '✓ Facebook connected (session only) &nbsp;·&nbsp; <a href="/signin.html" style="color:#bfdbfe;text-decoration:underline">Sign in to save</a>';
+      }
+
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
+    }
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
@@ -2430,10 +2525,78 @@ function stopConfetti() {
       }
     }
 
+    // ── Meta token connection ──────────────────────────────────────
+
+    // Cached connection state: null = not fetched, { connected, saved, expires_at, token }
+    window._metaConnection = null;
+
+    async function loadMetaToken() {
+      try {
+        const cpToken = localStorage.getItem('cp_token');
+        const headers = cpToken ? { 'Authorization': 'Bearer ' + cpToken } : {};
+        const res  = await fetch('/backend/api/meta-token.php', { headers });
+        const data = await res.json();
+        window._metaConnection = data;
+        if (data.connected && data.token) {
+          document.getElementById('token-input').value = data.token;
+          // Silently validate if a platform URL is already entered
+          const url = document.getElementById('hero-url');
+          if (url && url.value.trim() && (platform === 'fb' || platform === 'ig')) {
+            checkToken();
+          }
+        }
+      } catch(_) {
+        window._metaConnection = { connected: false };
+      }
+      _updateMetaConnectRow();
+    }
+
+    function _updateMetaConnectRow() {
+      const row = document.getElementById('meta-connect-row');
+      if (!row) return;
+
+      const conn = window._metaConnection;
+      const urlVal = (document.getElementById('hero-url') || {}).value || '';
+
+      // Only visible for FB/IG when a URL is entered
+      if (!urlVal.trim() || platform === 'yt') {
+        row.style.display = 'none';
+        return;
+      }
+
+      const notConn   = document.getElementById('meta-not-connected');
+      const isConn    = document.getElementById('meta-is-connected');
+      const saveNudge = document.getElementById('meta-save-nudge');
+
+      if (conn && conn.connected) {
+        notConn.style.display  = 'none';
+        isConn.style.display   = 'flex';
+        if (saveNudge) saveNudge.style.display = conn.saved ? 'none' : 'inline';
+      } else {
+        notConn.style.display  = 'flex';
+        isConn.style.display   = 'none';
+      }
+      row.style.display = 'flex';
+    }
+
+    async function metaDisconnect() {
+      try {
+        const cpToken = localStorage.getItem('cp_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (cpToken) headers['Authorization'] = 'Bearer ' + cpToken;
+        await fetch('/backend/api/meta-disconnect.php', { method: 'POST', headers });
+      } catch(_) {}
+      document.getElementById('token-input').value = '';
+      window._metaConnection = { connected: false };
+      _updateMetaConnectRow();
+    }
+
     // ── Boot: load user on page load ──
     (async function() {
       const user = await _cpLoadUser();
       _cpUpdateNav(user);
+      // Load stored Meta token (works for both logged-in and anonymous users)
+      await loadMetaToken();
     })();
   </script>
 </body>

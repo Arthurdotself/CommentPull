@@ -259,7 +259,6 @@
               <input type="text" id="token-input"
                 placeholder="EAABsbCS4IUA… (Page Access Token)"
                 autocomplete="off" spellcheck="false"
-                oninput="onTokenInput()"
                 class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-sm px-2 py-3 min-w-0">
               <button id="btn-check-token" onclick="checkToken()"
                 class="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 transition-colors whitespace-nowrap flex-shrink-0">
@@ -901,104 +900,6 @@ async function igAutoDetect() {
 }
 
 // ────────────────────────────────────────────────────────────
-//  TOKEN INPUT HANDLER — retry page detection once token arrives
-// ────────────────────────────────────────────────────────────
-function onTokenInput() {
-  const token = document.getElementById('token-input').value.trim();
-  if (!token) return;
-  const url = (document.getElementById('hero-url') || {}).value || '';
-  if (!url.trim()) return;
-
-  if (platform === 'fb') {
-    // If there was a pending slug that couldn't be resolved without a token, resolve it now
-    const pageIdEl = document.getElementById('fb-page-id');
-    const pending  = pageIdEl.dataset.pendingSlug;
-    if (pending && !pageIdEl.value) {
-      delete pageIdEl.dataset.pendingSlug;
-      setHint('fb-pageid-hint', 'info', `Resolving page "${pending}"…`);
-      gql(`/${enc(pending)}?fields=id,name&access_token=${enc(token)}`)
-        .then(data => {
-          pageIdEl.value = data.id;
-          setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
-        })
-        .catch(e => setHint('fb-pageid-hint', 'err', `Could not resolve "${pending}": ${e.message}`));
-    }
-  }
-  if (platform === 'ig') {
-    const pageIdEl = document.getElementById('ig-page-id');
-    if (!pageIdEl.value) igAutoDetect();
-  }
-}
-
-// ────────────────────────────────────────────────────────────
-//  AUTO-DETECT PAGE ID FROM PASTED URL
-// ────────────────────────────────────────────────────────────
-
-/** Extract a numeric Facebook Page ID directly from the URL (no API call needed). */
-function extractFbPageIdFromUrl(url) {
-  try {
-    const params = new URL(url).searchParams;
-    const id = params.get('id');
-    if (id && /^\d+$/.test(id)) return id;
-  } catch(_) {}
-  // Also handles mobile URLs with raw query string
-  const m = url.match(/[?&]id=(\d+)/);
-  return m ? m[1] : null;
-}
-
-/** Extract a human-readable page slug from the URL path (may need API to resolve to numeric ID). */
-function extractFbPageSlugFromUrl(url) {
-  const m = url.match(/facebook\.com\/([^/?#]+)\/(?:posts|videos|photos|reels|permalink)\//i);
-  if (!m) return null;
-  const slug = m[1];
-  // Ignore non-page path segments
-  const reserved = new Set(['groups','pages','watch','events','marketplace','story.php','permalink.php','profile.php']);
-  return reserved.has(slug.toLowerCase()) ? null : slug;
-}
-
-/**
- * Called whenever a new post URL is entered or a token becomes available.
- * Fills the Page ID field automatically where possible.
- */
-async function tryAutoDetectPageId(url) {
-  if (platform === 'yt') return;
-
-  const token = document.getElementById('token-input').value.trim();
-
-  if (platform === 'fb') {
-    // 1. Numeric ID directly in URL (permalink.php?id=, story.php?id=) — no API call needed
-    const numericId = extractFbPageIdFromUrl(url);
-    if (numericId) {
-      document.getElementById('fb-page-id').value = numericId;
-      setHint('fb-pageid-hint', 'ok', `✓ Page ID detected from URL (${numericId})`);
-      return;
-    }
-
-    // 2. Page slug in URL path — resolve to numeric ID via API if token available
-    const slug = extractFbPageSlugFromUrl(url);
-    if (slug && token) {
-      setHint('fb-pageid-hint', 'info', `Resolving page "${slug}"…`);
-      try {
-        const data = await gql(`/${enc(slug)}?fields=id,name&access_token=${enc(token)}`);
-        document.getElementById('fb-page-id').value = data.id;
-        setHint('fb-pageid-hint', 'ok', `✓ ${data.name} (${data.id})`);
-      } catch(e) {
-        setHint('fb-pageid-hint', 'err', `Could not resolve "${slug}": ${e.message}`);
-      }
-    } else if (slug) {
-      // Slug found but no token yet — show hint, will retry once token is entered
-      setHint('fb-pageid-hint', 'info', `Page "${slug}" detected — token needed to resolve ID`);
-      document.getElementById('fb-page-id').dataset.pendingSlug = slug;
-    }
-  }
-
-  if (platform === 'ig' && token) {
-    // Instagram post URLs don't embed a page ID — use existing auto-detect if token available
-    await igAutoDetect();
-  }
-}
-
-// ────────────────────────────────────────────────────────────
 //  FACEBOOK — POST ID PARSER
 // ────────────────────────────────────────────────────────────
 function buildFullPostId(link, pageId) {
@@ -1191,6 +1092,36 @@ function friendlyMetaError(err) {
   return msg.replace(/^\(#\d+\)\s*/, '');
 }
 function enc(s) { return encodeURIComponent(s); }
+
+// ────────────────────────────────────────────────────────────
+//  FACEBOOK — EXTRACT PAGE SLUG FROM POST URL
+// ────────────────────────────────────────────────────────────
+function extractPageSlugFromUrl(url) {
+  // permalink.php?story_fbid=X&id=NUMERIC_PAGE_ID
+  const idParam = url.match(/[?&]id=(\d+)/);
+  if (idParam) return idParam[1];
+
+  // /pagename/posts/, /pagename/videos/, /pagename/photos/, /pagename/reels/
+  const slugMatch = url.match(/facebook\.com\/([^/?]+)\/(?:posts|videos|photos|reels?)\//);
+  if (slugMatch) return slugMatch[1];
+
+  return null;
+}
+
+// ────────────────────────────────────────────────────────────
+//  FACEBOOK — RESOLVE PAGE ACCESS TOKEN FROM SLUG OR NUMERIC ID
+// ────────────────────────────────────────────────────────────
+async function resolvePageToken(pageSlugOrId, userToken) {
+  const data = await gql(`/${pageSlugOrId}?fields=id,name,access_token&access_token=${enc(userToken)}`);
+  if (!data.access_token) {
+    const name = data.name ?? pageSlugOrId;
+    throw new Error(
+      `You are not an admin of "${name}". Only page admins can extract comments — ` +
+      `please connect with a Facebook account that manages this page.`
+    );
+  }
+  return { pageId: data.id, pageToken: data.access_token, pageName: data.name };
+}
 
 // ────────────────────────────────────────────────────────────
 //  STATUS / PROGRESS HELPERS
@@ -1851,13 +1782,29 @@ async function handleExtract() {
 
   try {
     if (platform === 'fb') {
-      const pageId = document.getElementById('fb-page-id').value.trim();
-      if (!pageId) { setStatus('error','Page ID required','Enter your Page ID or click Auto-detect.'); btn.classList.remove('loading'); return; }
       const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
 
+      // Auto-extract page identifier from the first URL
+      const pageSlug = extractPageSlugFromUrl(urls[0]);
+      if (!pageSlug) {
+        setStatus('error', 'Cannot identify page', 'Could not extract the page name from your post URL. Use a direct post URL like facebook.com/pagename/posts/…');
+        btn.classList.remove('loading'); return;
+      }
+
       setStatus('info', `Connecting to Facebook Graph API…`, '');
       const filter = includeReplies ? 'stream' : 'toplevel';
+
+      // Resolve the page access token for the page that owns the post
+      let pageId, pageToken;
+      try {
+        setProgItem('pg-token', 'active', `Fetching page access token for "${pageSlug}"…`);
+        ({ pageId, pageToken } = await resolvePageToken(pageSlug, token));
+        setProgItem('pg-token', 'done', `Page access token obtained.`);
+      } catch(e) {
+        setProgItem('pg-token', 'err', `Could not get page token: ${e.message}`);
+        btn.classList.remove('loading'); return;
+      }
 
       for (let i = 0; i < urls.length; i++) {
         const link = urls[i], fullId = buildFullPostId(link, pageId);
@@ -1865,7 +1812,7 @@ async function handleExtract() {
         const pid = `p${i}`;
         setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — connecting…`);
         try {
-          const comments = await fetchFbComments(fullId, token, filter, n => {
+          const comments = await fetchFbComments(fullId, pageToken, filter, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} fetched…`);
           });
           all.push(...comments);
@@ -2438,18 +2385,18 @@ function stopConfetti() {
         _updateMetaConnectRow();
       }
 
-      // Show/hide page ID row (not needed for YouTube)
-      if (p === 'yt') {
+      // Show/hide page ID row (not needed for YouTube or Facebook — FB page is auto-resolved from URL)
+      if (p === 'yt' || p === 'fb') {
         pageIdRow.style.display = 'none';
       } else {
+        // Only show page ID row for Instagram
         pageIdRow.style.display = 'flex';
-        // Show the correct page ID input + auto-detect button + hint
-        document.getElementById('fb-page-id').style.display    = p === 'fb' ? '' : 'none';
-        document.getElementById('ig-page-id').style.display    = p === 'ig' ? '' : 'none';
-        document.getElementById('btn-fb-auto').style.display   = p === 'fb' ? '' : 'none';
-        document.getElementById('btn-ig-auto').style.display   = p === 'ig' ? '' : 'none';
-        document.getElementById('fb-pageid-hint').style.display = p === 'fb' ? '' : 'none';
-        document.getElementById('ig-pageid-hint').style.display = p === 'ig' ? '' : 'none';
+        document.getElementById('fb-page-id').style.display    = 'none';
+        document.getElementById('ig-page-id').style.display    = '';
+        document.getElementById('btn-fb-auto').style.display   = 'none';
+        document.getElementById('btn-ig-auto').style.display   = '';
+        document.getElementById('fb-pageid-hint').style.display = 'none';
+        document.getElementById('ig-pageid-hint').style.display = '';
       }
 
       // Show action row (Filters button + Extract button)
@@ -2457,9 +2404,6 @@ function stopConfetti() {
 
       // Show filter section container (collapsed by default)
       filterSec.style.display = 'block';
-
-      // Auto-detect page ID from the pasted URL (silently, no spinner blocking UI)
-      tryAutoDetectPageId(url);
     }
 
     // Override showPreview to hide the placeholder sample table when real data loads
@@ -2640,11 +2584,9 @@ function stopConfetti() {
         window._metaConnection = data;
         if (data.connected && data.token) {
           document.getElementById('token-input').value = data.token;
-          // If a URL is already entered, re-run page ID detection now that we have a token
-          const heroUrl = document.getElementById('hero-url');
-          const urlVal  = heroUrl ? heroUrl.value.trim() : '';
-          if (urlVal && (platform === 'fb' || platform === 'ig')) {
-            tryAutoDetectPageId(urlVal);
+          // Silently validate if a platform URL is already entered
+          const url = document.getElementById('hero-url');
+          if (url && url.value.trim() && (platform === 'fb' || platform === 'ig')) {
             checkToken();
           }
         }

@@ -62,6 +62,24 @@
     .alert.success { display: block; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); color: #86efac; }
     .alert.error   { display: block; background: rgba(239,68,68,0.08);  border: 1px solid rgba(239,68,68,0.2);  color: #fca5a5; }
     .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 24px 0; }
+    .btn-danger {
+      background: transparent; color: #f87171; border: 1px solid rgba(248,113,113,0.25);
+      border-radius: 10px; padding: 10px 20px; font-size: 14px; font-weight: 500;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.08); border-color: rgba(248,113,113,0.5); }
+    .btn-danger:disabled { opacity: 0.4; cursor: not-allowed; }
+    /* Confirmation modal */
+    #confirm-modal {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    #confirm-modal.open { display: flex; }
+    .modal-box {
+      background: #16191e; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; width: 100%; max-width: 420px; padding: 28px;
+    }
     .spin { animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .avatar-circle {
@@ -187,9 +205,29 @@
           </div>
         </div>
 
+        <!-- ── Facebook connection ── -->
+        <div class="card mb-6" id="fb-card">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);">
+              <i class="fa-brands fa-facebook text-blue-400 text-sm"></i>
+            </div>
+            <div>
+              <h2 class="text-base font-semibold leading-tight">Facebook / Meta Connection</h2>
+              <p class="text-xs text-gray-500 mt-0.5" id="fb-status-text">Checking connection…</p>
+            </div>
+            <span id="fb-connected-badge" class="hidden ml-auto flex-shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:#4ade80;">Connected</span>
+          </div>
+          <div id="fb-disconnect-area" class="hidden">
+            <div class="alert" id="alert-fb"></div>
+            <button onclick="disconnectFacebook()" class="btn-danger mt-2" id="btn-fb-disconnect">
+              <i class="fa-solid fa-plug-circle-xmark mr-1.5"></i> Disconnect Facebook
+            </button>
+          </div>
+        </div>
+
         <!-- ── Sign out ── -->
         <div class="divider"></div>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between mb-6">
           <div>
             <div class="text-sm font-medium text-gray-300 mb-0.5">Sign out of your account</div>
             <div class="text-xs text-gray-600">You can always sign back in.</div>
@@ -197,9 +235,37 @@
           <button onclick="signOut()" class="btn-ghost">Sign Out</button>
         </div>
 
+        <!-- ── Danger zone ── -->
+        <div class="card" style="border-color:rgba(239,68,68,0.15);background:rgba(239,68,68,0.03);">
+          <h2 class="text-base font-semibold text-red-400 mb-1">Danger Zone</h2>
+          <p class="text-xs text-gray-500 mb-4">This action is permanent and cannot be undone. All your data — runs, scheduled exports, and account details — will be deleted.</p>
+          <button onclick="openDeleteModal()" class="btn-danger">
+            <i class="fa-solid fa-trash mr-1.5"></i> Delete My Account
+          </button>
+        </div>
+
       </div>
     </div>
   </main>
+
+  <!-- ── Delete account confirmation modal ── -->
+  <div id="confirm-modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold mb-1">Delete your account?</h3>
+      <p class="text-sm text-gray-400 mb-5">This will permanently delete your account and all data. Enter your password to confirm.</p>
+      <div class="mb-4">
+        <label class="field-label" for="delete-confirm-pw">Your Password</label>
+        <input class="field-input" type="password" id="delete-confirm-pw" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="alert" id="alert-delete"></div>
+      <div class="flex items-center gap-3 mt-5">
+        <button onclick="confirmDeleteAccount()" class="btn-danger" id="btn-confirm-delete" style="flex:1;">
+          Yes, Delete My Account
+        </button>
+        <button onclick="closeDeleteModal()" class="btn-ghost" style="flex:1;">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const API = '/backend/api';
@@ -315,6 +381,98 @@
       }
     }
 
+    async function loadFacebookStatus() {
+      try {
+        const res = await fetch(API + '/meta-token.php', {
+          headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        const data = await res.json();
+        const statusText = document.getElementById('fb-status-text');
+        const badge      = document.getElementById('fb-connected-badge');
+        const area       = document.getElementById('fb-disconnect-area');
+
+        if (data.connected) {
+          statusText.textContent = 'Your Facebook account is connected.';
+          badge.classList.remove('hidden');
+          area.classList.remove('hidden');
+        } else {
+          statusText.textContent = 'No Facebook account connected.';
+        }
+      } catch(e) {
+        document.getElementById('fb-status-text').textContent = 'Could not check connection status.';
+      }
+    }
+
+    async function disconnectFacebook() {
+      const btn = document.getElementById('btn-fb-disconnect');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Disconnecting…';
+
+      try {
+        const res = await fetch(API + '/meta-disconnect.php', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        if (!res.ok) throw new Error('Failed to disconnect');
+
+        // Update UI
+        document.getElementById('fb-status-text').textContent = 'No Facebook account connected.';
+        document.getElementById('fb-connected-badge').classList.add('hidden');
+        document.getElementById('fb-disconnect-area').classList.add('hidden');
+        showAlert('alert-fb', 'success', 'Facebook account disconnected.');
+      } catch(err) {
+        showAlert('alert-fb', 'error', err.message || 'Failed to disconnect.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-plug-circle-xmark mr-1.5"></i> Disconnect Facebook';
+      }
+    }
+
+    function openDeleteModal() {
+      document.getElementById('delete-confirm-pw').value = '';
+      document.getElementById('alert-delete').className = 'alert';
+      document.getElementById('confirm-modal').classList.add('open');
+      setTimeout(() => document.getElementById('delete-confirm-pw').focus(), 50);
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('confirm-modal').classList.remove('open');
+    }
+
+    async function confirmDeleteAccount() {
+      const pw  = document.getElementById('delete-confirm-pw').value;
+      if (!pw) { showAlert('alert-delete', 'error', 'Please enter your password.'); return; }
+
+      const btn = document.getElementById('btn-confirm-delete');
+      btn.disabled = true;
+      btn.textContent = 'Deleting…';
+
+      try {
+        const res = await fetch(API + '/delete-account.php', {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer ' + getToken(),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ password: pw })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to delete account');
+
+        localStorage.removeItem('cp_token');
+        localStorage.removeItem('cp_name');
+        window.location.href = '/signin.html?deleted=1';
+      } catch(err) {
+        showAlert('alert-delete', 'error', err.message || 'Failed to delete account.');
+        btn.disabled = false;
+        btn.textContent = 'Yes, Delete My Account';
+      }
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('confirm-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeDeleteModal();
+    });
+
     async function savePassword(e) {
       e.preventDefault();
       const currentPw = document.getElementById('input-cur-pw').value;
@@ -355,6 +513,7 @@
       try {
         const user = await apiGet('/me.php');
         populatePage(user);
+        loadFacebookStatus();
       } catch(e) {
         document.getElementById('page-loading').classList.add('hidden');
         document.getElementById('page-unauth').classList.remove('hidden');

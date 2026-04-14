@@ -25,14 +25,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/config.php';
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
-if (!empty(MCP_API_KEYS)) {
-    $key = $_SERVER['HTTP_X_API_KEY'] ?? $_GET['api_key'] ?? '';
-    if (!in_array($key, MCP_API_KEYS, true)) {
-        http_response_code(401);
-        header('Content-Type: application/json');
-        echo json_encode(['error' => 'Invalid or missing API key']);
-        exit;
+if (!auth_ok()) {
+    http_response_code(401);
+    header('Content-Type: application/json');
+    // Tell the client where to get a token (OAuth discovery)
+    header('WWW-Authenticate: Bearer realm="commentpull", resource_metadata="https://commentpull.com/.well-known/oauth-authorization-server"');
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
+function auth_ok(): bool
+{
+    // 1. x-api-key header or ?api_key= query param
+    if (!empty(MCP_API_KEYS)) {
+        $key = $_SERVER['HTTP_X_API_KEY'] ?? $_GET['api_key'] ?? '';
+        if (in_array($key, MCP_API_KEYS, true)) return true;
     }
+
+    // 2. OAuth Bearer token (issued by token.php)
+    $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    if (stripos($auth, 'Bearer ') === 0) {
+        $token      = substr($auth, 7);
+        $token_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'cp_tok_' . hash('sha256', $token) . '.json';
+        if (file_exists($token_file)) {
+            $data = json_decode(file_get_contents($token_file), true);
+            if (!empty($data['expires_at']) && $data['expires_at'] > time()) return true;
+            @unlink($token_file); // expired — clean up
+        }
+    }
+
+    // 3. No valid auth — if no keys are configured at all, allow (dev mode)
+    if (empty(MCP_API_KEYS) && empty(MCP_OAUTH_CLIENTS)) return true;
+
+    return false;
 }
 
 set_time_limit(0); // allow long-running SSE connections

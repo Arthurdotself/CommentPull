@@ -2,9 +2,14 @@
 
 Connects Claude to [commentpull.com](https://commentpull.com) so you can extract, filter, and analyze social-media comments directly inside any Claude conversation.
 
-Hosted on **Fly.io** (free tier, always-on) — no installation needed for end users.
+Two deployment options are included:
 
-> **Architecture note:** The MCP server is a thin protocol layer. The heavy work (Facebook/Instagram Graph API calls) is handled by your existing PHP backend on Hostinger at `commentpull.com/backend/api/fetch-comments.php`. YouTube calls go directly to Google's API.
+| Option | Files | Hosting |
+|--------|-------|---------|
+| **PHP** (recommended) | `mcp.php` + `config.php` | Hostinger shared hosting — upload and done |
+| **Node.js** | `index.js` + `fly.toml` + `Dockerfile` | Fly.io free tier (always-on) |
+
+---
 
 ## Tools exposed
 
@@ -14,80 +19,91 @@ Hosted on **Fly.io** (free tier, always-on) — no installation needed for end u
 | `extract_facebook_comments` | Fetch comments from a Facebook post |
 | `extract_instagram_comments` | Fetch comments from an Instagram post/reel |
 | `filter_comments` | Filter by keyword, mentions, length, date range, duplicates, excluded users |
-| `pick_winners` | Randomly pick one or more winners (fair shuffle, optional seed for auditability) |
+| `pick_winners` | Randomly pick one or more winners (optional seed for auditability) |
 | `export_comments` | Export results as CSV or JSON text |
 
 ---
 
-## Deploy to Fly.io (free — always-on)
+## Option A — PHP on Hostinger (shared hosting)
 
-### Prerequisites
+### 1. Add your API keys
+
+Open `config.php` and add your keys:
+
+```php
+define('MCP_API_KEYS', [
+    'key_alice_abc123',
+    'key_bob_def456',
+]);
+```
+
+Generate a key: `php -r "echo bin2hex(random_bytes(16)) . PHP_EOL;"`
+
+### 2. Upload to Hostinger
+
+Upload both files via Hostinger File Manager or FTP:
+
+```
+public_html/
+└── mcp/
+    ├── mcp.php
+    └── config.php
+```
+
+Your endpoint will be:
+```
+https://commentpull.com/mcp/mcp.php
+```
+
+### 3. Connect from Claude Desktop
+
+Open `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) or  
+`%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "commentpull": {
+      "type": "http",
+      "url": "https://commentpull.com/mcp/mcp.php",
+      "headers": {
+        "x-api-key": "YOUR_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+### 4. Connect from Claude Code (CLI)
 
 ```bash
-# Install the Fly CLI (Mac/Linux)
-brew install flyctl
-
-# Or via script
-curl -L https://fly.io/install.sh | sh
-```
-
-Then sign up / log in (credit card required for verification, no charge on free tier):
-
-```bash
-fly auth signup   # new account
-# or
-fly auth login    # existing account
-```
-
-### 1. Launch the app
-
-```bash
-cd mcp-server
-fly launch
-```
-
-When prompted:
-- **App name:** `commentpull-mcp` (or any name you like)
-- **Region:** pick the closest to you
-- **Would you like to set up a Postgresql/Redis database?** → No
-- **Deploy now?** → No (set the secret first)
-
-`fly launch` detects the `Dockerfile` and `fly.toml` automatically.
-
-### 2. Set the API_KEYS secret
-
-```bash
-fly secrets set API_KEYS="key_user1,key_user2,key_user3"
-```
-
-Generate a unique key per user (e.g. `openssl rand -hex 16`).
-
-### 3. Deploy
-
-```bash
-fly deploy
-```
-
-Your app is now live at:
-```
-https://commentpull-mcp.fly.dev
-```
-
-### Useful commands
-
-```bash
-fly status          # check deployment status
-fly logs            # stream live logs
-fly secrets list    # list secret names (not values)
-fly secrets set API_KEYS="newkey1,newkey2"   # rotate keys
+claude mcp add --transport http commentpull https://commentpull.com/mcp/mcp.php \
+  --header "x-api-key: YOUR_KEY_HERE"
 ```
 
 ---
 
-## Connect from Claude Desktop
+## Option B — Node.js on Fly.io (always-on free tier)
 
-Open `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) or  
-`%APPDATA%\Claude\claude_desktop_config.json` (Windows) and add:
+### Prerequisites
+
+```bash
+brew install flyctl   # Mac
+fly auth signup       # or: fly auth login
+```
+
+### Deploy
+
+```bash
+cd mcp-server
+fly launch            # detects Dockerfile + fly.toml
+fly secrets set API_KEYS="key_user1,key_user2"
+fly deploy
+```
+
+Your endpoint: `https://commentpull-mcp.fly.dev/sse`
+
+### Connect from Claude Desktop
 
 ```json
 {
@@ -101,42 +117,6 @@ Open `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) or
     }
   }
 }
-```
-
-Restart Claude Desktop — the commentpull tools appear automatically.
-
-## Connect from Claude Code (CLI)
-
-```bash
-claude mcp add --transport sse commentpull https://commentpull-mcp.fly.dev/sse \
-  --header "x-api-key: YOUR_KEY_HERE"
-```
-
----
-
-## Local development
-
-```bash
-cd mcp-server
-npm install
-
-# No auth (dev mode)
-node index.js
-
-# With auth
-API_KEYS=testkey node index.js
-```
-
-Test the server:
-```bash
-# Health check
-curl http://localhost:3000/health
-
-# SSE connection
-curl -H "x-api-key: testkey" http://localhost:3000/sse
-
-# Without key → 401
-curl http://localhost:3000/sse
 ```
 
 ---

@@ -44,7 +44,7 @@ define('MAX_BATCH', 10); // max exports processed per run
 // ── Fetch pending exports ──────────────────────────────────────────
 $stmt = db()->prepare(
     'SELECT * FROM scheduled_exports
-     WHERE status = "pending" AND scheduled_at <= NOW()
+     WHERE status = "pending" AND scheduled_at <= UTC_TIMESTAMP()
      ORDER BY scheduled_at ASC
      LIMIT ' . MAX_BATCH
 );

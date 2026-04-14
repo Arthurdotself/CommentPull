@@ -96,7 +96,7 @@ if ($method === 'POST') {
     if (!$schedTs || $schedTs <= time() + 60) {
         json_error(422, 'scheduled_at must be at least 1 minute in the future');
     }
-    $scheduledAtDb = date('Y-m-d H:i:s', $schedTs);
+    $scheduledAtDb = gmdate('Y-m-d H:i:s', $schedTs);
 
     // ── Platform-specific params + server-side token retrieval ────────
     $params      = [];

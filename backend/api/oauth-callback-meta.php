@@ -93,24 +93,8 @@ $expiresAt  = date('Y-m-d H:i:s', time() + $expiresIn);
 $_SESSION['meta_token']         = $longToken;
 $_SESSION['meta_token_expires'] = $expiresAt;
 
-// ── 6. Fetch Facebook user profile (name + email) ────────────────
-$ch = curl_init('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' . urlencode($longToken));
-curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10]);
-$profileBody = curl_exec($ch);
-curl_close($ch);
-$profile = json_decode($profileBody, true);
-$fbId    = $profile['id']    ?? null;
-$fbName  = $profile['name']  ?? 'Facebook User';
-$fbEmail = $profile['email'] ?? ($fbId ? $fbId . '@facebook.placeholder' : null);
-
-// ── 7. Auto sign-in: find or create user, then create session ─────
+// ── 6. If user is logged in, also persist to DB ───────────────────
 $user = try_auth();
-if (!$user && $fbEmail) {
-    $user = find_or_create_oauth_user($fbEmail, $fbName);
-    create_session((int) $user['id']);
-}
-
-// ── 8. Persist Meta token to DB for authenticated users ──────────
 if ($user) {
     try {
         $encrypted = encrypt_token($longToken);

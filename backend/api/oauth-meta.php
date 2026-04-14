@@ -17,7 +17,7 @@ $params = http_build_query([
     'client_id'     => META_APP_ID,
     'redirect_uri'  => $redirect,
     'response_type' => 'code',
-    'scope'         => 'email,public_profile,pages_show_list,business_management,instagram_basic,pages_read_engagement,pages_manage_metadata,pages_read_user_content',
+    'scope'         => 'pages_show_list,business_management,instagram_basic,pages_read_engagement,pages_manage_metadata,pages_read_user_content',
     'state'         => $state,
 ]);
 

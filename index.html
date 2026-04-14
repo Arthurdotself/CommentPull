@@ -2255,8 +2255,9 @@ function stopConfetti() {
 
       const area = document.getElementById('nav-auth-area');
       if (area) {
-        const greeting = document.createElement('span');
-        greeting.className = 'hidden md:inline text-sm text-gray-300';
+        const greeting = document.createElement('a');
+        greeting.className = 'hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors';
+        greeting.href = '/settings.html';
         greeting.textContent = user.name || user.email;
 
         const btn = document.createElement('button');

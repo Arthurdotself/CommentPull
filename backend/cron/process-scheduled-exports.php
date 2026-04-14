@@ -85,12 +85,13 @@ foreach ($exports as $export) {
         // Save to runs table so it appears in History
         db()->prepare(
             'INSERT INTO runs (user_id, platform, post_urls, total_count, qualified_count, filters, comments)
-             VALUES (:uid, :platform, :post_urls, :total, :total, NULL, :comments)'
+             VALUES (:uid, :platform, :post_urls, :total, :qualified, NULL, :comments)'
         )->execute([
             ':uid'       => (int) $export['user_id'],
             ':platform'  => $export['platform'],
             ':post_urls' => json_encode([$export['post_url']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             ':total'     => $total,
+            ':qualified' => $total,
             ':comments'  => $commentsJson,
         ]);
 

@@ -70,18 +70,31 @@ foreach ($exports as $export) {
         ->execute([':id' => $export['id']]);
 
     try {
-        $comments = runExport($export);
-        $total    = count($comments);
+        $comments     = runExport($export);
+        $total        = count($comments);
+        $commentsJson = json_encode($comments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         db()->prepare(
             'UPDATE scheduled_exports SET status = "completed", total_count = :total, comments = :comments WHERE id = :id'
         )->execute([
             ':id'       => $export['id'],
             ':total'    => $total,
-            ':comments' => json_encode($comments, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            ':comments' => $commentsJson,
         ]);
 
-        log_msg("  ✓ Completed — {$total} comment(s)");
+        // Save to runs table so it appears in History
+        db()->prepare(
+            'INSERT INTO runs (user_id, platform, post_urls, total_count, qualified_count, filters, comments)
+             VALUES (:uid, :platform, :post_urls, :total, :total, NULL, :comments)'
+        )->execute([
+            ':uid'       => (int) $export['user_id'],
+            ':platform'  => $export['platform'],
+            ':post_urls' => json_encode([$export['post_url']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            ':total'     => $total,
+            ':comments'  => $commentsJson,
+        ]);
+
+        log_msg("  ✓ Completed — {$total} comment(s) — saved to History");
 
     } catch (Throwable $e) {
         $msg = substr($e->getMessage(), 0, 1000);

@@ -512,6 +512,15 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>`;
+        } else if (exp.status === 'completed' && exp.total_count > 0) {
+          actionBtn = `
+            <button onclick="downloadExport(${exp.id}, '${escHtml(exp.export_format)}', '${escHtml(exp.platform)}', this)"
+              class="text-gray-500 hover:text-indigo-400 transition-colors p-1.5 rounded-lg hover:bg-indigo-400/10"
+              title="Download export">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+            </button>`;
         }
 
         card.innerHTML = `
@@ -537,6 +546,64 @@
         `;
         listEl.appendChild(card);
       });
+    }
+
+    // ── Download helpers ───────────────────────────────────────────
+    function loadXLSX() {
+      if (window.XLSX) return Promise.resolve();
+      return new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function downloadExport(id, format, platform, btn) {
+      btn.disabled = true;
+      try {
+        const data = await apiFetch('/scheduled-exports.php?id=' + id);
+        const rows = data.comments || [];
+        if (!rows.length) { alert('No comments to download.'); return; }
+
+        const ts = new Date().toISOString().slice(0,10).replace(/-/g,'');
+        const filename = `commentpull_${platform}_${ts}`;
+
+        if (format === 'json') {
+          const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+          a.download = filename + '.json'; a.click();
+
+        } else if (format === 'csv') {
+          const keys = ['post_id','commenter_name','commenter_id','comment_text','timestamp','comment_id'];
+          const hasReplies = rows.some(r => r.reply_to !== undefined && r.reply_to !== '');
+          if (hasReplies) keys.push('reply_to');
+          const lines = [keys.join(','), ...rows.map(r => keys.map(k => `"${String(r[k]||'').replace(/"/g,'""')}"`).join(','))];
+          const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+          a.download = filename + '.csv'; a.click();
+
+        } else {
+          await loadXLSX();
+          const headers = ['Post ID','Commenter Name','Commenter ID','Comment','Timestamp','Comment ID'];
+          const hasReplies = rows.some(r => r.reply_to !== undefined && r.reply_to !== '');
+          if (hasReplies) headers.push('Reply To');
+          const sheetData = [headers, ...rows.map(r => {
+            const row = [r.post_id, r.commenter_name, r.commenter_id, r.comment_text, r.timestamp, r.comment_id];
+            if (hasReplies) row.push(r.reply_to || '');
+            return row;
+          })];
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.aoa_to_sheet(sheetData);
+          ws['!cols'] = [{wch:28},{wch:28},{wch:20},{wch:55},{wch:22},{wch:22},{wch:22}];
+          XLSX.utils.book_append_sheet(wb, ws, 'Comments');
+          XLSX.writeFile(wb, filename + '.xlsx');
+        }
+      } catch(e) {
+        alert('Download failed: ' + e.message);
+      } finally {
+        btn.disabled = false;
+      }
     }
 
     async function cancelExport(id, btn) {
@@ -592,7 +659,7 @@
       // Update nav
       const navAuth = document.getElementById('nav-auth');
       navAuth.innerHTML = `
-        <span class="hidden md:inline text-sm text-gray-300">${escHtml(user.name || user.email)}</span>
+        <a href="settings.html" class="hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors">${escHtml(user.name || user.email)}</a>
         <button onclick="signOut()" class="text-sm text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/10 hover:border-white/20">Sign Out</button>
       `;
 
@@ -605,9 +672,11 @@
       document.getElementById('pro-gate').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
 
-      // Set minimum datetime to now + 5 minutes
+      // Set minimum datetime to now + 5 minutes (local time, not UTC)
       const dt  = document.getElementById('s-datetime');
-      dt.min = new Date(Date.now() + 5 * 60 * 1000).toISOString().slice(0, 16);
+      const minDate = new Date(Date.now() + 5 * 60 * 1000);
+      const pad = n => String(n).padStart(2, '0');
+      dt.min = `${minDate.getFullYear()}-${pad(minDate.getMonth()+1)}-${pad(minDate.getDate())}T${pad(minDate.getHours())}:${pad(minDate.getMinutes())}`;
 
       loadSchedMeta();
       loadList();

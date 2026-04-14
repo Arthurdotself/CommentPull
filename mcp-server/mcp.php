@@ -2,19 +2,18 @@
 /**
  * commentpull MCP Server — PHP edition
  *
- * Implements the MCP Streamable HTTP transport (spec 2025-03-26).
- * Runs on any PHP 7.4+ shared hosting (Hostinger, cPanel, etc.)
+ * Supports two transports on a single file:
  *
- * Deploy:
- *   1. Upload mcp.php + config.php to a folder on your Hostinger site
- *      e.g.  commentpull.com/mcp/mcp.php
- *   2. Edit config.php — add your API keys
- *   3. Point Claude at:  https://commentpull.com/mcp/mcp.php
+ *   GET  /mcp/mcp.php          → SSE transport  (Claude Desktop)
+ *   POST /mcp/mcp.php?s=ID     → SSE message handler (Claude Desktop)
+ *   POST /mcp/mcp.php          → Streamable HTTP (Claude Code CLI)
+ *
+ * Deploy: upload mcp.php + config.php to public_html/mcp/ on Hostinger.
  */
 
-// ── CORS — required so Claude Desktop can reach this endpoint ────────────────
+// ── CORS ─────────────────────────────────────────────────────────────────────
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, x-api-key, Authorization, Mcp-Session-Id');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -36,49 +35,213 @@ if (!empty(MCP_API_KEYS)) {
     }
 }
 
-header('Content-Type: application/json');
-set_time_limit(120); // allow up to 2 min for large fetches
+set_time_limit(0); // allow long-running SSE connections
 
-// ── Parse JSON-RPC request ───────────────────────────────────────────────────
-$raw  = file_get_contents('php://input');
-$body = json_decode($raw, true);
+// ── Transport router ──────────────────────────────────────────────────────────
+$method = $_SERVER['REQUEST_METHOD'];
 
-if (!$body || empty($body['method'])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid JSON-RPC request']);
+if ($method === 'GET') {
+    handle_sse();
+} elseif ($method === 'POST' && isset($_GET['s'])) {
+    handle_sse_message($_GET['s']);
+} elseif ($method === 'POST') {
+    handle_streamable_http();
+} else {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  TRANSPORT HANDLERS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * SSE transport — Claude Desktop connects here via GET.
+ * Sends an `endpoint` event immediately, then polls for messages.
+ */
+function handle_sse()
+{
+    $sid      = bin2hex(random_bytes(8));
+    $req_file = tmp_path($sid);
+
+    // Build the POST endpoint URL Claude will use for messages
+    $scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host     = $_SERVER['HTTP_HOST'];
+    $path     = strtok($_SERVER['REQUEST_URI'], '?');
+    $endpoint = "{$scheme}://{$host}{$path}?s={$sid}";
+
+    // SSE headers — disable every layer of buffering
+    header('Content-Type: text/event-stream');
+    header('Cache-Control: no-cache');
+    header('Connection: keep-alive');
+    header('X-Accel-Buffering: no');        // nginx
+    @ini_set('zlib.output_compression', 0); // gzip off
+    while (ob_get_level() > 0) ob_end_flush();
+    ob_implicit_flush(true);
+
+    // Tell Claude where to POST messages (MCP SSE spec)
+    sse_write('endpoint', $endpoint);
+
+    // Poll for incoming messages (max 5 min, keep-alive ping every 20 s)
+    $deadline   = time() + 300;
+    $last_ping  = time();
+
+    while (time() < $deadline) {
+        if (connection_aborted()) break;
+
+        // Keep-alive so proxies don't drop the connection
+        if (time() - $last_ping >= 20) {
+            echo ": ping\n\n";
+            flush();
+            $last_ping = time();
+        }
+
+        if (file_exists($req_file)) {
+            $raw = file_get_contents($req_file);
+            @unlink($req_file);
+
+            $request  = json_decode($raw, true);
+            $response = $request ? dispatch($request) : null;
+
+            if ($response !== null) {
+                sse_write('message', json_encode($response));
+            }
+        }
+
+        usleep(200000); // 200 ms poll
+    }
+
     exit;
 }
 
-$method = $body['method'];
-$id     = $body['id'] ?? null;
-$params = $body['params'] ?? [];
+/**
+ * SSE message endpoint — Claude Desktop POSTs JSON-RPC here.
+ * Just writes the request to a temp file; the SSE stream picks it up.
+ */
+function handle_sse_message($raw_sid)
+{
+    $sid = preg_replace('/[^a-f0-9]/', '', $raw_sid);
+    if (strlen($sid) !== 16) {
+        http_response_code(400);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Invalid session ID']);
+        exit;
+    }
 
-// ── JSON-RPC helpers ──────────────────────────────────────────────────────────
-function rpc_ok($id, $result)
-{
-    echo json_encode(['jsonrpc' => '2.0', 'id' => $id, 'result' => $result]);
-}
-function rpc_err($id, $code, $msg)
-{
-    echo json_encode(['jsonrpc' => '2.0', 'id' => $id,
-        'error' => ['code' => $code, 'message' => $msg]]);
-}
-function tool_ok($text)
-{
-    return ['content' => [['type' => 'text', 'text' => $text]]];
-}
-function tool_fail($msg)
-{
-    return ['content' => [['type' => 'text', 'text' => 'Error: ' . $msg]], 'isError' => true];
+    file_put_contents(tmp_path($sid), file_get_contents('php://input'));
+
+    http_response_code(202);
+    header('Content-Type: application/json');
+    echo '{}';
+    exit;
 }
 
-// ── Tool definitions ──────────────────────────────────────────────────────────
+/**
+ * Streamable HTTP transport — Claude Code CLI POSTs JSON-RPC here.
+ * Responds with JSON directly (no persistent connection needed).
+ */
+function handle_streamable_http()
+{
+    header('Content-Type: application/json');
+
+    $body = json_decode(file_get_contents('php://input'), true);
+    if (!$body || empty($body['method'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid JSON-RPC request']);
+        exit;
+    }
+
+    $response = dispatch($body);
+
+    if ($response === null) {
+        http_response_code(204);
+        exit;
+    }
+
+    echo json_encode($response);
+    exit;
+}
+
+// ─── helpers ─────────────────────────────────────────────────────────────────
+
+function tmp_path($sid)
+{
+    return sys_get_temp_dir() . DIRECTORY_SEPARATOR . "cp_mcp_{$sid}.req";
+}
+
+function sse_write($event, $data)
+{
+    echo "event: {$event}\ndata: {$data}\n\n";
+    flush();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  JSON-RPC DISPATCHER
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function dispatch($body)
+{
+    global $TOOLS;
+    $method = $body['method'] ?? '';
+    $id     = $body['id']     ?? null;
+    $params = $body['params'] ?? [];
+
+    switch ($method) {
+
+        case 'initialize':
+            return rpc_ok($id, [
+                'protocolVersion' => '2025-03-26',
+                'capabilities'    => ['tools' => new stdClass()],
+                'serverInfo'      => ['name' => 'commentpull', 'version' => '1.0.0'],
+            ]);
+
+        case 'notifications/initialized':
+            return null; // notifications never get a response
+
+        case 'tools/list':
+            return rpc_ok($id, ['tools' => $TOOLS]);
+
+        case 'tools/call':
+            $result = call_tool($params['name'] ?? '', $params['arguments'] ?? []);
+            return rpc_ok($id, $result);
+
+        case 'ping':
+            return rpc_ok($id, new stdClass());
+
+        default:
+            return rpc_err($id, -32601, "Method not found: {$method}");
+    }
+}
+
+function call_tool($name, $args)
+{
+    switch ($name) {
+        case 'extract_youtube_comments':  return tool_extract_youtube($args);
+        case 'extract_facebook_comments': return tool_extract_meta('fb', $args);
+        case 'extract_instagram_comments':return tool_extract_meta('ig', $args);
+        case 'filter_comments':           return tool_filter($args);
+        case 'pick_winners':              return tool_pick_winners($args);
+        case 'export_comments':           return tool_export($args);
+        default:                          return tool_fail("Unknown tool: {$name}");
+    }
+}
+
+// ─── JSON-RPC helpers ─────────────────────────────────────────────────────────
+function rpc_ok($id, $result)  { return ['jsonrpc' => '2.0', 'id' => $id, 'result' => $result]; }
+function rpc_err($id, $c, $m) { return ['jsonrpc' => '2.0', 'id' => $id, 'error'  => ['code' => $c, 'message' => $m]]; }
+function tool_ok($text)        { return ['content' => [['type' => 'text', 'text' => $text]]]; }
+function tool_fail($msg)       { return ['content' => [['type' => 'text', 'text' => 'Error: ' . $msg]], 'isError' => true]; }
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  TOOL DEFINITIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+
 $TOOLS = [
     [
         'name'        => 'extract_youtube_comments',
         'description' => 'Fetch all comments (and optionally replies) from a YouTube video.',
         'inputSchema' => [
-            'type'       => 'object',
+            'type' => 'object',
             'properties' => [
                 'url'             => ['type' => 'string',  'description' => 'YouTube video URL or bare video ID.'],
                 'api_key'         => ['type' => 'string',  'description' => 'YouTube Data API v3 key (AIzaSy…).'],
@@ -92,12 +255,12 @@ $TOOLS = [
         'name'        => 'extract_facebook_comments',
         'description' => 'Fetch all comments from a Facebook post via commentpull.com.',
         'inputSchema' => [
-            'type'       => 'object',
+            'type' => 'object',
             'properties' => [
                 'post_url'        => ['type' => 'string',  'description' => 'Full Facebook post URL.'],
                 'page_id'         => ['type' => 'string',  'description' => 'Facebook Page ID (numeric string).'],
                 'cp_token'        => ['type' => 'string',  'description' => 'Your commentpull.com Bearer token.'],
-                'include_replies' => ['type' => 'boolean', 'description' => 'Fetch replies too. Default: true.'],
+                'include_replies' => ['type' => 'boolean', 'description' => 'Include replies. Default: true.'],
             ],
             'required' => ['post_url', 'page_id', 'cp_token'],
         ],
@@ -106,12 +269,12 @@ $TOOLS = [
         'name'        => 'extract_instagram_comments',
         'description' => 'Fetch all comments from an Instagram post via commentpull.com.',
         'inputSchema' => [
-            'type'       => 'object',
+            'type' => 'object',
             'properties' => [
                 'post_url'        => ['type' => 'string',  'description' => 'Full Instagram post/reel URL.'],
                 'page_id'         => ['type' => 'string',  'description' => 'Facebook Page ID linked to your IG Business account.'],
                 'cp_token'        => ['type' => 'string',  'description' => 'Your commentpull.com Bearer token.'],
-                'include_replies' => ['type' => 'boolean', 'description' => 'Fetch replies too. Default: true.'],
+                'include_replies' => ['type' => 'boolean', 'description' => 'Include replies. Default: true.'],
             ],
             'required' => ['post_url', 'page_id', 'cp_token'],
         ],
@@ -120,15 +283,15 @@ $TOOLS = [
         'name'        => 'filter_comments',
         'description' => 'Apply filter rules to a list of comments. Returns only matching comments.',
         'inputSchema' => [
-            'type'       => 'object',
+            'type' => 'object',
             'properties' => [
                 'comments'      => ['type' => 'array',   'description' => 'Comments from any extract_* tool.', 'items' => ['type' => 'object']],
                 'keyword'       => ['type' => 'string',  'description' => 'Keep comments containing this keyword/hashtag (case-insensitive).'],
                 'min_mentions'  => ['type' => 'number',  'description' => 'Minimum number of @mentions required.'],
                 'min_length'    => ['type' => 'number',  'description' => 'Minimum comment character length.'],
                 'dedup'         => ['type' => 'boolean', 'description' => 'Keep only the first comment per unique user.'],
-                'date_from'     => ['type' => 'string',  'description' => 'ISO date YYYY-MM-DD — keep comments on or after this date.'],
-                'date_to'       => ['type' => 'string',  'description' => 'ISO date YYYY-MM-DD — keep comments on or before this date.'],
+                'date_from'     => ['type' => 'string',  'description' => 'ISO date YYYY-MM-DD — keep comments on or after.'],
+                'date_to'       => ['type' => 'string',  'description' => 'ISO date YYYY-MM-DD — keep comments on or before.'],
                 'exclude_users' => ['type' => 'string',  'description' => 'Comma-separated usernames to exclude.'],
             ],
             'required' => ['comments'],
@@ -138,11 +301,11 @@ $TOOLS = [
         'name'        => 'pick_winners',
         'description' => 'Randomly pick one or more winners from a comments list (giveaway draw).',
         'inputSchema' => [
-            'type'       => 'object',
+            'type' => 'object',
             'properties' => [
                 'comments' => ['type' => 'array',  'description' => 'Comments to draw from.', 'items' => ['type' => 'object']],
-                'count'    => ['type' => 'number', 'description' => 'Number of winners to pick. Default: 1.'],
-                'seed'     => ['type' => 'number', 'description' => 'Optional integer seed for a reproducible, auditable draw.'],
+                'count'    => ['type' => 'number', 'description' => 'Number of winners. Default: 1.'],
+                'seed'     => ['type' => 'number', 'description' => 'Optional integer seed for a reproducible draw.'],
             ],
             'required' => ['comments'],
         ],
@@ -151,9 +314,9 @@ $TOOLS = [
         'name'        => 'export_comments',
         'description' => 'Convert a comments list to CSV or JSON text.',
         'inputSchema' => [
-            'type'       => 'object',
+            'type' => 'object',
             'properties' => [
-                'comments' => ['type' => 'array', 'description' => 'Comments to export.', 'items' => ['type' => 'object']],
+                'comments' => ['type' => 'array',  'description' => 'Comments to export.', 'items' => ['type' => 'object']],
                 'format'   => ['type' => 'string', 'enum' => ['csv', 'json'], 'description' => '"csv" or "json". Default: "csv".'],
             ],
             'required' => ['comments'],
@@ -161,75 +324,39 @@ $TOOLS = [
     ],
 ];
 
-// ── HTTP helpers (curl) ───────────────────────────────────────────────────────
-function curl_get($url)
-{
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 60,
-        CURLOPT_SSL_VERIFYPEER => true,
-        CURLOPT_USERAGENT      => 'commentpull-mcp/1.0',
-    ]);
-    $body   = curl_exec($ch);
-    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    return [$status, json_decode($body, true)];
-}
-
-function curl_post_json($url, $data, $extra_headers = [])
-{
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => json_encode($data),
-        CURLOPT_TIMEOUT        => 60,
-        CURLOPT_SSL_VERIFYPEER => true,
-        CURLOPT_USERAGENT      => 'commentpull-mcp/1.0',
-        CURLOPT_HTTPHEADER     => array_merge(
-            ['Content-Type: application/json'],
-            $extra_headers
-        ),
-    ]);
-    $body   = curl_exec($ch);
-    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    return [$status, json_decode($body, true)];
-}
-
-// ── Tool implementations ──────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+//  TOOL IMPLEMENTATIONS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 function tool_extract_youtube($args)
 {
-    $url     = $args['url'] ?? '';
+    $url     = $args['url']     ?? '';
     $api_key = $args['api_key'] ?? '';
     $replies = $args['include_replies'] ?? true;
     $max     = (int)($args['max_comments'] ?? 500);
 
-    // Extract video ID
     $video_id = null;
-    if (preg_match('/youtu\.be\/([A-Za-z0-9_-]{11})/', $url, $m))         $video_id = $m[1];
-    elseif (preg_match('/[?&]v=([A-Za-z0-9_-]{11})/', $url, $m))          $video_id = $m[1];
-    elseif (preg_match('/youtube\.com\/(?:shorts|embed|v)\/([A-Za-z0-9_-]{11})/', $url, $m)) $video_id = $m[1];
-    elseif (preg_match('/^[A-Za-z0-9_-]{11}$/', $url))                    $video_id = $url;
+    if      (preg_match('/youtu\.be\/([A-Za-z0-9_-]{11})/', $url, $m))                         $video_id = $m[1];
+    elseif  (preg_match('/[?&]v=([A-Za-z0-9_-]{11})/', $url, $m))                             $video_id = $m[1];
+    elseif  (preg_match('/youtube\.com\/(?:shorts|embed|v)\/([A-Za-z0-9_-]{11})/', $url, $m)) $video_id = $m[1];
+    elseif  (preg_match('/^[A-Za-z0-9_-]{11}$/', $url))                                       $video_id = $url;
 
-    if (!$video_id) return tool_fail("Cannot extract video ID from: $url");
+    if (!$video_id) return tool_fail("Cannot extract video ID from: {$url}");
 
     $results    = [];
     $page_token = '';
     $base       = 'https://www.googleapis.com/youtube/v3';
 
     do {
-        $params = http_build_query([
+        $params = http_build_query(array_filter([
             'part'       => $replies ? 'snippet,replies' : 'snippet',
             'videoId'    => $video_id,
             'key'        => $api_key,
             'maxResults' => 100,
             'textFormat' => 'plainText',
-            'pageToken'  => $page_token,
-        ]);
-        [$status, $data] = curl_get("$base/commentThreads?$params");
+            'pageToken'  => $page_token ?: null,
+        ]));
+        [$status, $data] = http_get("{$base}/commentThreads?{$params}");
 
         if (!empty($data['error']))
             return tool_fail($data['error']['message'] ?? 'YouTube API error');
@@ -248,7 +375,7 @@ function tool_extract_youtube($args)
             ];
             if ($replies && !empty($thread['replies']['comments'])) {
                 foreach ($thread['replies']['comments'] as $reply) {
-                    if (count($results) >= $max) break 2;
+                    if (count($results) >= $max) break;
                     $rs = $reply['snippet'];
                     $results[] = [
                         'post_id'        => $video_id,
@@ -266,97 +393,79 @@ function tool_extract_youtube($args)
     } while ($page_token && count($results) < $max);
 
     return tool_ok(json_encode([
-        'platform'       => 'youtube',
-        'video_id'       => $video_id,
-        'total_comments' => count($results),
-        'comments'       => $results,
+        'platform' => 'youtube', 'video_id' => $video_id,
+        'total_comments' => count($results), 'comments' => $results,
     ], JSON_PRETTY_PRINT));
 }
 
 function tool_extract_meta($platform, $args)
 {
-    $headers = ['Authorization: Bearer ' . ($args['cp_token'] ?? '')];
-    [$status, $json] = curl_post_json(
+    [$status, $json] = http_post(
         'https://commentpull.com/backend/api/fetch-comments.php',
         [
             'platform'        => $platform,
             'post_url'        => $args['post_url'] ?? '',
-            'page_id'         => $args['page_id'] ?? '',
+            'page_id'         => $args['page_id']  ?? '',
             'include_replies' => $args['include_replies'] ?? true,
         ],
-        $headers
+        ['Authorization: Bearer ' . ($args['cp_token'] ?? '')]
     );
+
     if ($status !== 200 || empty($json))
-        return tool_fail($json['error'] ?? "Server error (HTTP $status)");
+        return tool_fail($json['error'] ?? "Server error (HTTP {$status})");
 
     $comments = $json['comments'] ?? [];
     return tool_ok(json_encode([
-        'platform'       => $platform,
-        'post_url'       => $args['post_url'] ?? '',
-        'total_comments' => count($comments),
-        'comments'       => $comments,
+        'platform' => $platform, 'post_url' => $args['post_url'] ?? '',
+        'total_comments' => count($comments), 'comments' => $comments,
     ], JSON_PRETTY_PRINT));
 }
 
 function tool_filter($args)
 {
-    $comments = $args['comments'] ?? [];
-    $out      = $comments;
+    $out = $args['comments'] ?? [];
 
     if (!empty($args['keyword'])) {
         $kw  = strtolower($args['keyword']);
-        $out = array_values(array_filter($out, fn($c) =>
-            str_contains(strtolower($c['comment_text'] ?? ''), $kw)
-        ));
+        $out = array_values(array_filter($out,
+            fn($c) => str_contains(strtolower($c['comment_text'] ?? ''), $kw)));
     }
-
     if (isset($args['min_mentions'])) {
         $n   = (int)$args['min_mentions'];
-        $out = array_values(array_filter($out, fn($c) =>
-            preg_match_all('/@\w+/', $c['comment_text'] ?? '') >= $n
-        ));
+        $out = array_values(array_filter($out,
+            fn($c) => preg_match_all('/@\w+/', $c['comment_text'] ?? '') >= $n));
     }
-
     if (isset($args['min_length'])) {
         $n   = (int)$args['min_length'];
-        $out = array_values(array_filter($out, fn($c) =>
-            mb_strlen($c['comment_text'] ?? '') >= $n
-        ));
+        $out = array_values(array_filter($out,
+            fn($c) => mb_strlen($c['comment_text'] ?? '') >= $n));
     }
-
     if (!empty($args['dedup'])) {
         $seen = [];
         $out  = array_values(array_filter($out, function ($c) use (&$seen) {
-            $key = strtolower($c['commenter_id'] ?: $c['commenter_name'] ?? '');
-            if (isset($seen[$key])) return false;
-            $seen[$key] = true;
-            return true;
+            $k = strtolower($c['commenter_id'] ?: ($c['commenter_name'] ?? ''));
+            if (isset($seen[$k])) return false;
+            return $seen[$k] = true;
         }));
     }
-
     if (!empty($args['date_from'])) {
         $from = strtotime($args['date_from']);
-        $out  = array_values(array_filter($out, fn($c) =>
-            !empty($c['timestamp']) && strtotime($c['timestamp']) >= $from
-        ));
+        $out  = array_values(array_filter($out,
+            fn($c) => !empty($c['timestamp']) && strtotime($c['timestamp']) >= $from));
     }
-
     if (!empty($args['date_to'])) {
         $to  = strtotime($args['date_to'] . ' 23:59:59');
-        $out = array_values(array_filter($out, fn($c) =>
-            !empty($c['timestamp']) && strtotime($c['timestamp']) <= $to
-        ));
+        $out = array_values(array_filter($out,
+            fn($c) => !empty($c['timestamp']) && strtotime($c['timestamp']) <= $to));
     }
-
     if (!empty($args['exclude_users'])) {
-        $excluded = array_map('strtolower', array_filter(array_map('trim', explode(',', $args['exclude_users']))));
-        $out      = array_values(array_filter($out, fn($c) =>
-            !in_array(strtolower($c['commenter_name'] ?? ''), $excluded, true)
-        ));
+        $ex  = array_map('strtolower', array_filter(array_map('trim', explode(',', $args['exclude_users']))));
+        $out = array_values(array_filter($out,
+            fn($c) => !in_array(strtolower($c['commenter_name'] ?? ''), $ex, true)));
     }
 
     return tool_ok(json_encode([
-        'original_count' => count($comments),
+        'original_count' => count($args['comments'] ?? []),
         'filtered_count' => count($out),
         'comments'       => $out,
     ], JSON_PRETTY_PRINT));
@@ -364,17 +473,15 @@ function tool_filter($args)
 
 function tool_pick_winners($args)
 {
-    $comments = $args['comments'] ?? [];
-    $count    = max(1, (int)($args['count'] ?? 1));
-    $seed     = isset($args['seed']) ? (int)$args['seed'] : null;
+    $pool  = $args['comments'] ?? [];
+    $count = max(1, (int)($args['count'] ?? 1));
+    $seed  = isset($args['seed']) ? (int)$args['seed'] : null;
 
-    if (empty($comments)) return tool_fail('No comments to draw from.');
-
-    $pool = $comments;
+    if (empty($pool)) return tool_fail('No comments to draw from.');
 
     if ($seed !== null) {
         srand($seed);
-        usort($pool, fn() => rand(-1, 1));  // seeded shuffle
+        usort($pool, fn() => rand(-1, 1));
     } else {
         shuffle($pool);
     }
@@ -384,7 +491,7 @@ function tool_pick_winners($args)
                          $winners, array_keys($winners));
 
     return tool_ok(json_encode([
-        'pool_size'    => count($comments),
+        'pool_size'    => count($args['comments']),
         'winner_count' => count($ranked),
         'seed'         => $seed,
         'winners'      => $ranked,
@@ -394,16 +501,14 @@ function tool_pick_winners($args)
 function tool_export($args)
 {
     $comments = $args['comments'] ?? [];
-    $format   = $args['format'] ?? 'csv';
+    $format   = $args['format']   ?? 'csv';
 
     if ($format === 'json') {
         return tool_ok(json_encode($comments, JSON_PRETTY_PRINT));
     }
 
-    // CSV
-    $cols = ['#', 'commenter_name', 'commenter_id', 'comment_text', 'timestamp', 'post_id', 'comment_id', 'reply_to'];
-    $buf  = fopen('php://temp', 'r+');
-    fputcsv($buf, $cols);
+    $buf = fopen('php://temp', 'r+');
+    fputcsv($buf, ['#', 'commenter_name', 'commenter_id', 'comment_text', 'timestamp', 'post_id', 'comment_id', 'reply_to']);
     foreach ($comments as $i => $c) {
         fputcsv($buf, [
             $i + 1,
@@ -423,60 +528,39 @@ function tool_export($args)
     return tool_ok($csv);
 }
 
-// ── MCP method router ─────────────────────────────────────────────────────────
-switch ($method) {
+// ═══════════════════════════════════════════════════════════════════════════════
+//  HTTP HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
 
-    case 'initialize':
-        rpc_ok($id, [
-            'protocolVersion' => '2025-03-26',
-            'capabilities'    => ['tools' => new stdClass()],
-            'serverInfo'      => ['name' => 'commentpull', 'version' => '1.0.0'],
-        ]);
-        break;
+function http_get($url)
+{
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 60,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_USERAGENT      => 'commentpull-mcp/1.0',
+    ]);
+    $body   = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return [$status, json_decode($body, true)];
+}
 
-    case 'notifications/initialized':
-        // Notification — no response expected
-        http_response_code(204);
-        break;
-
-    case 'tools/list':
-        global $TOOLS;
-        rpc_ok($id, ['tools' => $TOOLS]);
-        break;
-
-    case 'tools/call':
-        $name      = $params['name']      ?? '';
-        $tool_args = $params['arguments'] ?? [];
-
-        switch ($name) {
-            case 'extract_youtube_comments':
-                rpc_ok($id, tool_extract_youtube($tool_args));
-                break;
-            case 'extract_facebook_comments':
-                rpc_ok($id, tool_extract_meta('fb', $tool_args));
-                break;
-            case 'extract_instagram_comments':
-                rpc_ok($id, tool_extract_meta('ig', $tool_args));
-                break;
-            case 'filter_comments':
-                rpc_ok($id, tool_filter($tool_args));
-                break;
-            case 'pick_winners':
-                rpc_ok($id, tool_pick_winners($tool_args));
-                break;
-            case 'export_comments':
-                rpc_ok($id, tool_export($tool_args));
-                break;
-            default:
-                rpc_err($id, -32601, "Unknown tool: $name");
-        }
-        break;
-
-    case 'ping':
-        rpc_ok($id, new stdClass());
-        break;
-
-    default:
-        // Unknown methods return -32601 per JSON-RPC spec
-        rpc_err($id, -32601, "Method not found: $method");
+function http_post($url, $data, $extra_headers = [])
+{
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode($data),
+        CURLOPT_TIMEOUT        => 60,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_USERAGENT      => 'commentpull-mcp/1.0',
+        CURLOPT_HTTPHEADER     => array_merge(['Content-Type: application/json'], $extra_headers),
+    ]);
+    $body   = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return [$status, json_decode($body, true)];
 }

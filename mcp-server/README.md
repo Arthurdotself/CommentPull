@@ -2,7 +2,9 @@
 
 Connects Claude to [commentpull.com](https://commentpull.com) so you can extract, filter, and analyze social-media comments directly inside any Claude conversation.
 
-Hosted on Railway — no installation needed for end users. Just add the URL to your Claude config.
+Hosted on **Fly.io** (free tier, always-on) — no installation needed for end users.
+
+> **Architecture note:** The MCP server is a thin protocol layer. The heavy work (Facebook/Instagram Graph API calls) is handled by your existing PHP backend on Hostinger at `commentpull.com/backend/api/fetch-comments.php`. YouTube calls go directly to Google's API.
 
 ## Tools exposed
 
@@ -12,39 +14,72 @@ Hosted on Railway — no installation needed for end users. Just add the URL to 
 | `extract_facebook_comments` | Fetch comments from a Facebook post |
 | `extract_instagram_comments` | Fetch comments from an Instagram post/reel |
 | `filter_comments` | Filter by keyword, mentions, length, date range, duplicates, excluded users |
-| `pick_winners` | Randomly pick one or more winners (fair Fisher-Yates shuffle, optional seed) |
+| `pick_winners` | Randomly pick one or more winners (fair shuffle, optional seed for auditability) |
 | `export_comments` | Export results as CSV or JSON text |
 
 ---
 
-## Deploy to Railway (one-time setup)
+## Deploy to Fly.io (free — always-on)
 
-### 1. Push to GitHub
-Make sure the `mcp-server/` folder is in a GitHub repo (the root commentpull.com repo works fine).
+### Prerequisites
 
-### 2. Create a Railway project
+```bash
+# Install the Fly CLI (Mac/Linux)
+brew install flyctl
 
-1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub Repo**
-2. Select your repo
-3. Under **Settings → Build**, set **Root Directory** to `mcp-server`
-4. Railway picks up `railway.toml` automatically — no extra config needed
-
-### 3. Set environment variables in Railway
-
-In your Railway service → **Variables** tab, add:
-
-```
-API_KEYS=key_user1,key_user2,key_user3
+# Or via script
+curl -L https://fly.io/install.sh | sh
 ```
 
-Generate a unique key per user/plan (any random string, e.g. `openssl rand -hex 16`).
-Do **not** set `PORT` — Railway manages that automatically.
+Then sign up / log in (credit card required for verification, no charge on free tier):
 
-### 4. Get your public URL
-
-Railway gives you a URL like:
+```bash
+fly auth signup   # new account
+# or
+fly auth login    # existing account
 ```
-https://commentpull-mcp.up.railway.app
+
+### 1. Launch the app
+
+```bash
+cd mcp-server
+fly launch
+```
+
+When prompted:
+- **App name:** `commentpull-mcp` (or any name you like)
+- **Region:** pick the closest to you
+- **Would you like to set up a Postgresql/Redis database?** → No
+- **Deploy now?** → No (set the secret first)
+
+`fly launch` detects the `Dockerfile` and `fly.toml` automatically.
+
+### 2. Set the API_KEYS secret
+
+```bash
+fly secrets set API_KEYS="key_user1,key_user2,key_user3"
+```
+
+Generate a unique key per user (e.g. `openssl rand -hex 16`).
+
+### 3. Deploy
+
+```bash
+fly deploy
+```
+
+Your app is now live at:
+```
+https://commentpull-mcp.fly.dev
+```
+
+### Useful commands
+
+```bash
+fly status          # check deployment status
+fly logs            # stream live logs
+fly secrets list    # list secret names (not values)
+fly secrets set API_KEYS="newkey1,newkey2"   # rotate keys
 ```
 
 ---
@@ -59,7 +94,7 @@ Open `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) or
   "mcpServers": {
     "commentpull": {
       "type": "sse",
-      "url": "https://commentpull-mcp.up.railway.app/sse",
+      "url": "https://commentpull-mcp.fly.dev/sse",
       "headers": {
         "x-api-key": "YOUR_KEY_HERE"
       }
@@ -68,12 +103,12 @@ Open `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) or
 }
 ```
 
-Restart Claude Desktop — the commentpull tools will appear automatically.
+Restart Claude Desktop — the commentpull tools appear automatically.
 
 ## Connect from Claude Code (CLI)
 
 ```bash
-claude mcp add --transport sse commentpull https://commentpull-mcp.up.railway.app/sse \
+claude mcp add --transport sse commentpull https://commentpull-mcp.fly.dev/sse \
   --header "x-api-key: YOUR_KEY_HERE"
 ```
 
@@ -85,22 +120,22 @@ claude mcp add --transport sse commentpull https://commentpull-mcp.up.railway.ap
 cd mcp-server
 npm install
 
-# Start with no auth (dev mode)
+# No auth (dev mode)
 node index.js
 
-# Start with auth
+# With auth
 API_KEYS=testkey node index.js
 ```
 
-Test endpoints:
+Test the server:
 ```bash
 # Health check
 curl http://localhost:3000/health
 
-# SSE connection (should stream events)
+# SSE connection
 curl -H "x-api-key: testkey" http://localhost:3000/sse
 
-# Without key (should return 401)
+# Without key → 401
 curl http://localhost:3000/sse
 ```
 
@@ -109,13 +144,13 @@ curl http://localhost:3000/sse
 ## Usage examples in Claude
 
 **YouTube giveaway:**
-> "Fetch comments from `https://youtube.com/watch?v=VIDEO_ID` using API key `AIzaSy…`. Keep only comments with 2+ @mentions, then pick 3 winners."
+> "Fetch comments from `https://youtube.com/watch?v=VIDEO_ID` with API key `AIzaSy…`. Keep only people who tagged 2+ friends, then pick 3 winners."
 
-**Facebook comment export:**
-> "Pull comments from this Facebook post [URL]. My commentpull token is `…` and page ID is `123456`. Give me a CSV."
+**Facebook export:**
+> "Pull all comments from this Facebook post [URL]. My commentpull token is `…` and page ID is `123456`. Give me a CSV."
 
-**Auditable giveaway:**
-> "Pick a winner with seed 42 — I want to be able to show the result is reproducible."
+**Auditable draw:**
+> "Pick a winner with seed 42 — I want anyone to be able to verify the result."
 
 ---
 
@@ -124,7 +159,7 @@ curl http://localhost:3000/sse
 | Platform | What you need |
 |----------|--------------|
 | YouTube | [YouTube Data API v3 key](https://console.developers.google.com/) |
-| Facebook | commentpull.com account token + Facebook Page ID |
-| Instagram | commentpull.com account token + Facebook Page ID linked to IG |
+| Facebook | commentpull.com Bearer token + Facebook Page ID |
+| Instagram | commentpull.com Bearer token + Facebook Page ID linked to IG Business |
 
 Get your commentpull token by signing in at [commentpull.com](https://commentpull.com).

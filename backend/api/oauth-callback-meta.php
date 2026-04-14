@@ -93,16 +93,28 @@ $expiresAt  = date('Y-m-d H:i:s', time() + $expiresIn);
 $_SESSION['meta_token']         = $longToken;
 $_SESSION['meta_token_expires'] = $expiresAt;
 
+// ── 5b. Fetch Facebook profile picture URL ────────────────────────
+$picUrl  = null;
+$picResp = @file_get_contents(
+    'https://graph.facebook.com/v19.0/me?fields=picture.type(large)&access_token=' . urlencode($longToken)
+);
+if ($picResp) {
+    $picData = json_decode($picResp, true);
+    $picUrl  = $picData['picture']['data']['url'] ?? null;
+}
+$_SESSION['meta_picture_url'] = $picUrl;
+
 // ── 6. If user is logged in, also persist to DB ───────────────────
 $user = try_auth();
 if ($user) {
     try {
         $encrypted = encrypt_token($longToken);
         db()->prepare(
-            'UPDATE users SET meta_access_token = :token, meta_token_expires = :exp WHERE id = :id'
+            'UPDATE users SET meta_access_token = :token, meta_token_expires = :exp, facebook_picture_url = :pic WHERE id = :id'
         )->execute([
             ':token' => $encrypted,
             ':exp'   => $expiresAt,
+            ':pic'   => $picUrl,
             ':id'    => (int) $user['id'],
         ]);
     } catch (Throwable $e) {

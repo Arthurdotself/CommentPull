@@ -17,9 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $user = require_auth();
 
 json_out([
-    'id'         => (int) $user['id'],
-    'email'      => $user['email'],
-    'name'       => $user['name'],
-    'plan'       => $user['plan'],
-    'created_at' => $user['created_at'],
+    'id'          => (int) $user['id'],
+    'email'       => $user['email'],
+    'name'        => $user['name'],
+    'plan'        => $user['plan'],
+    'created_at'  => $user['created_at'],
+    'picture_url' => $user['facebook_picture_url'] ?? null,
 ]);

@@ -2268,6 +2268,13 @@ function stopConfetti() {
           window.location.href = '/signin.html';
         };
 
+        if (user.picture_url) {
+          const img = document.createElement('img');
+          img.src = user.picture_url;
+          img.alt = user.name || 'Profile';
+          img.className = 'w-8 h-8 rounded-full object-cover border border-white/20 flex-shrink-0';
+          area.appendChild(img);
+        }
         area.appendChild(greeting);
         area.appendChild(btn);
       }

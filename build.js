@@ -70,6 +70,37 @@ function generateAr(filename) {
     html = html.replace(/(<meta name="description" content=")[^"]*"/, `$1${meta.desc.ar}"`);
   }
 
+  /* 3e2. Localize Open Graph and Twitter Card tags for Arabic */
+  // og:locale → ar_AR
+  html = html.replace(/(<meta property="og:locale" content=")[^"]*"/, '$1ar_AR"');
+  // og:url and twitter:url → insert /ar/
+  html = html.replace(
+    /(<meta property="og:url" content="https:\/\/commentpull\.com\/)([^"]*")/,
+    (m, prefix, rest) => `${prefix}ar/${rest}`
+  );
+  html = html.replace(
+    /(<meta name="twitter:url" content="https:\/\/commentpull\.com\/)([^"]*")/,
+    (m, prefix, rest) => `${prefix}ar/${rest}`
+  );
+  // og:title and twitter:title
+  if (meta.title && meta.title.ar) {
+    html = html.replace(/(<meta property="og:title" content=")[^"]*"/, `$1${meta.title.ar}"`);
+    html = html.replace(/(<meta name="twitter:title" content=")[^"]*"/, `$1${meta.title.ar}"`);
+  }
+  // og:description and twitter:description
+  if (meta.desc && meta.desc.ar) {
+    html = html.replace(/(<meta property="og:description" content=")[^"]*"/, `$1${meta.desc.ar}"`);
+    html = html.replace(/(<meta name="twitter:description" content=")[^"]*"/, `$1${meta.desc.ar}"`);
+  }
+  // JSON-LD url field → insert /ar/
+  html = html.replace(
+    /("url":\s*"https:\/\/commentpull\.com\/)([^"]*")/g,
+    (m, prefix, rest) => {
+      if (rest.startsWith('ar/')) return m;
+      return `${prefix}ar/${rest}`;
+    }
+  );
+
   /* 3f. Update canonical URL (insert /ar/ before the filename) */
   html = html.replace(
     /(<link rel="canonical" href="https:\/\/commentpull\.com\/)([^"]+)"/,

@@ -1,6 +1,0 @@
-# Disable output buffering for SSE (Server-Sent Events)
-<FilesMatch "mcp\.php">
-    Header set X-Accel-Buffering "no"
-    Header set Cache-Control "no-cache, no-store"
-    Header set X-LiteSpeed-Cache-Control "no-store"
-</FilesMatch>

@@ -1,4 +1,0 @@
-# Serve oauth-authorization-server as JSON (no file extension)
-<Files "oauth-authorization-server">
-    ForceType application/json
-</Files>

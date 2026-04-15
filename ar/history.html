@@ -121,23 +121,7 @@
 <body class="lang-ar antialiased min-h-screen flex flex-col">
 
   <!-- ─── Header ─── -->
-  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
-    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2">
-        <span class="text-xl font-semibold tracking-tight">commentpull</span>
-      </a>
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="/" class="hover:text-white transition-colors" data-i18n="nav.tool">الأداة</a>
-        <a href="/ar/pricing.html" class="hover:text-white transition-colors" data-i18n="nav.pricing">الأسعار</a>
-        <a href="/ar/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">الدعم</a>
-        <a href="/ar/history.html" class="text-indigo-400 font-semibold" data-i18n="nav.history">السجل</a>
-        <a href="/ar/scheduled-exports.html" class="hover:text-white transition-colors" data-i18n="nav.scheduled">المجدولة</a>
-      </nav>
-      <div class="flex items-center gap-3" id="nav-auth">
-        <!-- filled by JS -->
-      </div>
-    </div>
-  </header>
+  <div id="site-nav" data-variant="app"></div>
 
   <main class="flex-grow pt-20">
     <div class="max-w-[860px] mx-auto px-6 py-16">
@@ -878,6 +862,7 @@
     // ── Start ─────────────────────────────────────────────────────
     boot();
   </script>
+  <script src="/components.js"></script>
   <script src="/lang.js"></script>
 </body>
 </html>

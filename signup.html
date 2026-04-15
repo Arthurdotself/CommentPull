@@ -72,16 +72,7 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col">
 
-  <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
-    <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
-      <div class="flex items-center gap-4 text-sm">
-        <span class="text-gray-400">Already have an account?</span>
-        <a href="signin.html" class="border border-white/20 text-white px-4 py-2 rounded-full text-sm font-medium hover:border-white/40 transition-colors">Sign In</a>
-      </div>
-    </div>
-  </header>
+  <div id="site-nav" data-variant="signup"></div>
 
   <main class="flex-grow flex items-center justify-center px-4 pt-16">
     <div class="w-full max-w-md py-16">
@@ -272,5 +263,6 @@
       }
     }
   </script>
+  <script src="/components.js"></script>
 </body>
 </html>

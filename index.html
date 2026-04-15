@@ -222,35 +222,7 @@
 <body class="antialiased min-h-screen flex flex-col">
 
   <!-- ─── Header ─── -->
-  <header id="header" class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
-    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="text-xl font-semibold tracking-tight">commentpull</span>
-      </div>
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
-        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
-        <a href="support.html" class="hover:text-white transition-colors">Support</a>
-        <a href="history.html" class="hover:text-white transition-colors">History</a>
-        <a href="scheduled-exports.html" class="hover:text-white transition-colors">Scheduled</a>
-      </nav>
-      <div class="flex items-center gap-3" id="nav-auth-area">
-        <button id="lang-toggle" onclick="toggleLang()"
-          class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">
-          العربية
-        </button>
-        <!-- Auth buttons — replaced by JS when signed in -->
-        <a href="signin.html" id="nav-signin"
-          class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium">
-          Sign In
-        </a>
-        <a href="signup.html" id="nav-signup"
-          class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">
-          Sign Up
-        </a>
-      </div>
-    </div>
-  </header>
+  <div id="site-nav" data-variant="full"></div>
 
   <main class="flex-grow pt-20">
 
@@ -684,54 +656,7 @@
   </main>
 
   <!-- ─── Footer ─── -->
-  <footer id="footer" class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
-    <div class="max-w-[1440px] mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
-        <div class="col-span-1 md:col-span-2">
-          <div class="flex items-center gap-2 mb-6">
-          <span class="text-xl font-semibold tracking-tight">commentpull</span>
-          </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6">
-            The fastest way to extract, analyze, and export social media comments for marketers and researchers.
-          </p>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="footer.product">Product</h4>
-          <ul class="space-y-3 text-sm text-gray-400">
-            <li><a href="#how-it-works" class="hover:text-white transition-colors" data-i18n="footer.how">How it Works</a></li>
-            <li><a href="#preview" class="hover:text-white transition-colors" data-i18n="footer.preview">Results Preview</a></li>
-            <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="footer.platforms">Platforms</h4>
-          <ul class="space-y-3 text-sm text-gray-400">
-            <li class="flex items-center gap-2"><i class="fa-brands fa-facebook text-blue-400"></i> Facebook</li>
-            <li class="flex items-center gap-2"><i class="fa-brands fa-instagram text-pink-400"></i> Instagram</li>
-            <li class="flex items-center gap-2"><i class="fa-brands fa-youtube text-red-400"></i> YouTube</li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4">Company</h4>
-          <ul class="space-y-3 text-sm text-gray-400">
-            <li><a href="about.html" class="hover:text-white transition-colors">About</a></li>
-            <li><a href="support.html" class="hover:text-white transition-colors">Support</a></li>
-            <li><a href="contact.html" class="hover:text-white transition-colors">Contact</a></li>
-            <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-        <p data-i18n="footer.index.copyright">&copy; 2026 commentpull. All rights reserved.</p>
-        <div class="flex gap-6">
-          <a href="about.html" class="hover:text-white transition-colors">About</a>
-          <a href="privacy.html" class="hover:text-white transition-colors">Privacy</a>
-          <a href="support.html" class="hover:text-white transition-colors">Support</a>
-          <a href="contact.html" class="hover:text-white transition-colors">Contact</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <div id="site-footer" data-variant="extended"></div>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
   <!-- Hidden DOM elements required by the extraction engine      -->
@@ -2212,6 +2137,7 @@ function stopConfetti() {
     }
   </script>
 
+  <script src="/components.js"></script>
   <script src="/lang.js"></script>
   <script>
     // Handle Google/GitHub OAuth redirect back to homepage

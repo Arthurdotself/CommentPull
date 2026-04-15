@@ -118,32 +118,7 @@
 <body class="lang-ar antialiased min-h-screen flex flex-col">
 
   <!-- ─── Header ─── -->
-  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
-    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="/ar/index.html" class="flex items-center gap-2 no-underline">
-      <span class="text-xl font-semibold tracking-tight text-white">commentpull</span>
-      </a>
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="/ar/index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">كيف يعمل</a>
-        <a href="/ar/pricing.html" class="text-white transition-colors" data-i18n="nav.pricing">الأسعار</a>
-        <a href="/ar/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">الدعم</a>
-      </nav>
-      <div class="flex items-center gap-3">
-        <button id="lang-toggle" onclick="toggleLang()"
-          class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">
-          العربية
-        </button>
-        <a href="signin.html"
-          class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium" data-i18n="nav.signin">
-          Sign In
-        </a>
-        <a href="signup.html"
-          class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" data-i18n="nav.signup">
-          Sign Up
-        </a>
-      </div>
-    </div>
-  </header>
+  <div id="site-nav" data-variant="marketing"></div>
 
   <main class="flex-grow pt-20">
 
@@ -394,52 +369,7 @@
   </main>
 
   <!-- ─── Footer ─── -->
-  <footer class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
-    <div class="max-w-[1440px] mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-        <div class="col-span-1">
-          <div class="flex items-center gap-2 mb-6">
-          <span class="text-xl font-semibold tracking-tight">commentpull</span>
-          </div>
-          <p class="text-gray-400 text-sm leading-relaxed mb-6" data-i18n="pricing.footer.desc">
-            The fastest way to extract, analyze, and export social media comments for marketers and researchers.
-          </p>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="pricing.footer.product">المنتج</h4>
-          <ul class="space-y-3 text-sm text-gray-400">
-            <li><a href="/ar/index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="pricing.footer.how">كيف يعمل</a></li>
-            <li><a href="/ar/index.html#preview" class="hover:text-white transition-colors" data-i18n="pricing.footer.preview">معاينة النتائج</a></li>
-            <li><a href="/ar/pricing.html" class="hover:text-white transition-colors" data-i18n="pricing.footer.pricing">الأسعار</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="pricing.footer.platforms">المنصات</h4>
-          <ul class="space-y-3 text-sm text-gray-400">
-            <li class="flex items-center gap-2"><i class="fa-brands fa-facebook text-blue-400"></i> Facebook</li>
-            <li class="flex items-center gap-2"><i class="fa-brands fa-instagram text-pink-400"></i> Instagram</li>
-            <li class="flex items-center gap-2"><i class="fa-brands fa-youtube text-red-400"></i> YouTube</li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4" data-i18n="pricing.footer.exports">تنسيقات التصدير</h4>
-          <ul class="space-y-3 text-sm text-gray-400">
-            <li>Excel (.xlsx)</li>
-            <li>CSV (.csv)</li>
-            <li>JSON (.json)</li>
-          </ul>
-        </div>
-      </div>
-      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-        <p data-i18n="pricing.footer.copyright">© 2026 commentpull. جميع الحقوق محفوظة.</p>
-        <div class="flex gap-4">
-          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-twitter text-lg"></i></a>
-          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
-          <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-lg"></i></a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <div id="site-footer" data-variant="extended"></div>
 
   <script>
     function toggleFaq(btn) {
@@ -458,6 +388,7 @@
     }
   </script>
 
+  <script src="/components.js"></script>
   <script src="/lang.js"></script>
 </body>
 </html>

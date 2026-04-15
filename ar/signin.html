@@ -69,15 +69,7 @@
 <body class="antialiased min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
-    <div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="../index.html" class="text-xl font-bold tracking-tight text-white no-underline">commentpull</a>
-      <div class="flex items-center gap-4 text-sm">
-        <span class="text-gray-400">ليس لديك حساب؟</span>
-        <a href="signup.html" class="bg-white text-black px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-100 transition-colors">إنشاء حساب</a>
-      </div>
-    </div>
-  </header>
+  <div id="site-nav" data-variant="signin"></div>
 
   <main class="flex-grow flex items-center justify-center px-4 pt-16">
     <div class="w-full max-w-md py-16">
@@ -224,5 +216,7 @@
       }
     }
   </script>
+  <script src="/components.js"></script>
+  <script src="/lang.js"></script>
 </body>
 </html>

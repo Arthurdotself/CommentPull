@@ -89,22 +89,7 @@
 <body class="antialiased min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
-    <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-        <a href="index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
-        <a href="pricing.html" class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
-        <a href="support.html" class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
-      </nav>
-      <div class="flex items-center gap-3">
-        <button id="lang-toggle" onclick="toggleLang()"
-          class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">العربية</button>
-        <a href="signin.html" class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium" data-i18n="nav.signin">Sign In</a>
-        <a href="signup.html" class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors" data-i18n="nav.signup">Sign Up</a>
-      </div>
-    </div>
-  </header>
+  <div id="site-nav" data-variant="marketing"></div>
 
   <main class="flex-grow pt-20">
     <div class="max-w-3xl mx-auto px-6 py-24">
@@ -192,19 +177,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-[#0F1115] border-t border-white/10 pt-16 pb-8">
-    <div class="max-w-[1440px] mx-auto px-6">
-      <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-        <p data-i18n="footer.index.copyright">© 2026 commentpull. All rights reserved.</p>
-        <div class="flex gap-6">
-          <a href="about.html" class="hover:text-white transition-colors" data-i18n="footer.about">About</a>
-          <a href="privacy.html" class="hover:text-white transition-colors" data-i18n="footer.privacy">Privacy Policy</a>
-          <a href="support.html" class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
-          <a href="contact.html" class="hover:text-white transition-colors" data-i18n="footer.contact">Contact</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <div id="site-footer" data-variant="simple"></div>
 
   <script>
     (function () {
@@ -262,6 +235,7 @@
     })();
   </script>
 
+  <script src="/components.js"></script>
   <script src="/lang.js"></script>
 </body>
 </html>

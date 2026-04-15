@@ -221,44 +221,58 @@
 
   /* ─────────────────────────────────────────────
    * SHARED AUTH NAV UPDATE
-   * Runs on every page. Replaces the Sign In / Sign Up
-   * links with the user's name + Sign Out when logged in.
-   * Pages that have their own auth code (index, history,
-   * settings, scheduled-exports) will simply overwrite
-   * #nav-auth a second time — that is fine.
+   * Runs on every page after nav injection.
+   * Uses the cached cp_name from localStorage for an
+   * instant, synchronous update — no flash, no race.
+   * Falls back to an API fetch only when cp_name is
+   * not yet cached (e.g. first login on a new device).
+   * Pages with their own auth code (index, history,
+   * settings, scheduled-exports) will overwrite #nav-auth
+   * after their own fetch — that is fine.
    * ───────────────────────────────────────────── */
 
-  /* Global sign-out helper referenced by the inline onclick */
+  /* Global sign-out helper — called by the injected button's onclick */
   window._cpSignOut = function() {
     localStorage.removeItem('cp_token');
     localStorage.removeItem('cp_name');
     window.location.href = '/signin.html';
   };
 
+  function _cpSetNavUser(name) {
+    var navAuth = document.getElementById('nav-auth');
+    if (!navAuth) return;
+    var safe = (name || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    navAuth.innerHTML =
+      '<a href="/settings.html" class="hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors">' + safe + '</a>' +
+      '<button onclick="_cpSignOut()" class="text-sm text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/10 hover:border-white/20">Sign Out</button>';
+  }
+
   function _cpInitNavAuth() {
     var token = localStorage.getItem('cp_token');
     if (!token) return;
 
+    /* Fast path: name already cached — update immediately, no network */
+    var cachedName = localStorage.getItem('cp_name');
+    if (cachedName) {
+      _cpSetNavUser(cachedName);
+      return;
+    }
+
+    /* Slow path: name not cached — fetch once and cache it */
     fetch('/backend/api/me.php', {
       headers: { 'Authorization': 'Bearer ' + token }
     })
-    .then(function(res) {
-      if (!res.ok) return null;
-      return res.json();
-    })
+    .then(function(res) { return res.ok ? res.json() : null; })
     .then(function(user) {
       if (!user) return;
-      var navAuth = document.getElementById('nav-auth');
-      if (!navAuth) return;
-      var name = (user.name || user.email || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      navAuth.innerHTML =
-        '<a href="/settings.html" class="hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors">' + name + '</a>' +
-        '<button onclick="_cpSignOut()" class="text-sm text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/10 hover:border-white/20">Sign Out</button>';
+      var displayName = user.name || user.email || '';
+      if (displayName) localStorage.setItem('cp_name', displayName);
+      _cpSetNavUser(displayName);
     })
-    .catch(function() { /* silently ignore network errors */ });
+    .catch(function() { /* silently ignore */ });
   }
 
   /* ─────────────────────────────────────────────

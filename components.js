@@ -19,14 +19,15 @@
    * NAV TEMPLATES
    * ───────────────────────────────────────────── */
 
-  /* Used by: ALL pages
+  /* Used by: index.html
    * Links: How it Works | Pricing | Support | History | Scheduled
-   * Auth : lang-toggle (always visible) + nav-auth div with Sign In/Sign Up
-   *        (page JS may replace nav-auth contents when user is signed in) */
+   * Auth : lang-toggle + static Sign In / Sign Up (replaced by page JS when signed in) */
   var NAV_FULL = `
 <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
   <div class="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
-    <a href="/index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
+    <div class="flex items-center gap-2">
+      <a href="/index.html" class="text-xl font-semibold tracking-tight text-white no-underline">commentpull</a>
+    </div>
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
       <a href="/index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
       <a href="/pricing.html"            class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
@@ -34,7 +35,7 @@
       <a href="/history.html"            class="hover:text-white transition-colors" data-i18n="nav.history">History</a>
       <a href="/scheduled-exports.html"  class="hover:text-white transition-colors" data-i18n="nav.scheduled">Scheduled</a>
     </nav>
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3" id="nav-auth-area">
       <button id="lang-toggle" onclick="toggleLang()"
         class="text-sm text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg border border-white/10 hover:border-white/20">
         العربية

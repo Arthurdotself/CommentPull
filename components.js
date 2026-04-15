@@ -220,6 +220,48 @@
   }
 
   /* ─────────────────────────────────────────────
+   * SHARED AUTH NAV UPDATE
+   * Runs on every page. Replaces the Sign In / Sign Up
+   * links with the user's name + Sign Out when logged in.
+   * Pages that have their own auth code (index, history,
+   * settings, scheduled-exports) will simply overwrite
+   * #nav-auth a second time — that is fine.
+   * ───────────────────────────────────────────── */
+
+  /* Global sign-out helper referenced by the inline onclick */
+  window._cpSignOut = function() {
+    localStorage.removeItem('cp_token');
+    localStorage.removeItem('cp_name');
+    window.location.href = '/signin.html';
+  };
+
+  function _cpInitNavAuth() {
+    var token = localStorage.getItem('cp_token');
+    if (!token) return;
+
+    fetch('/backend/api/me.php', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(function(res) {
+      if (!res.ok) return null;
+      return res.json();
+    })
+    .then(function(user) {
+      if (!user) return;
+      var navAuth = document.getElementById('nav-auth');
+      if (!navAuth) return;
+      var name = (user.name || user.email || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      navAuth.innerHTML =
+        '<a href="/settings.html" class="hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors">' + name + '</a>' +
+        '<button onclick="_cpSignOut()" class="text-sm text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/10 hover:border-white/20">Sign Out</button>';
+    })
+    .catch(function() { /* silently ignore network errors */ });
+  }
+
+  /* ─────────────────────────────────────────────
    * INJECTION
    * ───────────────────────────────────────────── */
   function inject() {
@@ -239,6 +281,8 @@
         // Re-query the injected header for active highlighting
         var injectedHeader = document.querySelector('header');
         if (injectedHeader) highlightActive(injectedHeader);
+        // Update nav auth state for all pages
+        _cpInitNavAuth();
       }
     }
 

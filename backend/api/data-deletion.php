@@ -1,10 +1,8 @@
 <?php
 /**
  * POST /backend/api/data-deletion.php
- *
- * Two modes:
- *  1. Facebook signed_request callback — deletes data linked to a Meta user_id
- *  2. Manual deletion — POST JSON { "email": "..." } deletes the full account
+ * Facebook signed_request callback — called by Facebook when a user removes
+ * the app. Verifies the HMAC-SHA256 signature and returns a confirmation URL.
  */
 require_once __DIR__ . '/../middleware/cors.php';
 require_once __DIR__ . '/../config.php';
@@ -59,34 +57,4 @@ if (!empty($_POST['signed_request'])) {
     ]);
 }
 
-// ── Manual deletion via JSON body { "email": "..." } ───────────────
-$body  = body();
-$email = trim($body['email'] ?? '');
-
-if ($email === '') {
-    json_error(400, 'email is required');
-}
-
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    json_error(400, 'Invalid email address');
-}
-
-$stmt = db()->prepare('SELECT id FROM users WHERE email = :email LIMIT 1');
-$stmt->execute([':email' => $email]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$user) {
-    // Don't reveal whether the account exists — return a code anyway
-    $code = strtoupper(substr(bin2hex(random_bytes(8)), 0, 12));
-    json_out(['confirmation_code' => $code]);
-}
-
-$uid = (int) $user['id'];
-
-db()->prepare('DELETE FROM sessions          WHERE user_id = :uid')->execute([':uid' => $uid]);
-db()->prepare('DELETE FROM runs              WHERE user_id = :uid')->execute([':uid' => $uid]);
-db()->prepare('DELETE FROM scheduled_exports WHERE user_id = :uid')->execute([':uid' => $uid]);
-db()->prepare('DELETE FROM users             WHERE id      = :uid')->execute([':uid' => $uid]);
-
-$code = strtoupper(substr(bin2hex(random_bytes(8)), 0, 12));
-json_out(['confirmation_code' => $code]);
+json_error(400, 'signed_request required');

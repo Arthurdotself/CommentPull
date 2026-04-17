@@ -147,38 +147,15 @@
           <h2 data-i18n="deletion.s3.title">Option 2 — Request via email</h2>
           <p data-i18n-html="deletion.s3.desc">Send a deletion request to <a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a> from the email address linked to your account. We will permanently delete your data within 7 days and send you a confirmation.</p>
 
-          <h2 data-i18n="deletion.s4.title">Option 3 — Request below</h2>
-          <p data-i18n="deletion.s4.desc">Enter the email address associated with your account. We will immediately and permanently delete all data linked to it.</p>
-
         </div>
 
-        <!-- Deletion form -->
-        <div class="mt-8 rounded-xl border border-white/10 bg-white/3 p-6">
-          <form id="deletion-form" onsubmit="submitDeletion(event)">
-            <label class="block text-sm font-medium text-gray-300 mb-2" for="del-email" data-i18n="deletion.form.label">Email address</label>
-            <div class="flex gap-3">
-              <input
-                id="del-email"
-                type="email"
-                required
-                class="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/50"
-                data-i18n-placeholder="deletion.form.placeholder"
-                placeholder="you@example.com"
-              >
-              <button
-                type="submit"
-                id="del-btn"
-                class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors"
-                data-i18n="deletion.form.btn"
-              >Delete my data</button>
-            </div>
-            <p id="del-error" class="hidden mt-2 text-sm text-red-400"></p>
-          </form>
-
-          <div id="del-success" class="hidden mt-4 rounded-lg border border-green-500/20 bg-green-500/5 px-4 py-3">
-            <p class="text-sm text-green-400" data-i18n="deletion.form.success">Done. Your data has been permanently deleted.</p>
-            <p class="text-xs text-gray-500 mt-1"><span data-i18n="deletion.form.code_label">Confirmation code:</span> <span id="del-code" class="font-mono font-semibold text-white"></span></p>
+        <!-- Settings CTA -->
+        <div class="mt-10 rounded-xl border border-white/10 bg-white/3 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p class="text-sm font-medium text-white mb-1" data-i18n="deletion.cta.heading">Delete your account instantly</p>
+            <p class="text-sm text-gray-400" data-i18n="deletion.cta.desc">Sign in, go to Settings, and delete your account — requires your password to confirm.</p>
           </div>
+          <a href="/settings.html" class="shrink-0 px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition-colors" data-i18n="deletion.cta.btn">Go to Settings</a>
         </div>
 
       </div>
@@ -191,7 +168,6 @@
   <script src="/components.js"></script>
   <script src="/lang.js"></script>
   <script>
-    // Show confirmation view if ?code= param is in URL
     (function () {
       var params = new URLSearchParams(window.location.search);
       var code = params.get('code');
@@ -201,49 +177,6 @@
         document.getElementById('confirmation-code').textContent = code;
       }
     })();
-
-    function submitDeletion(e) {
-      e.preventDefault();
-      var btn   = document.getElementById('del-btn');
-      var email = document.getElementById('del-email').value.trim();
-      var err   = document.getElementById('del-error');
-      var suc   = document.getElementById('del-success');
-
-      err.classList.add('hidden');
-      suc.classList.add('hidden');
-      btn.disabled = true;
-      btn.textContent = '…';
-
-      fetch('/backend/api/data-deletion.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email })
-      })
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        if (data.confirmation_code) {
-          document.getElementById('del-code').textContent = data.confirmation_code;
-          suc.classList.remove('hidden');
-          document.getElementById('deletion-form').reset();
-        } else {
-          err.textContent = data.error || 'Something went wrong. Please try again.';
-          err.classList.remove('hidden');
-        }
-      })
-      .catch(function () {
-        err.textContent = 'Network error. Please try again.';
-        err.classList.remove('hidden');
-      })
-      .finally(function () {
-        btn.disabled = false;
-        // Restore button label from i18n if available
-        if (window.t) {
-          btn.textContent = window.t('deletion.form.btn') || 'Delete my data';
-        } else {
-          btn.textContent = 'Delete my data';
-        }
-      });
-    }
   </script>
 </body>
 </html>

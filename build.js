@@ -33,13 +33,14 @@ const META = {
   'scheduled-exports.html': { title: { ar: 'الصادرات المجدولة — commentpull' }, desc: { ar: '' } },
   'pricing.html':           { title: { ar: 'الأسعار — commentpull' },            desc: { ar: 'خطط commentpull — مجانية وبرو ومؤسسات لاستخراج تعليقات وسائل التواصل الاجتماعي.' } },
   'data-deletion.html':     { title: { ar: 'حذف البيانات — commentpull' },       desc: { ar: 'طلب حذف حسابك في commentpull وجميع البيانات المرتبطة به.' } },
+  'terms.html':             { title: { ar: 'شروط الخدمة — commentpull' },        desc: { ar: 'شروط خدمة commentpull — القواعد التي تحكم استخدامك للمنصة.' } },
 };
 
 /* Pages that have /ar/ versions — used to rewrite internal href links */
-const AR_PAGES = new Set(['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html', 'pricing.html', 'data-deletion.html']);
+const AR_PAGES = new Set(['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html', 'pricing.html', 'data-deletion.html', 'terms.html']);
 
 /* Pages to generate */
-const PAGES = ['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html', 'pricing.html', 'data-deletion.html'];
+const PAGES = ['index.html', 'about.html', 'contact.html', 'support.html', 'privacy.html', 'history.html', 'scheduled-exports.html', 'pricing.html', 'data-deletion.html', 'terms.html'];
 
 /* ── 3. Core transformation ─────────────────────────────────────────────── */
 function generateAr(filename) {

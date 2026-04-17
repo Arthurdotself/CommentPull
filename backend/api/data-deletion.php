@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // ── Facebook signed_request callback ──────────────────────────────
 if (!empty($_POST['signed_request'])) {
-    $signed_request = $_POST['signed_request'];
+    $signed_request = trim($_POST['signed_request']);
     $parts = explode('.', $signed_request, 2);
     if (count($parts) !== 2) {
         json_error(400, 'Invalid signed_request');

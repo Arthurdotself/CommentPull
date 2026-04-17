@@ -249,8 +249,7 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
       navAuth.innerHTML =
-        '<a href="/settings.html" class="hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors">' + name + '</a>' +
-        '<button onclick="_cpSignOut()" class="text-sm text-gray-400 hover:text-white transition-colors px-3 py-2 rounded-full border border-white/10 hover:border-white/20">Sign Out</button>';
+        '<a href="/settings.html" class="hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors">' + name + '</a>';
     })
     .catch(function() { /* silently ignore network errors */ });
   }

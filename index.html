@@ -261,22 +261,13 @@
     .cp-stagger-2 { transition-delay: 120ms; }
     .cp-stagger-3 { transition-delay: 240ms; }
 
-    /* 4. Platform badge pulse — 3× then stops */
-    @keyframes cp-badge-pulse {
-      0%   { box-shadow: 0 0 0 0   rgba(129,140,248,0.35); }
-      60%  { box-shadow: 0 0 0 7px rgba(129,140,248,0);    }
-      100% { box-shadow: 0 0 0 0   rgba(129,140,248,0);    }
-    }
-    .cp-badge-pulse { animation: cp-badge-pulse 1.1s ease-out 3; }
-
-    /* 5. Reduced-motion & no-script fallbacks */
+    /* 4. Reduced-motion & no-script fallbacks */
     @media (prefers-reduced-motion: reduce) {
       .cp-reveal, .cp-reveal-left, .cp-reveal-right {
         opacity: 1 !important; transform: none !important; transition: none !important;
       }
-      #hero h1 span    { animation: none !important; }
-      .cp-badge-pulse  { animation: none !important; }
-      #bubbles-canvas  { display: none !important;   }
+      #hero h1 span   { animation: none !important; }
+      #bubbles-canvas { display: none !important;   }
     }
     @media (scripting: none) {
       .cp-reveal, .cp-reveal-left, .cp-reveal-right {
@@ -2443,8 +2434,11 @@ function stopConfetti() {
       var running = false;
 
       function resize() {
-        canvas.width  = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
+        // Size from the hero section, not the canvas itself —
+        // the canvas offsetWidth/Height can read as 0 before layout resolves.
+        var heroEl = document.getElementById('hero');
+        canvas.width  = heroEl ? heroEl.offsetWidth  : window.innerWidth;
+        canvas.height = heroEl ? heroEl.offsetHeight : window.innerHeight;
       }
 
       function makeBubble() {
@@ -2641,21 +2635,6 @@ function stopConfetti() {
         .forEach(function(el) { observer.observe(el); });
     })();
 
-
-    // ─────────────────────────────────────────
-    // MODULE 4: PLATFORM BADGE PULSE
-    // ─────────────────────────────────────────
-    (function initBadgePulse() {
-      var badge = document.getElementById('platform-badge');
-      if (!badge) return;
-      new MutationObserver(function() {
-        if (badge.style.display && badge.style.display !== 'none') {
-          badge.classList.remove('cp-badge-pulse');
-          void badge.offsetWidth; // reflow to restart animation
-          badge.classList.add('cp-badge-pulse');
-        }
-      }).observe(badge, { attributes: true, attributeFilter: ['style'] });
-    })();
 
   }); // end DOMContentLoaded
   </script>

@@ -44,9 +44,6 @@
         <a href="/signin.html" id="nav-signin"
           class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium"
           data-i18n="nav.signin">Sign In</a>
-        <a href="/signup.html" id="nav-signup"
-          class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors"
-          data-i18n="nav.signup">Sign Up</a>
       </div>
     </div>
   </div>
@@ -72,9 +69,6 @@
       <a href="/signin.html"
         class="text-sm text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20 font-medium"
         data-i18n="nav.signin">Sign In</a>
-      <a href="/signup.html"
-        class="bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors"
-        data-i18n="nav.signup">Sign Up</a>
     </div>
   </div>
 </header>`;

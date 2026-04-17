@@ -221,14 +221,24 @@
 
   <!-- ─── CommentPull Animation System ─── -->
   <style>
-    /* 1. Shimmer on hero gradient headline */
-    @keyframes cp-shimmer {
-      0%   { background-position: -200% center; }
-      100% { background-position:  200% center; }
+    /* 1. Dynamic hero background glow */
+    @keyframes cp-glow-drift {
+      0%   { opacity: 1;    transform: scale(1)    translate(0,    0);    }
+      25%  { opacity: 0.75; transform: scale(1.18) translate(4%,  -3%);   }
+      50%  { opacity: 0.9;  transform: scale(1.08) translate(-5%,  5%);   }
+      75%  { opacity: 0.7;  transform: scale(1.22) translate(3%,   4%);   }
+      100% { opacity: 1;    transform: scale(1)    translate(0,    0);    }
     }
-    #hero h1 span {
-      background-size: 200% auto;
-      animation: cp-shimmer 4s linear infinite;
+    @keyframes cp-glow-hue {
+      0%   { filter: hue-rotate(0deg)   brightness(1);   }
+      33%  { filter: hue-rotate(30deg)  brightness(1.15); }
+      66%  { filter: hue-rotate(-20deg) brightness(0.9);  }
+      100% { filter: hue-rotate(0deg)   brightness(1);   }
+    }
+    .bg-hero-glow {
+      animation: cp-glow-drift 12s ease-in-out infinite,
+                 cp-glow-hue   16s ease-in-out infinite;
+      transform-origin: center center;
     }
 
     /* 2. Scroll-reveal base states */
@@ -266,7 +276,7 @@
       .cp-reveal, .cp-reveal-left, .cp-reveal-right {
         opacity: 1 !important; transform: none !important; transition: none !important;
       }
-      #hero h1 span   { animation: none !important; }
+      .bg-hero-glow   { animation: none !important; }
       #bubbles-canvas { display: none !important;   }
     }
     @media (scripting: none) {

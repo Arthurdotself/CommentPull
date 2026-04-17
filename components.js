@@ -160,6 +160,7 @@
           <li><a href="/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
           <li><a href="/contact.html" class="hover:text-white transition-colors" data-i18n="footer.contact">Contact</a></li>
           <li><a href="/privacy.html" class="hover:text-white transition-colors" data-i18n="footer.privacy">Privacy Policy</a></li>
+          <li><a href="/data-deletion.html" class="hover:text-white transition-colors" data-i18n="footer.deletion">Data Deletion</a></li>
         </ul>
       </div>
     </div>
@@ -185,6 +186,7 @@
       <div class="flex gap-6">
         <a href="/about.html"   class="hover:text-white transition-colors" data-i18n="footer.about">About</a>
         <a href="/privacy.html" class="hover:text-white transition-colors" data-i18n="footer.privacy">Privacy Policy</a>
+        <a href="/data-deletion.html" class="hover:text-white transition-colors" data-i18n="footer.deletion">Data Deletion</a>
         <a href="/support.html" class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
         <a href="/contact.html" class="hover:text-white transition-colors" data-i18n="footer.contact">Contact</a>
       </div>

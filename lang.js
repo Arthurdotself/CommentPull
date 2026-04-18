@@ -104,7 +104,7 @@
       'index.btn.autodetect.ig': 'Auto-detect →',
       'index.btn.filters': 'Filters',
       'index.btn.extract': 'Extract Comments',
-      'index.url.placeholder': 'Paste your Facebook, Instagram or YouTube URL here...',
+      'index.url.placeholder': 'Paste a Facebook post, Instagram post, or YouTube video URL...',
 
       /* ── filters ── */
       'filter.title': 'Filter Rules',
@@ -555,7 +555,7 @@
       'index.btn.autodetect.ig': 'اكتشاف تلقائي ←',
       'index.btn.filters': 'المرشحات',
       'index.btn.extract': 'استخراج التعليقات',
-      'index.url.placeholder': 'الصق رابط فيسبوك أو إنستغرام أو يوتيوب هنا...',
+      'index.url.placeholder': 'الصق رابط منشور فيسبوك أو إنستغرام أو فيديو يوتيوب...',
 
       /* ── filters ── */
       'filter.title': 'قواعد التصفية',

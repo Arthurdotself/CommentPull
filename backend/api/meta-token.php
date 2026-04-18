@@ -8,9 +8,10 @@
  *
  * Response:
  *   { "connected": false }
- *   { "connected": true, "token": "...", "expires_at": "...", "saved": true|false }
+ *   { "connected": true, "expires_at": "...", "saved": true|false }
  *     saved=true  → stored in DB (logged-in user)
  *     saved=false → session only (anonymous user)
+ * The access token is never returned to the client.
  */
 require_once __DIR__ . '/../middleware/cors.php';
 require_once __DIR__ . '/../middleware/auth.php';
@@ -38,10 +39,9 @@ if ($user) {
         // Check not expired
         if (strtotime($row['meta_token_expires']) > time()) {
             try {
-                $token = decrypt_token($row['meta_access_token']);
+                decrypt_token($row['meta_access_token']); // verify token is valid/decryptable
                 json_out([
                     'connected'  => true,
-                    'token'      => $token,
                     'expires_at' => $row['meta_token_expires'],
                     'saved'      => true,
                 ]);
@@ -59,7 +59,6 @@ $sessionExpires = $_SESSION['meta_token_expires'] ?? null;
 if ($sessionToken && $sessionExpires && strtotime($sessionExpires) > time()) {
     json_out([
         'connected'  => true,
-        'token'      => $sessionToken,
         'expires_at' => $sessionExpires,
         'saved'      => false,
     ]);

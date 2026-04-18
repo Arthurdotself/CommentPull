@@ -2167,12 +2167,17 @@ function stopConfetti() {
       badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 ' + badgeCls[p];
       badge.style.display = 'flex';
 
-      // YouTube: show API key row; FB/IG: show connect row
+      // YouTube: coming soon — hide action/key rows and show coming soon badge
       if (p === 'yt') {
-        ytKeyRow.style.display = 'flex';
+        document.getElementById('platform-badge-dot').style.background = '#f59e0b';
+        document.getElementById('platform-badge-text').textContent = '⏳ Coming Soon';
+        badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
+        ytKeyRow.style.display = 'none';
         metaConnectRow.style.display = 'none';
+        actionRow.style.display = 'none';
         const fbRow = document.getElementById('hero-fbpage-row');
         if (fbRow) fbRow.style.display = 'none';
+        return;
       } else {
         ytKeyRow.style.display = 'none';
         _updateMetaConnectRow();

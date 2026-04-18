@@ -284,6 +284,32 @@
         opacity: 1 !important; transform: none !important;
       }
     }
+
+    /* ── How-it-works mini chips ── */
+    .hiw-chips { display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+    .hiw-chip {
+      display:flex; align-items:center; gap:5px; padding:5px 12px; border-radius:999px;
+      font-size:12px; color:rgba(255,255,255,0.55); border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.03);
+    }
+    .hiw-chip-num { font-weight:700; color:rgba(99,102,241,0.7); }
+    .hiw-sep-arrow { color:rgba(255,255,255,0.2); font-size:11px; }
+
+    /* ── Platform connect badge ── */
+    #platform-badge.badge-connect {
+      cursor:pointer;
+      background:rgba(59,130,246,0.18); color:#93c5fd;
+      border:1px solid rgba(59,130,246,0.35);
+      padding:6px 14px; font-size:12px; font-weight:600;
+      transition:background 0.15s, border-color 0.15s;
+    }
+    #platform-badge.badge-connect-ig {
+      background:rgba(244,114,182,0.18); color:#f9a8d4;
+      border-color:rgba(244,114,182,0.35);
+    }
+    #platform-badge.badge-connect:hover { background:rgba(59,130,246,0.28); border-color:rgba(59,130,246,0.55); }
+    #platform-badge.badge-connect-ig:hover { background:rgba(244,114,182,0.28); border-color:rgba(244,114,182,0.55); }
+    .badge-connect-done { background:rgba(34,197,94,0.08); color:rgba(34,197,94,0.85); border:1px solid rgba(34,197,94,0.2); padding:6px 14px; font-size:12px; font-weight:600; }
   </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col">
@@ -312,9 +338,18 @@
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Instantly.</span>
         </h1>
 
-        <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto" data-i18n="index.hero.subtitle">
+        <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto" data-i18n="index.hero.subtitle">
           Pick a winner from any post's comments with one click — no spreadsheets, no bias, no effort.
         </p>
+
+        <!-- ── How it works mini chips ── -->
+        <div class="hiw-chips mb-10">
+          <div class="hiw-chip"><span class="hiw-chip-num">1</span> Paste a URL</div>
+          <span class="hiw-sep-arrow">→</span>
+          <div class="hiw-chip"><span class="hiw-chip-num">2</span> Connect &amp; Extract</div>
+          <span class="hiw-sep-arrow">→</span>
+          <div class="hiw-chip"><span class="hiw-chip-num">3</span> Draw a Winner</div>
+        </div>
 
         <!-- ── Tool container ── -->
         <div id="tool-container" class="max-w-3xl mx-auto">
@@ -336,40 +371,6 @@
                 <span id="platform-badge-dot" class="w-2 h-2 rounded-full flex-shrink-0"></span>
                 <span id="platform-badge-text">Detected</span>
               </span>
-            </div>
-
-            <!-- Meta Connect row (FB/IG only, hidden until URL entered) -->
-            <div id="meta-connect-row" style="display:none"
-              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5 min-h-[42px]">
-
-              <!-- Not connected state -->
-              <div id="meta-not-connected" class="flex items-center gap-2 w-full">
-                <div class="pl-3 text-blue-400 flex-shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>
-                </div>
-                <span class="text-xs text-gray-400 flex-grow">Connect your Facebook account — skip pasting a token every time.</span>
-                <a href="/backend/api/oauth-meta.php"
-                  class="text-xs text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap pr-2 flex-shrink-0 font-medium">
-                  Connect Facebook →
-                </a>
-              </div>
-
-              <!-- Connected state -->
-              <div id="meta-is-connected" style="display:none" class="flex items-center gap-2 w-full">
-                <div class="pl-3 text-green-400 flex-shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                </div>
-                <span class="text-xs text-gray-300 flex-grow">
-                  Connected to Facebook
-                  <span id="meta-save-nudge" style="display:none" class="text-gray-500"> · session only ·
-                    <a href="/signin.html" class="text-indigo-400 hover:text-indigo-300">Sign in to save</a>
-                  </span>
-                </span>
-                <button onclick="metaDisconnect()"
-                  class="text-xs text-gray-500 hover:text-red-400 transition-colors whitespace-nowrap pr-2 flex-shrink-0">
-                  Disconnect
-                </button>
-              </div>
             </div>
 
             <!-- Row 3a: Facebook Page Selector (FB only, shown when connected with multiple pages) -->
@@ -2132,15 +2133,14 @@ function stopConfetti() {
 
     // Called on every keystroke in the hero URL input
     function onHeroUrlInput() {
-      const url            = document.getElementById('hero-url').value.trim();
-      const metaConnectRow = document.getElementById('meta-connect-row');
-      const ytKeyRow       = document.getElementById('hero-ytkey-row');
-      const actionRow      = document.getElementById('hero-action-row');
-      const filterSec      = document.getElementById('filter-section');
-      const badge          = document.getElementById('platform-badge');
+      const url       = document.getElementById('hero-url').value.trim();
+      const ytKeyRow  = document.getElementById('hero-ytkey-row');
+      const actionRow = document.getElementById('hero-action-row');
+      const filterSec = document.getElementById('filter-section');
+      const badge     = document.getElementById('platform-badge');
 
       if (!url) {
-        [metaConnectRow, ytKeyRow, actionRow].forEach(el => el.style.display = 'none');
+        [ytKeyRow, actionRow].forEach(el => el.style.display = 'none');
         const fbRow = document.getElementById('hero-fbpage-row');
         if (fbRow) fbRow.style.display = 'none';
         filterSec.style.display = 'none';
@@ -2158,25 +2158,31 @@ function stopConfetti() {
       if (urlInput) urlInput.value = url;
 
       // Show + style the platform badge
-      const names     = { fb: 'Facebook', ig: 'Instagram', yt: 'YouTube' };
-      const dots      = { fb: '#60a5fa', ig: '#f472b6', yt: '#f87171' };
-      const badgeCls  = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
-      document.getElementById('platform-badge-text').textContent = names[p] + ' detected';
+      const dots     = { fb: '#60a5fa', ig: '#f472b6', yt: '#f87171' };
+      const badgeCls = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
       document.getElementById('platform-badge-dot').style.background = dots[p];
-      badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 ' + badgeCls[p];
-      badge.style.display = 'flex';
 
-      // YouTube: show API key row; FB/IG: show connect row
       if (p === 'yt') {
+        document.getElementById('platform-badge-text').textContent = 'YouTube detected';
+        badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 ' + badgeCls[p];
+        badge.onclick = null;
         ytKeyRow.style.display = 'flex';
-        metaConnectRow.style.display = 'none';
         const fbRow = document.getElementById('hero-fbpage-row');
         if (fbRow) fbRow.style.display = 'none';
       } else {
+        const connectLabels = { fb: 'Connect Facebook →', ig: 'Connect Instagram →' };
+        const connected = !!(window._metaConnection && window._metaConnection.connected);
+        document.getElementById('platform-badge-text').textContent = connected ? '✓ Connected' : connectLabels[p];
+        const connectCls = p === 'ig' ? 'badge-connect badge-connect-ig' : 'badge-connect';
+        badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 '
+          + (connected ? 'badge-connect-done' : connectCls);
+        badge.onclick = connected ? null : function() { window.location.href = '/backend/api/oauth-meta.php'; };
         ytKeyRow.style.display = 'none';
         _updateMetaConnectRow();
         _updateFbPageSelector();
       }
+
+      badge.style.display = 'flex';
 
       // Show action row (Filters button + Extract button)
       actionRow.style.display = 'flex';
@@ -2358,31 +2364,17 @@ function stopConfetti() {
     }
 
     function _updateMetaConnectRow() {
-      const row = document.getElementById('meta-connect-row');
-      if (!row) return;
+      const conn  = window._metaConnection;
+      const badge = document.getElementById('platform-badge');
+      if (!badge || badge.style.display === 'none' || platform === 'yt') return;
 
-      const conn = window._metaConnection;
-      const urlVal = (document.getElementById('hero-url') || {}).value || '';
-
-      // Only visible for FB/IG when a URL is entered
-      if (!urlVal.trim() || platform === 'yt') {
-        row.style.display = 'none';
-        return;
-      }
-
-      const notConn   = document.getElementById('meta-not-connected');
-      const isConn    = document.getElementById('meta-is-connected');
-      const saveNudge = document.getElementById('meta-save-nudge');
-
-      if (conn && conn.connected) {
-        notConn.style.display  = 'none';
-        isConn.style.display   = 'flex';
-        if (saveNudge) saveNudge.style.display = conn.saved ? 'none' : 'inline';
-      } else {
-        notConn.style.display  = 'flex';
-        isConn.style.display   = 'none';
-      }
-      row.style.display = 'flex';
+      const connected     = !!(conn && conn.connected);
+      const connectLabels = { fb: 'Connect Facebook →', ig: 'Connect Instagram →' };
+      const connectCls    = platform === 'ig' ? 'badge-connect badge-connect-ig' : 'badge-connect';
+      document.getElementById('platform-badge-text').textContent = connected ? '✓ Connected' : (connectLabels[platform] || 'Connect →');
+      badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 '
+        + (connected ? 'badge-connect-done' : connectCls);
+      badge.onclick = connected ? null : function() { window.location.href = '/backend/api/oauth-meta.php'; };
     }
 
     async function metaDisconnect() {

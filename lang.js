@@ -422,7 +422,7 @@
       'terms.s15.title': '15. Governing Law',
       'terms.s15.text': 'These Terms are governed by and construed in accordance with applicable law. Any disputes arising under these Terms shall be resolved through good-faith negotiation or, if necessary, through binding arbitration.',
       'terms.s16.title': '16. Contact',
-      'terms.s16.text': 'Questions about these Terms can be sent to:<br><a href="mailto:legal@commentpull.com">legal@commentpull.com</a>',
+      'terms.s16.text': 'Questions about these Terms can be sent to:<br><a href="mailto:support@commentpull.com">support@commentpull.com</a>',
 
       /* ── data deletion page ── */
       'footer.deletion': 'Data Deletion',
@@ -873,7 +873,7 @@
       'terms.s15.title': '١٥. القانون المعمول به',
       'terms.s15.text': 'تخضع هذه الشروط وتُفسَّر وفقاً للقانون المعمول به. تُحسم أي نزاعات تنشأ بموجب هذه الشروط من خلال التفاوض بحسن نية أو، عند الضرورة، من خلال تحكيم ملزم.',
       'terms.s16.title': '١٦. الاتصال',
-      'terms.s16.text': 'يمكن إرسال الأسئلة المتعلقة بهذه الشروط إلى:<br><a href="mailto:legal@commentpull.com">legal@commentpull.com</a>',
+      'terms.s16.text': 'يمكن إرسال الأسئلة المتعلقة بهذه الشروط إلى:<br><a href="mailto:support@commentpull.com">support@commentpull.com</a>',
 
       /* ── data deletion page ── */
       'footer.deletion': 'حذف البيانات',

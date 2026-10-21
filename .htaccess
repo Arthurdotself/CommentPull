@@ -1,6 +1,6 @@
 Options -MultiViews
 
-# ── Security Headers ────────────────────────────────────────────
+# Security Headers
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
@@ -12,11 +12,12 @@ Options -MultiViews
 
 RewriteEngine On
 
-# Remove .html extension from URLs
+# Keep the experimental extension test page on its explicit .html URL
+RewriteCond %{THE_REQUEST} !/fb-extension-test\.html [NC]
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [NC,L,R=301]
+
+# Resolve clean URLs to .html files
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.html [NC,L]
-
-# Redirect .html URLs to clean URLs (301 permanent)
-RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
-RewriteRule ^ /%1 [NC,L,R=301]

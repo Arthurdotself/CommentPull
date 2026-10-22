@@ -180,7 +180,30 @@ function replaceLine(line) {
   );
 }
 
-/* ── 5. Run ─────────────────────────────────────────────────────────────── */
+/* ── 5. Package the browser extension ───────────────────────────────────────
+   Zips ONLY the browser-extension folder to downloads/commentpull-extension.zip
+   (the file the Download button on the guide page points to). Needs the `zip`
+   command (built into macOS and most Linux).                                   */
+function zipExtension() {
+  const { execFileSync } = require('child_process');
+  const destDir = path.join(ROOT, 'downloads');
+  const destZip = path.join(destDir, 'commentpull-extension.zip');
+  if (!fs.existsSync(path.join(ROOT, 'browser-extension', 'manifest.json'))) {
+    console.warn('SKIP: browser-extension/manifest.json not found');
+    return;
+  }
+  if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
+  if (fs.existsSync(destZip)) fs.unlinkSync(destZip);
+  try {
+    execFileSync('zip', ['-r', '-q', destZip, 'browser-extension', '-x', '*.DS_Store'], { cwd: ROOT });
+    console.log('✓  downloads/commentpull-extension.zip');
+  } catch (e) {
+    console.warn('WARN: could not create the extension zip (is `zip` installed?): ' + e.message);
+  }
+}
+
+/* ── 6. Run ─────────────────────────────────────────────────────────────── */
 console.log('Building /ar/ pages…\n');
 PAGES.forEach(generateAr);
-console.log('\nDone. Run `node build.js` again after editing any root source file.');
+zipExtension();
+console.log('\nDone. Run `node build.js` again after editing any root source file or the extension.');

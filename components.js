@@ -32,6 +32,7 @@
       <a href="/index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
       <a href="/pricing.html"            class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
       <a href="/support.html"            class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
+      <a href="/guide.html"              class="hover:text-white transition-colors" data-i18n="nav.guide">Guide</a>
       <a href="/history.html"            class="hover:text-white transition-colors" data-i18n="nav.history">History</a>
       <a href="/scheduled-exports.html"  class="hover:text-white transition-colors" data-i18n="nav.scheduled">Scheduled</a>
     </nav>
@@ -60,6 +61,7 @@
       <a href="/index.html#how-it-works" class="hover:text-white transition-colors" data-i18n="nav.how">How it Works</a>
       <a href="/pricing.html"            class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
       <a href="/support.html"            class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
+      <a href="/guide.html"              class="hover:text-white transition-colors" data-i18n="nav.guide">Guide</a>
     </nav>
     <div class="flex items-center gap-3">
       <button id="lang-toggle" onclick="toggleLang()"

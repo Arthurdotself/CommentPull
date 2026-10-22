@@ -1,14 +1,18 @@
 {
   "manifest_version": 3,
   "name": "CommentPull Lab (Experimental)",
-  "version": "0.1.0",
-  "description": "Test collecting visible comments from a Facebook post and import them into CommentPull.",
+  "version": "0.3.0",
+  "description": "Collect comments from a Facebook post you can view and send them to CommentPull.",
   "permissions": ["activeTab", "storage"],
   "host_permissions": [
     "https://www.facebook.com/*",
     "https://m.facebook.com/*",
-    "https://commentpull.com/*"
+    "https://commentpull.com/*",
+    "https://www.commentpull.com/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_title": "CommentPull Lab",
     "default_popup": "popup.html"
@@ -20,7 +24,7 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://commentpull.com/fb-extension-test.html"],
+      "matches": ["https://commentpull.com/*", "https://www.commentpull.com/*"],
       "js": ["test-page-bridge.js"],
       "run_at": "document_idle"
     }

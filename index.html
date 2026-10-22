@@ -1601,7 +1601,38 @@ async function handleExtract() {
   let lastErrorMsg = '';
 
   try {
-    if (platform === 'fb') {
+    if (platform === 'fb' && window.CP_USE_EXTENSION !== false) {
+      // Facebook via the CommentPull browser extension (no Graph API, no page selection)
+      const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', 'Connecting to the CommentPull extension…', '');
+      const ext = await cpExtPing(4000);
+      if (!ext) {
+        setStatus('error', 'Extension not detected',
+          'Install the CommentPull browser extension, refresh this page, then try again. <a href="/guide.html" style="text-decoration:underline">Install guide</a>');
+        btn.classList.remove('loading'); return;
+      }
+      window._cpExt = ext; _updateMetaConnectRow();
+      setStatus('info', 'Collecting from Facebook…',
+        '<div style="margin-top:6px;font-size:11px;opacity:0.75">A Facebook tab will open — keep it open (and stay logged in) until it finishes.</div>');
+
+      for (let i = 0; i < urls.length; i++) {
+        const link  = urls[i];
+        const label = link.length > 44 ? '…'+link.slice(-41) : link;
+        const pid   = `p${i}`;
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — opening post…`);
+        try {
+          const comments = await cpExtCollectPost(link, includeReplies, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} collected…`);
+          });
+          all.push(...comments);
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`); anyError = true; lastErrorMsg = e.message; }
+      }
+
+    } else if (platform === 'fb') {
+      // Legacy Graph API path (kept as a fallback: set window.CP_USE_EXTENSION = false)
       const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
 
@@ -2439,6 +2470,150 @@ function stopConfetti() {
       // Load stored Meta token (works for both logged-in and anonymous users)
       await loadMetaToken();
     })();
+  </script>
+
+  <!-- Facebook via CommentPull browser extension: bridge, row mapping, badge state -->
+  <script>
+    window.CP_USE_EXTENSION = true;   // set to false to fall back to the Graph API flow
+    window._cpExt = null;
+
+    // ── messaging with the extension's page bridge ──
+    let _cpExtSeq = 0;
+    function cpExtRequest(type, payload, timeoutMs) {
+      return new Promise(resolve => {
+        const id = 'cp' + (++_cpExtSeq) + '_' + Date.now();
+        const timer = setTimeout(() => { window.removeEventListener('message', onMsg); resolve(null); }, timeoutMs || 3000);
+        function onMsg(ev) {
+          const d = ev.data;
+          if (ev.source !== window || ev.origin !== location.origin || !d || d.source !== 'commentpull-extension' || d.id !== id) return;
+          clearTimeout(timer); window.removeEventListener('message', onMsg); resolve(d);
+        }
+        window.addEventListener('message', onMsg);
+        window.postMessage(Object.assign({ source: 'commentpull-site', type: type, id: id }, payload || {}), location.origin);
+      });
+    }
+    async function cpExtPing(waitMs) {
+      const end = Date.now() + (waitMs || 2000);
+      do {
+        const r = await cpExtRequest('PING', {}, 700);
+        if (r && r.ok) return r;
+      } while (Date.now() < end);
+      return null;
+    }
+
+    // ── helpers to turn extension output into the table's row format ──
+    function cpPostIdFromUrl(u) {
+      const m = u.match(/(pfbid[A-Za-z0-9]+)/) || u.match(/\/posts\/(\d+)/) || u.match(/story_fbid=(\d+)/) ||
+                u.match(/\/videos\/(\d+)/) || u.match(/\/reel\/(\d+)/) || u.match(/fbid=(\d+)/) || u.match(/\/(\d{10,})/);
+      return m ? m[1] : u;
+    }
+    function cpProfileId(u) {
+      try {
+        const x = new URL(u);
+        if (x.pathname === '/profile.php') return x.searchParams.get('id') || '';
+        return x.pathname.replace(/^\/|\/$/g, '');
+      } catch (e) { return ''; }
+    }
+    // "6h", "2 days ago", "منذ 3 ساعات" -> approximate ISO date, relative to when the comments were captured
+    function cpRelToIso(text, baseIso) {
+      if (!text) return '';
+      const base = baseIso ? new Date(baseIso) : new Date();
+      const s = String(text).toLowerCase().trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+      if (/just now|^now$|الآن/.test(s)) return base.toISOString();
+      if (/yesterday|أمس/.test(s)) return new Date(base.getTime() - 864e5).toISOString();
+      const m = s.match(/(\d+)\s*(seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|mo|years?|yrs?|ثانية|ثوان|دقيقة|دقائق|ساعة|ساعات|يوم|أيام|أسبوع|أسابيع|شهر|أشهر|شهور|سنة|سنوات|s|m|h|d|w|y|ث|د|س|ي|أ|ش)/);
+      if (m) {
+        const n = parseInt(m[1], 10), u = m[2];
+        const H = 36e5;
+        let ms = null;
+        if (/^(seconds?|secs?|s|ثانية|ثوان|ث)$/.test(u)) ms = 1e3;
+        else if (/^(minutes?|mins?|m|دقيقة|دقائق|د)$/.test(u)) ms = 6e4;
+        else if (/^(hours?|hrs?|h|ساعة|ساعات|س)$/.test(u)) ms = H;
+        else if (/^(days?|d|يوم|أيام|ي)$/.test(u)) ms = 24 * H;
+        else if (/^(weeks?|w|أسبوع|أسابيع|أ)$/.test(u)) ms = 7 * 24 * H;
+        else if (/^(months?|mo|شهر|أشهر|شهور|ش)$/.test(u)) ms = 30 * 24 * H;
+        else if (/^(years?|yrs?|y|سنة|سنوات)$/.test(u)) ms = 365 * 24 * H;
+        if (ms) return new Date(base.getTime() - n * ms).toISOString();
+      }
+      // older comments show a calendar date ("March 3", "12 Mar 2025")
+      if (/[a-z]{3,}/i.test(s)) {
+        let t = Date.parse(text);
+        if (isNaN(t)) t = Date.parse(text + ', ' + base.getFullYear());
+        if (!isNaN(t)) { if (t > base.getTime() + 864e5) t = Date.parse(new Date(t).toISOString().replace(/^\d{4}/, String(base.getFullYear() - 1))); if (!isNaN(t)) return new Date(t).toISOString(); }
+      }
+      return '';
+    }
+    function cpMapExtRows(payload, link) {
+      const postId = cpPostIdFromUrl(link);
+      return (payload.results || []).map((c, i) => {
+        const pid = cpProfileId(c.profileUrl || '');
+        return {
+          post_id:        postId,
+          commenter_name: c.username || pid || 'Unknown',
+          commenter_id:   pid,
+          comment_text:   c.comment || '',
+          timestamp:      cpRelToIso(c.timestampText, payload.capturedAt),
+          comment_id:     postId + '_c' + (i + 1),
+          reply_to:       '',
+        };
+      });
+    }
+
+    // Starts a run in the extension and waits until it reports done/stopped. Resolves to table rows.
+    async function cpExtCollectPost(link, includeReplies, onProgress) {
+      const start = await cpExtRequest('START_COLLECT', { url: link, max: 0, includeReplies: !!includeReplies }, 6000);
+      if (!start || !start.ok) throw new Error((start && start.error) || 'Could not start the extension. Refresh this page and try again.');
+      const t0 = Date.now();
+      for (;;) {
+        await new Promise(r => setTimeout(r, 1500));
+        const r = await cpExtRequest('GET_RESULTS', {}, 4000);
+        if (!r || !r.ok) throw new Error('Lost connection to the extension — refresh this page and try again.');
+        onProgress((r.results || []).length, r.status);
+        if (r.status === 'error') throw new Error(r.error || 'Collection failed.');
+        if (r.status === 'done' || r.status === 'stopped') return cpMapExtRows(r, link);
+        const waited = Date.now() - t0;
+        if (r.status === 'starting' && waited > 60000) throw new Error('The Facebook page did not start collecting. Make sure you are logged in to Facebook in this browser.');
+        if (waited > 16 * 60 * 1000) throw new Error('Timed out while collecting comments.');
+      }
+    }
+
+    // ── hero badge: for Facebook it now shows extension state instead of Meta OAuth (same look) ──
+    function _applyFbExtBadge() {
+      if (platform !== 'fb' || window.CP_USE_EXTENSION === false) return;
+      const badge = document.getElementById('platform-badge');
+      if (!badge || badge.style.display === 'none') return;
+      const dot  = document.getElementById('platform-badge-dot');
+      const text = document.getElementById('platform-badge-text');
+      if (window._cpExt) {
+        dot.innerHTML = ''; dot.className = 'w-2 h-2 rounded-full flex-shrink-0'; dot.style.background = '#4ade80';
+        text.textContent = '✓ Extension ready';
+        badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 badge-connect-done';
+        badge.onclick = null;
+      } else {
+        text.textContent = 'Get extension';
+        badge.onclick = function () { window.location.href = '/guide.html'; };
+      }
+    }
+    const _cpOrigUpdateMeta = _updateMetaConnectRow;
+    _updateMetaConnectRow = function () { _cpOrigUpdateMeta.apply(this, arguments); _applyFbExtBadge(); };
+    const _cpOrigHeroInput = onHeroUrlInput;
+    onHeroUrlInput = function () { _cpOrigHeroInput.apply(this, arguments); _applyFbExtBadge(); };
+    const _cpOrigPageSel = _updateFbPageSelector;
+    _updateFbPageSelector = function () {
+      if (platform === 'fb' && window.CP_USE_EXTENSION !== false) {
+        const row = document.getElementById('hero-fbpage-row'); if (row) row.style.display = 'none';
+        setHint('fb-page-hint', '', '');
+        return;
+      }
+      _cpOrigPageSel.apply(this, arguments);
+    };
+
+    async function _cpDetectExt() {
+      window._cpExt = await cpExtPing(3000);
+      _updateMetaConnectRow();
+    }
+    window.addEventListener('load', _cpDetectExt);
+    window.addEventListener('focus', function () { if (!window._cpExt) _cpDetectExt(); });
   </script>
 
   <!-- ─── CommentPull Animation Engine ─── -->

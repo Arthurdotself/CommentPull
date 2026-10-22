@@ -1,186 +1,72 @@
-# CommentPull 🗂️
+# CommentPull
 
-> Extract comments & engagement from Facebook and Instagram posts — free, client-side, no backend required.
+> Extract, filter and export comments from Facebook, Instagram and YouTube posts — and pick a giveaway winner.
 
-![CommentPull screenshot](https://i.imgur.com/placeholder.png)
+**Live site:** [commentpull.com](https://commentpull.com) · **Guide:** [commentpull.com/guide](https://commentpull.com/guide)
 
----
+> ⚠️ **Beta.** CommentPull is under active development. Features can change or break, the service may be unavailable at times, and results can be incomplete (Facebook changes its page layout often). Don't rely on it for anything critical yet.
 
-## ✨ Features
+## Open source — check the code yourself
 
-- **Facebook** — extract all comments from any Page post (supports `pfbid` encoded URLs, multi-post, full pagination)
-- **Instagram** — extract all comments from any Business/Creator account post (`/p/`, `/reel/`, `/tv/`)
-- **Multi-post** — extract from multiple posts at once in a single run
-- **Replies** — optionally include nested replies/threads
-- **Export formats** — Excel (`.xlsx` with Summary sheet), CSV, JSON
-- **Zero backend** — runs entirely in your browser; your token and data never touch any server
-- **Free & open source** — no accounts, no ads, no paywalls
+This repository contains everything: the website, the PHP backend and the browser extension. You don't have to take our word for what the service does — read the code, or ask someone you trust to.
 
----
+Note: publishing the code lets you verify what the software is *designed* to do; it can't prove what is running on the live server at any moment. The [Privacy Policy](https://commentpull.com/privacy.html) and [Terms](https://commentpull.com/terms.html) describe how the live service operates. Found a security issue? Please email **privacy@commentpull.com** (or open an issue for non-sensitive bugs).
 
-## 🚀 Live Demo
+## How it works
 
-👉 **[commentpull.com](https://commentpull.com)**
+| Platform | How comments are collected | What touches our server |
+|----------|---------------------------|-------------------------|
+| **Facebook** | The **browser extension** reads the comments Facebook already shows to *your* logged-in account, inside *your* browser, and hands them to the CommentPull page. | Nothing, unless you are signed in on Pro with Run History (then the run is saved to your account). |
+| **Instagram** | You connect a Meta account that manages a Business/Creator Instagram account. Our server calls Meta's Graph API with your access token and returns the comments. | Comments pass through in transit. Your token is stored encrypted (AES-256-GCM) if you are signed in, or kept in a temporary server session if not. |
+| **YouTube** | You paste your own YouTube Data API key; your browser requests comments from Google directly. | Nothing, unless you use Pro Scheduled Exports (the key is stored encrypted to run the export later). |
 
----
+Features: filters (keyword, mentions, length, dates, one entry per person), winner picker, export to CSV / Excel / JSON, plus Pro features (Run History, Scheduled Exports).
 
-## 📸 How It Works
+## Install the browser extension (Facebook)
 
-### Facebook
-1. Go to [Meta Graph API Explorer](https://developers.facebook.com/tools/explorer/)
-2. Select your App → your Facebook Page
-3. Add permissions: `pages_read_engagement`, `pages_show_list`
-4. Generate token → paste into CommentPull
-5. Enter your Page ID (or click Auto-detect)
-6. Paste post URL(s) → Extract & Download
+The extension is not on the Chrome Web Store yet, so you load it manually. Works in Chrome, Edge, Brave and other Chromium browsers (Safari and Firefox are not supported yet).
 
-### Instagram
-1. Same token setup as above, additionally add:
-   - `instagram_basic`
-   - `instagram_manage_comments`
-2. Your Instagram must be a **Business or Creator account** linked to a Facebook Page
-3. Enter the Facebook Page ID linked to your Instagram (or Auto-detect)
-4. Paste Instagram post URL(s) → Extract & Download
+1. Download this repository (**Code → Download ZIP**, or `git clone https://github.com/Arthurdotself/CommentPull.git`) and unzip it somewhere you'll keep it.
+2. Open `chrome://extensions` (`edge://extensions`, `brave://extensions`).
+3. Turn on **Developer mode**.
+4. Click **Load unpacked** and select the **`browser-extension`** folder (the one containing `manifest.json`).
+5. Pin **CommentPull Lab** to the toolbar.
+6. Go to [commentpull.com](https://commentpull.com), choose Facebook, paste a post URL and press **Extract Comments**. Keep the Facebook tab open until it finishes.
 
----
+More detail and troubleshooting: [commentpull.com/guide](https://commentpull.com/guide) and [`browser-extension/README.md`](browser-extension/README.md).
 
-## 🗂️ Project Structure
+**What the extension does:** runs only on `facebook.com` and `commentpull.com`, requests only the `activeTab` and `storage` permissions, makes no network requests of its own, and keeps collected comments in its local storage until you clear them. It scrolls the page and clicks Facebook's "view more comments / replies" controls to load more. Automated collection may go against Facebook's terms — use it only on content you're allowed to view and process.
+
+## Project structure
 
 ```
-commentpull/
-├── index.html        # Single-file app — the entire tool
-└── README.md
+├── *.html, lang.js, components.js   # Frontend (Tailwind via CDN, vanilla JS, EN/AR)
+├── build.js                         # Generates /ar/*.html from the English sources
+├── backend/                         # PHP API (auth, Meta OAuth, history, scheduled exports)
+│   ├── config.example.php           # Copy to config.php and fill in your own values
+│   ├── schema.sql                   # MySQL schema
+│   ├── api/  middleware/  cron/
+├── browser-extension/               # Chromium (Manifest V3) extension
+└── Asset/, Favicon/
 ```
 
-This is intentionally a **single HTML file** with no build step, no dependencies to install, and no server required. Just open `index.html` in a browser or drop it on any static host.
+## Self-hosting / development
+
+Requirements: PHP 8.1+, MySQL/MariaDB, Apache with `mod_rewrite` (see `.htaccess`), Node.js (only for `build.js`).
+
+1. Create a database and run `backend/schema.sql`.
+2. Copy `backend/config.example.php` to `backend/config.php` and fill in your own database, OAuth (Google, GitHub, Meta), cron and encryption values. **Never commit `config.php`** — it is in `.gitignore`.
+3. Edit the English pages and `lang.js`, then run `node build.js` to regenerate the Arabic pages in `/ar/`.
+4. Set up a cron job for `backend/cron/process-scheduled-exports.php` (every minute) if you use Scheduled Exports.
+
+## Contributing
+
+Issues and pull requests are welcome. For larger changes, please open an issue first.
+
+## License
+
+The README previously referenced the MIT license. Make sure a `LICENSE` file is present in the repository root; the license in that file governs use of the source code. The CommentPull name and logo are not licensed for reuse.
 
 ---
 
-## 🛠️ Deployment
-
-### Option 1 — Static hosting (recommended)
-
-Upload `index.html` to any static host:
-
-| Host | Steps |
-|------|-------|
-| **GitHub Pages** | Push to repo → Settings → Pages → Deploy from branch |
-| **Netlify** | Drag & drop `index.html` into [app.netlify.com](https://app.netlify.com) |
-| **Vercel** | `vercel --prod` in the project folder |
-| **Your own server** | Copy `index.html` to your web root |
-
-### Option 2 — Run locally
-
-```bash
-git clone https://github.com/YOUR_USERNAME/commentpull.git
-cd commentpull
-# Open directly in browser
-open index.html
-# Or serve with Python
-python3 -m http.server 8080
-```
-
----
-
-## 🔑 Getting a Facebook / Instagram Access Token
-
-1. Go to [developers.facebook.com/tools/explorer](https://developers.facebook.com/tools/explorer/)
-2. Click **"Add a Tool"** → select **Graph API Explorer**
-3. Under **"Meta App"**, select your app (or create one at [developers.facebook.com](https://developers.facebook.com))
-4. Under **"User or Page"**, select your **Facebook Page**
-5. Add the required permissions:
-
-| Platform | Required Permissions |
-|----------|----------------------|
-| Facebook | `pages_read_engagement`, `pages_show_list` |
-| Instagram | + `instagram_basic`, `instagram_manage_comments` |
-
-6. Click **"Generate Access Token"** → copy and paste into CommentPull
-
-> ⚠️ Tokens expire. For long-lived tokens, exchange your short-lived token using the [Token Debugger](https://developers.facebook.com/tools/debug/accesstoken/).
-
----
-
-## 📊 Export Columns
-
-| Column | Description |
-|--------|-------------|
-| `post_id` | Full post or media ID |
-| `commenter_name` | Display name (FB) or username (IG) |
-| `commenter_id` | Facebook user ID or Instagram comment ID |
-| `comment_text` | Full comment text |
-| `timestamp` | ISO 8601 datetime |
-| `comment_id` | Unique comment identifier |
-| `reply_to` | Parent comment ID (replies only, Instagram) |
-
-Excel exports also include a **Summary** sheet with comment counts per post.
-
----
-
-## ⚙️ Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Frontend | Vanilla HTML / CSS / JavaScript |
-| API | [Meta Graph API v19.0](https://developers.facebook.com/docs/graph-api/) |
-| Excel export | [SheetJS (xlsx)](https://sheetjs.com/) via CDN |
-| Fonts | [DM Mono + Fraunces](https://fonts.google.com/) via Google Fonts |
-
-No frameworks. No build tools. No Node.js. Just one file.
-
----
-
-## 🔒 Privacy & Security
-
-- **Your token stays in your browser.** It is never sent to any server other than `graph.facebook.com`.
-- **No analytics, no tracking, no ads.**
-- **No data is stored** — everything is processed in memory and downloaded directly to your device.
-- We recommend using **Page Access Tokens** (not User tokens) to limit scope.
-
----
-
-## 🗺️ Roadmap
-
-- [x] Facebook Page posts
-- [x] Instagram Business/Creator posts
-- [x] Multi-post extraction
-- [x] Excel / CSV / JSON export
-- [x] Replies support
-- [ ] TikTok
-- [ ] YouTube
-- [ ] Twitter / X
-- [ ] Scheduled / automated extraction
-- [ ] Dark/light theme toggle
-
----
-
-## 🤝 Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
-
-```bash
-# Fork the repo, then:
-git clone https://github.com/Arthurdotself/commentpull.git
-cd commentpull
-# Make your changes to index.html
-git commit -m "feat: your change"
-git push origin main
-# Open a Pull Request
-```
-
----
-
-## 📄 License
-
-[MIT](LICENSE) — free to use, modify, and distribute.
-
----
-
-## 🙏 Acknowledgements
-
-Built with the [Meta Graph API](https://developers.facebook.com/docs/graph-api/) and [SheetJS](https://sheetjs.com/).  
-Inspired by the need for a simple, free, no-account-required comment extraction tool.
-
----
-
-<p align="center">Made with ❤️ · Free forever · No ads · No data stored</p>
+<p align="center">CommentPull is a beta project. Questions: <a href="mailto:privacy@commentpull.com">privacy@commentpull.com</a></p>

@@ -1,4 +1,6 @@
 .DS_Store
 Favicon/.DS_Store
-Favicon/.DS_Store
-.DS_Store
+
+# Secrets — never commit real credentials
+backend/config.php
+.env

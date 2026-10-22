@@ -285,6 +285,45 @@
         opacity: 1 !important; transform: none !important;
       }
     }
+
+    /* ── How-it-works mini chips ── */
+    .hiw-chips { display:flex; align-items:center; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+    .hiw-chip {
+      display:flex; align-items:center; gap:5px; padding:5px 12px; border-radius:999px;
+      font-size:12px; color:rgba(255,255,255,0.55); border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.03);
+    }
+    .hiw-chip-num { font-weight:700; color:rgba(99,102,241,0.7); }
+    .hiw-sep-arrow { color:rgba(255,255,255,0.2); font-size:11px; }
+
+    /* ── Platform connect badge ── */
+    @keyframes badge-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.45); }
+      50%       { box-shadow: 0 0 0 5px rgba(59,130,246,0); }
+    }
+    @keyframes badge-pulse-ig {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(244,114,182,0.45); }
+      50%       { box-shadow: 0 0 0 5px rgba(244,114,182,0); }
+    }
+    #platform-badge.badge-connect {
+      cursor: pointer;
+      background: #2563eb; color: #fff;
+      border: none; padding: 7px 14px; font-size: 12px; font-weight: 600;
+      border-radius: 12px;
+      animation: badge-pulse 1.8s ease-in-out infinite;
+      transition: background 0.15s, transform 0.1s;
+    }
+    #platform-badge.badge-connect-ig {
+      background: linear-gradient(135deg,#e1306c,#833ab4);
+      animation: badge-pulse-ig 1.8s ease-in-out infinite;
+    }
+    #platform-badge.badge-connect:hover     { background: #1d4ed8; transform: scale(1.03); }
+    #platform-badge.badge-connect-ig:hover  { filter: brightness(1.15); transform: scale(1.03); }
+    .badge-connect-done {
+      background: rgba(34,197,94,0.1); color: rgba(34,197,94,0.9);
+      border: 1px solid rgba(34,197,94,0.25); padding: 7px 14px; font-size: 12px; font-weight: 600;
+      animation: none;
+    }
   </style>
 </head>
 <body class="lang-ar antialiased min-h-screen flex flex-col">
@@ -313,9 +352,18 @@
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Instantly.</span>
         </h1>
 
-        <p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto" data-i18n="index.hero.subtitle">
+        <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto" data-i18n="index.hero.subtitle">
           Pick a winner from any post's comments with one click — no spreadsheets, no bias, no effort.
         </p>
+
+        <!-- ── How it works mini chips ── -->
+        <div class="hiw-chips mb-10">
+          <div class="hiw-chip"><span class="hiw-chip-num">1</span> Paste a URL</div>
+          <span class="hiw-sep-arrow">→</span>
+          <div class="hiw-chip"><span class="hiw-chip-num">2</span> Connect &amp; Extract</div>
+          <span class="hiw-sep-arrow">→</span>
+          <div class="hiw-chip"><span class="hiw-chip-num">3</span> Draw a Winner</div>
+        </div>
 
         <!-- ── Tool container ── -->
         <div id="tool-container" class="max-w-3xl mx-auto">
@@ -329,7 +377,7 @@
               <input type="text" id="hero-url"
                 autocomplete="url"
                 data-i18n-placeholder="index.url.placeholder"
-                placeholder="الصق رابط فيسبوك أو إنستغرام أو يوتيوب هنا..."
+                placeholder="الصق رابط منشور فيسبوك أو إنستغرام أو فيديو يوتيوب..."
                 oninput="onHeroUrlInput()"
                 class="flex-grow bg-transparent border-none text-white placeholder-gray-500 focus:outline-none focus:ring-0 text-base px-2 py-3 min-w-0">
               <span id="platform-badge" style="display:none"
@@ -337,40 +385,6 @@
                 <span id="platform-badge-dot" class="w-2 h-2 rounded-full flex-shrink-0"></span>
                 <span id="platform-badge-text">Detected</span>
               </span>
-            </div>
-
-            <!-- Meta Connect row (FB/IG only, hidden until URL entered) -->
-            <div id="meta-connect-row" style="display:none"
-              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5 min-h-[42px]">
-
-              <!-- Not connected state -->
-              <div id="meta-not-connected" class="flex items-center gap-2 w-full">
-                <div class="pl-3 text-blue-400 flex-shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>
-                </div>
-                <span class="text-xs text-gray-400 flex-grow">Connect your Facebook account — skip pasting a token every time.</span>
-                <a href="/backend/api/oauth-meta.php"
-                  class="text-xs text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap pr-2 flex-shrink-0 font-medium">
-                  Connect Facebook →
-                </a>
-              </div>
-
-              <!-- Connected state -->
-              <div id="meta-is-connected" style="display:none" class="flex items-center gap-2 w-full">
-                <div class="pl-3 text-green-400 flex-shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                </div>
-                <span class="text-xs text-gray-300 flex-grow">
-                  Connected to Facebook
-                  <span id="meta-save-nudge" style="display:none" class="text-gray-500"> · session only ·
-                    <a href="/signin.html" class="text-indigo-400 hover:text-indigo-300">Sign in to save</a>
-                  </span>
-                </span>
-                <button onclick="metaDisconnect()"
-                  class="text-xs text-gray-500 hover:text-red-400 transition-colors whitespace-nowrap pr-2 flex-shrink-0">
-                  Disconnect
-                </button>
-              </div>
             </div>
 
             <!-- Row 3a: Facebook Page Selector (FB only, shown when connected with multiple pages) -->
@@ -1121,7 +1135,14 @@ function exportJSON(rows) {
 // ────────────────────────────────────────────────────────────
 function toggleFilters() {
   const section = document.getElementById('filter-section');
-  section.classList.toggle('open');
+  const isHidden = section.style.display === 'none' || section.style.display === '';
+  if (isHidden) {
+    section.style.display = 'block';
+    section.classList.add('open');
+  } else {
+    section.style.display = 'none';
+    section.classList.remove('open');
+  }
 }
 
 function onRuleToggle(ruleId) {
@@ -1581,7 +1602,38 @@ async function handleExtract() {
   let lastErrorMsg = '';
 
   try {
-    if (platform === 'fb') {
+    if (platform === 'fb' && window.CP_USE_EXTENSION !== false) {
+      // Facebook via the CommentPull browser extension (no Graph API, no page selection)
+      const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
+      if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
+
+      setStatus('info', 'Connecting to the CommentPull extension…', '');
+      const ext = await cpExtPing(4000);
+      if (!ext) {
+        setStatus('error', 'Extension not detected',
+          'Install the CommentPull browser extension, refresh this page, then try again. <a href="/guide.html" style="text-decoration:underline">Install guide</a>');
+        btn.classList.remove('loading'); return;
+      }
+      window._cpExt = ext; _updateMetaConnectRow();
+      setStatus('info', 'Collecting from Facebook…',
+        '<div style="margin-top:6px;font-size:11px;opacity:0.75">A Facebook tab will open — keep it open (and stay logged in) until it finishes.</div>');
+
+      for (let i = 0; i < urls.length; i++) {
+        const link  = urls[i];
+        const label = link.length > 44 ? '…'+link.slice(-41) : link;
+        const pid   = `p${i}`;
+        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — opening post…`);
+        try {
+          const comments = await cpExtCollectPost(link, includeReplies, n => {
+            setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} collected…`);
+          });
+          all.push(...comments);
+          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
+        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`); anyError = true; lastErrorMsg = e.message; }
+      }
+
+    } else if (platform === 'fb') {
+      // Legacy Graph API path (kept as a fallback: set window.CP_USE_EXTENSION = false)
       const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
 
@@ -2133,18 +2185,16 @@ function stopConfetti() {
 
     // Called on every keystroke in the hero URL input
     function onHeroUrlInput() {
-      const url            = document.getElementById('hero-url').value.trim();
-      const metaConnectRow = document.getElementById('meta-connect-row');
-      const ytKeyRow       = document.getElementById('hero-ytkey-row');
-      const actionRow      = document.getElementById('hero-action-row');
-      const filterSec      = document.getElementById('filter-section');
-      const badge          = document.getElementById('platform-badge');
+      const url       = document.getElementById('hero-url').value.trim();
+      const ytKeyRow  = document.getElementById('hero-ytkey-row');
+      const actionRow = document.getElementById('hero-action-row');
+      const badge     = document.getElementById('platform-badge');
 
       if (!url) {
-        [metaConnectRow, ytKeyRow, actionRow].forEach(el => el.style.display = 'none');
+        [ytKeyRow, actionRow].forEach(el => el.style.display = 'none');
         const fbRow = document.getElementById('hero-fbpage-row');
         if (fbRow) fbRow.style.display = 'none';
-        filterSec.style.display = 'none';
+        document.getElementById('filter-section').style.display = 'none';
         badge.style.display = 'none';
         return;
       }
@@ -2159,36 +2209,48 @@ function stopConfetti() {
       if (urlInput) urlInput.value = url;
 
       // Show + style the platform badge
-      const names     = { fb: 'Facebook', ig: 'Instagram', yt: 'YouTube' };
-      const dots      = { fb: '#60a5fa', ig: '#f472b6', yt: '#f87171' };
-      const badgeCls  = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
-      document.getElementById('platform-badge-text').textContent = names[p] + ' detected';
+      const dots     = { fb: '#60a5fa', ig: '#f472b6', yt: '#f87171' };
+      const badgeCls = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
       document.getElementById('platform-badge-dot').style.background = dots[p];
-      badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 ' + badgeCls[p];
-      badge.style.display = 'flex';
 
-      // YouTube: coming soon — hide action/key rows and show coming soon badge
       if (p === 'yt') {
         document.getElementById('platform-badge-dot').style.background = '#f59e0b';
         document.getElementById('platform-badge-text').textContent = '⏳ Coming Soon';
         badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
+        badge.onclick = null;
         ytKeyRow.style.display = 'none';
-        metaConnectRow.style.display = 'none';
         actionRow.style.display = 'none';
+        badge.style.display = 'flex';
         const fbRow = document.getElementById('hero-fbpage-row');
         if (fbRow) fbRow.style.display = 'none';
         return;
       } else {
+        const connected = !!(window._metaConnection && window._metaConnection.connected);
+        const fbIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>';
+        const igIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>';
+        const dot = document.getElementById('platform-badge-dot');
+        if (connected) {
+          dot.innerHTML = ''; dot.className = 'w-2 h-2 rounded-full flex-shrink-0'; dot.style.background = '#4ade80';
+          document.getElementById('platform-badge-text').textContent = '✓ Connected';
+          badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 badge-connect-done';
+          badge.onclick = null;
+        } else {
+          dot.className = 'flex-shrink-0'; dot.style.background = '';
+          dot.innerHTML = p === 'ig' ? igIcon : fbIcon;
+          document.getElementById('platform-badge-text').textContent = p === 'ig' ? 'Connect Instagram' : 'Connect Facebook';
+          const connectCls = p === 'ig' ? 'badge-connect badge-connect-ig' : 'badge-connect';
+          badge.className = 'rounded-lg font-medium flex items-center gap-2 whitespace-nowrap mr-1 flex-shrink-0 ' + connectCls;
+          badge.onclick = function() { window.location.href = '/backend/api/oauth-meta.php'; };
+        }
         ytKeyRow.style.display = 'none';
         _updateMetaConnectRow();
         _updateFbPageSelector();
       }
 
+      badge.style.display = 'flex';
+
       // Show action row (Filters button + Extract button)
       actionRow.style.display = 'flex';
-
-      // Show filter section container (collapsed by default)
-      filterSec.style.display = 'block';
     }
 
     // Override showPreview to hide the placeholder sample table when real data loads
@@ -2364,31 +2426,27 @@ function stopConfetti() {
     }
 
     function _updateMetaConnectRow() {
-      const row = document.getElementById('meta-connect-row');
-      if (!row) return;
+      const conn  = window._metaConnection;
+      const badge = document.getElementById('platform-badge');
+      if (!badge || badge.style.display === 'none' || platform === 'yt') return;
 
-      const conn = window._metaConnection;
-      const urlVal = (document.getElementById('hero-url') || {}).value || '';
-
-      // Only visible for FB/IG when a URL is entered
-      if (!urlVal.trim() || platform === 'yt') {
-        row.style.display = 'none';
-        return;
-      }
-
-      const notConn   = document.getElementById('meta-not-connected');
-      const isConn    = document.getElementById('meta-is-connected');
-      const saveNudge = document.getElementById('meta-save-nudge');
-
-      if (conn && conn.connected) {
-        notConn.style.display  = 'none';
-        isConn.style.display   = 'flex';
-        if (saveNudge) saveNudge.style.display = conn.saved ? 'none' : 'inline';
+      const connected = !!(conn && conn.connected);
+      const fbIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>';
+      const igIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>';
+      const dot = document.getElementById('platform-badge-dot');
+      if (connected) {
+        dot.innerHTML = ''; dot.className = 'w-2 h-2 rounded-full flex-shrink-0'; dot.style.background = '#4ade80';
+        document.getElementById('platform-badge-text').textContent = '✓ Connected';
+        badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 badge-connect-done';
+        badge.onclick = null;
       } else {
-        notConn.style.display  = 'flex';
-        isConn.style.display   = 'none';
+        dot.className = 'flex-shrink-0'; dot.style.background = '';
+        dot.innerHTML = platform === 'ig' ? igIcon : fbIcon;
+        document.getElementById('platform-badge-text').textContent = platform === 'ig' ? 'Connect Instagram' : 'Connect Facebook';
+        const connectCls = platform === 'ig' ? 'badge-connect badge-connect-ig' : 'badge-connect';
+        badge.className = 'rounded-lg font-medium flex items-center gap-2 whitespace-nowrap mr-1 flex-shrink-0 ' + connectCls;
+        badge.onclick = function() { window.location.href = '/backend/api/oauth-meta.php'; };
       }
-      row.style.display = 'flex';
     }
 
     async function metaDisconnect() {
@@ -2413,6 +2471,150 @@ function stopConfetti() {
       // Load stored Meta token (works for both logged-in and anonymous users)
       await loadMetaToken();
     })();
+  </script>
+
+  <!-- Facebook via CommentPull browser extension: bridge, row mapping, badge state -->
+  <script>
+    window.CP_USE_EXTENSION = true;   // set to false to fall back to the Graph API flow
+    window._cpExt = null;
+
+    // ── messaging with the extension's page bridge ──
+    let _cpExtSeq = 0;
+    function cpExtRequest(type, payload, timeoutMs) {
+      return new Promise(resolve => {
+        const id = 'cp' + (++_cpExtSeq) + '_' + Date.now();
+        const timer = setTimeout(() => { window.removeEventListener('message', onMsg); resolve(null); }, timeoutMs || 3000);
+        function onMsg(ev) {
+          const d = ev.data;
+          if (ev.source !== window || ev.origin !== location.origin || !d || d.source !== 'commentpull-extension' || d.id !== id) return;
+          clearTimeout(timer); window.removeEventListener('message', onMsg); resolve(d);
+        }
+        window.addEventListener('message', onMsg);
+        window.postMessage(Object.assign({ source: 'commentpull-site', type: type, id: id }, payload || {}), location.origin);
+      });
+    }
+    async function cpExtPing(waitMs) {
+      const end = Date.now() + (waitMs || 2000);
+      do {
+        const r = await cpExtRequest('PING', {}, 700);
+        if (r && r.ok) return r;
+      } while (Date.now() < end);
+      return null;
+    }
+
+    // ── helpers to turn extension output into the table's row format ──
+    function cpPostIdFromUrl(u) {
+      const m = u.match(/(pfbid[A-Za-z0-9]+)/) || u.match(/\/posts\/(\d+)/) || u.match(/story_fbid=(\d+)/) ||
+                u.match(/\/videos\/(\d+)/) || u.match(/\/reel\/(\d+)/) || u.match(/fbid=(\d+)/) || u.match(/\/(\d{10,})/);
+      return m ? m[1] : u;
+    }
+    function cpProfileId(u) {
+      try {
+        const x = new URL(u);
+        if (x.pathname === '/profile.php') return x.searchParams.get('id') || '';
+        return x.pathname.replace(/^\/|\/$/g, '');
+      } catch (e) { return ''; }
+    }
+    // "6h", "2 days ago", "منذ 3 ساعات" -> approximate ISO date, relative to when the comments were captured
+    function cpRelToIso(text, baseIso) {
+      if (!text) return '';
+      const base = baseIso ? new Date(baseIso) : new Date();
+      const s = String(text).toLowerCase().trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+      if (/just now|^now$|الآن/.test(s)) return base.toISOString();
+      if (/yesterday|أمس/.test(s)) return new Date(base.getTime() - 864e5).toISOString();
+      const m = s.match(/(\d+)\s*(seconds?|secs?|minutes?|mins?|hours?|hrs?|days?|weeks?|months?|mo|years?|yrs?|ثانية|ثوان|دقيقة|دقائق|ساعة|ساعات|يوم|أيام|أسبوع|أسابيع|شهر|أشهر|شهور|سنة|سنوات|s|m|h|d|w|y|ث|د|س|ي|أ|ش)/);
+      if (m) {
+        const n = parseInt(m[1], 10), u = m[2];
+        const H = 36e5;
+        let ms = null;
+        if (/^(seconds?|secs?|s|ثانية|ثوان|ث)$/.test(u)) ms = 1e3;
+        else if (/^(minutes?|mins?|m|دقيقة|دقائق|د)$/.test(u)) ms = 6e4;
+        else if (/^(hours?|hrs?|h|ساعة|ساعات|س)$/.test(u)) ms = H;
+        else if (/^(days?|d|يوم|أيام|ي)$/.test(u)) ms = 24 * H;
+        else if (/^(weeks?|w|أسبوع|أسابيع|أ)$/.test(u)) ms = 7 * 24 * H;
+        else if (/^(months?|mo|شهر|أشهر|شهور|ش)$/.test(u)) ms = 30 * 24 * H;
+        else if (/^(years?|yrs?|y|سنة|سنوات)$/.test(u)) ms = 365 * 24 * H;
+        if (ms) return new Date(base.getTime() - n * ms).toISOString();
+      }
+      // older comments show a calendar date ("March 3", "12 Mar 2025")
+      if (/[a-z]{3,}/i.test(s)) {
+        let t = Date.parse(text);
+        if (isNaN(t)) t = Date.parse(text + ', ' + base.getFullYear());
+        if (!isNaN(t)) { if (t > base.getTime() + 864e5) t = Date.parse(new Date(t).toISOString().replace(/^\d{4}/, String(base.getFullYear() - 1))); if (!isNaN(t)) return new Date(t).toISOString(); }
+      }
+      return '';
+    }
+    function cpMapExtRows(payload, link) {
+      const postId = cpPostIdFromUrl(link);
+      return (payload.results || []).map((c, i) => {
+        const pid = cpProfileId(c.profileUrl || '');
+        return {
+          post_id:        postId,
+          commenter_name: c.username || pid || 'Unknown',
+          commenter_id:   pid,
+          comment_text:   c.comment || '',
+          timestamp:      cpRelToIso(c.timestampText, payload.capturedAt),
+          comment_id:     postId + '_c' + (i + 1),
+          reply_to:       '',
+        };
+      });
+    }
+
+    // Starts a run in the extension and waits until it reports done/stopped. Resolves to table rows.
+    async function cpExtCollectPost(link, includeReplies, onProgress) {
+      const start = await cpExtRequest('START_COLLECT', { url: link, max: 0, includeReplies: !!includeReplies }, 6000);
+      if (!start || !start.ok) throw new Error((start && start.error) || 'Could not start the extension. Refresh this page and try again.');
+      const t0 = Date.now();
+      for (;;) {
+        await new Promise(r => setTimeout(r, 1500));
+        const r = await cpExtRequest('GET_RESULTS', {}, 4000);
+        if (!r || !r.ok) throw new Error('Lost connection to the extension — refresh this page and try again.');
+        onProgress((r.results || []).length, r.status);
+        if (r.status === 'error') throw new Error(r.error || 'Collection failed.');
+        if (r.status === 'done' || r.status === 'stopped') return cpMapExtRows(r, link);
+        const waited = Date.now() - t0;
+        if (r.status === 'starting' && waited > 60000) throw new Error('The Facebook page did not start collecting. Make sure you are logged in to Facebook in this browser.');
+        if (waited > 16 * 60 * 1000) throw new Error('Timed out while collecting comments.');
+      }
+    }
+
+    // ── hero badge: for Facebook it now shows extension state instead of Meta OAuth (same look) ──
+    function _applyFbExtBadge() {
+      if (platform !== 'fb' || window.CP_USE_EXTENSION === false) return;
+      const badge = document.getElementById('platform-badge');
+      if (!badge || badge.style.display === 'none') return;
+      const dot  = document.getElementById('platform-badge-dot');
+      const text = document.getElementById('platform-badge-text');
+      if (window._cpExt) {
+        dot.innerHTML = ''; dot.className = 'w-2 h-2 rounded-full flex-shrink-0'; dot.style.background = '#4ade80';
+        text.textContent = '✓ Extension ready';
+        badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 badge-connect-done';
+        badge.onclick = null;
+      } else {
+        text.textContent = 'Get extension';
+        badge.onclick = function () { window.location.href = '/guide.html'; };
+      }
+    }
+    const _cpOrigUpdateMeta = _updateMetaConnectRow;
+    _updateMetaConnectRow = function () { _cpOrigUpdateMeta.apply(this, arguments); _applyFbExtBadge(); };
+    const _cpOrigHeroInput = onHeroUrlInput;
+    onHeroUrlInput = function () { _cpOrigHeroInput.apply(this, arguments); _applyFbExtBadge(); };
+    const _cpOrigPageSel = _updateFbPageSelector;
+    _updateFbPageSelector = function () {
+      if (platform === 'fb' && window.CP_USE_EXTENSION !== false) {
+        const row = document.getElementById('hero-fbpage-row'); if (row) row.style.display = 'none';
+        setHint('fb-page-hint', '', '');
+        return;
+      }
+      _cpOrigPageSel.apply(this, arguments);
+    };
+
+    async function _cpDetectExt() {
+      window._cpExt = await cpExtPing(3000);
+      _updateMetaConnectRow();
+    }
+    window.addEventListener('load', _cpDetectExt);
+    window.addEventListener('focus', function () { if (!window._cpExt) _cpDetectExt(); });
   </script>
 
   <!-- ─── CommentPull Animation Engine ─── -->

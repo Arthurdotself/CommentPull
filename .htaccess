@@ -12,8 +12,9 @@ Options -MultiViews
 
 RewriteEngine On
 
-# Keep the experimental extension test page on its explicit .html URL
-RewriteCond %{THE_REQUEST} !/fb-extension-test\.html [NC]
+# The old extension test page now lives at /guide
+RewriteRule ^fb-extension-test(\.html)?$ /guide [NC,L,R=301]
+
 RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
 RewriteRule ^ /%1 [NC,L,R=301]
 

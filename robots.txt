@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /fb-extension-test.html
 
 Sitemap: https://commentpull.com/sitemap.xml

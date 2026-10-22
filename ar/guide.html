@@ -1,0 +1,273 @@
+<!-- AUTO-GENERATED — do not edit. Edit root source files and run: node build.js -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كيفية الاستخدام — commentpull</title>
+  <meta name="description" content="دليل خطوة بخطوة لاستخدام commentpull وتثبيت إضافة المتصفح مفتوحة المصدر. مرحلة تجريبية.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://commentpull.com/ar/guide.html">
+  <meta property="og:title" content="كيفية الاستخدام — commentpull">
+  <meta property="og:description" content="دليل خطوة بخطوة لاستخدام commentpull وتثبيت إضافة المتصفح مفتوحة المصدر. مرحلة تجريبية.">
+  <meta property="og:image" content="https://commentpull.com/Asset/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="commentpull">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://commentpull.com/ar/guide.html">
+  <meta name="twitter:title" content="كيفية الاستخدام — commentpull">
+  <meta name="twitter:description" content="دليل خطوة بخطوة لاستخدام commentpull وتثبيت إضافة المتصفح مفتوحة المصدر. مرحلة تجريبية.">
+  <meta name="twitter:image" content="https://commentpull.com/Asset/og-image.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Favicon/Standard/Icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Favicon/Apple-touch-icons/Icon.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "url": "https://commentpull.com/ar/guide.html",
+    "name": "How to use commentpull — Install the browser extension",
+    "description": "Step-by-step guide to using commentpull and installing its open-source browser extension.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "commentpull",
+      "url": "https://commentpull.com/ar/"
+    }
+  }
+  </script>
+
+  <link rel="canonical" href="https://commentpull.com/ar/guide.html">
+  <link rel="alternate" hreflang="en" href="https://commentpull.com/guide.html">
+  <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/guide.html">
+  <link rel="alternate" hreflang="x-default" href="https://commentpull.com/guide.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] .prose ul, [dir="rtl"] .prose ol { padding-right: 1.5rem; padding-left: 0; }
+    .prose h2 { font-size: 1.125rem; font-weight: 600; color: #fff; margin-top: 2.5rem; margin-bottom: 0.75rem; }
+    .prose h3 { font-size: 1rem; font-weight: 600; color: #e5e7eb; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    .prose p, .prose li { font-size: 0.9375rem; color: #9ca3af; line-height: 1.75; }
+    .prose ul { list-style: disc; padding-left: 1.5rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .prose ol { list-style: decimal; padding-left: 1.5rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .prose a { color: #818cf8; }
+    .prose a:hover { color: #a5b4fc; }
+    .prose code { background: rgba(255,255,255,0.07); padding: 1px 5px; border-radius: 4px; font-size: 12px; overflow-wrap: anywhere; }
+    .prose strong { color: #e5e7eb; }
+    .step-num { width: 2rem; height: 2rem; flex-shrink: 0; border-radius: 9999px; background: rgba(99,102,241,.15); border: 1px solid rgba(99,102,241,.4); color: #a5b4fc; font-weight: 600; font-size: .875rem; display: flex; align-items: center; justify-content: center; }
+    .btn-primary { display: inline-flex; align-items: center; gap: .5rem; background: #fff; color: #000; padding: .625rem 1.25rem; border-radius: 9999px; font-size: .875rem; font-weight: 600; text-decoration: none; transition: background .15s; }
+    .btn-primary:hover { background: #f3f4f6; color: #000; }
+    .btn-ghost { display: inline-flex; align-items: center; gap: .5rem; border: 1px solid rgba(255,255,255,.15); color: #e5e7eb !important; padding: .625rem 1.25rem; border-radius: 9999px; font-size: .875rem; font-weight: 500; text-decoration: none; transition: border-color .15s; }
+    .btn-ghost:hover { border-color: rgba(255,255,255,.35); }
+    .btn-action { background: #6366f1; color: #fff; border-radius: 10px; padding: .625rem 1rem; font-size: .875rem; font-weight: 600; }
+    .btn-action:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-outline { border: 1px solid rgba(255,255,255,.12); color: #e5e7eb; border-radius: 10px; padding: .625rem 1rem; font-size: .875rem; font-weight: 600; }
+    .btn-outline:disabled { opacity: .45; cursor: not-allowed; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    .mono { font-family: ui-monospace, 'DM Mono', monospace; }
+  </style>
+</head>
+<body class="lang-ar antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <div id="site-nav" data-variant="marketing"></div>
+
+  <main class="flex-grow pt-20">
+    <div class="max-w-3xl mx-auto px-6 py-24">
+
+      <!-- Page heading -->
+      <div class="mb-10">
+        <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4" data-i18n="guide.eyebrow">الدليل</span>
+        <h1 class="text-4xl font-semibold text-white mb-4" data-i18n="guide.title">كيفية استخدام commentpull</h1>
+        <p class="text-gray-400 text-base leading-relaxed" data-i18n="guide.subtitle">نزّل إضافة المتصفح وثبّتها واستخرج تعليقات فيسبوك ببضع نقرات. يعمل إنستغرام ويوتيوب دون الحاجة إلى الإضافة.</p>
+      </div>
+
+      <!-- Beta notice -->
+      <div class="rounded-xl border border-amber-400/25 bg-amber-400/5 px-6 py-5 mb-6 text-sm text-gray-300 leading-relaxed">
+        <p class="font-semibold text-amber-300 mb-1" data-i18n="guide.beta.title">commentpull في المرحلة التجريبية (Beta)</p>
+        <p data-i18n="guide.beta.text">قد تتغير الميزات أو تتعطل دون إشعار، وقد تكون الخدمة غير متاحة أحياناً، وقد تكون النتائج غير مكتملة — فيسبوك يغيّر تصميم صفحاته باستمرار. يُرجى التحقق من النتائج المهمة مرة أخرى وعدم الاعتماد على commentpull في أي أمر حساس في الوقت الحالي.</p>
+      </div>
+
+      <!-- Open source notice -->
+      <div class="rounded-xl border border-indigo-500/20 bg-indigo-500/5 px-6 py-5 mb-12 text-sm text-gray-300 leading-relaxed">
+        <p class="font-semibold text-indigo-300 mb-1" data-i18n="guide.oss.title">مفتوح المصدر — تحقّق من الكود بنفسك</p>
+        <p data-i18n-html="guide.oss.text">المشروع كاملاً، بما في ذلك الموقع وإضافة المتصفح هذه، متاح للعموم على GitHub. لا يتعين عليك تصديق كلامنا حول ما يفعله — اقرأ الكود بنفسك أو اطلب من شخص تثق به أن يفعل: <a class="text-indigo-300 underline" href="https://github.com/Arthurdotself/CommentPull" target="_blank" rel="noopener">github.com/Arthurdotself/CommentPull</a>.</p>
+      </div>
+
+      <div class="prose">
+
+        <h2 data-i18n="guide.how.title">كيف يعمل</h2>
+        <ul data-i18n-html="guide.how.items"><li><strong>فيسبوك</strong> — يستخدم إضافة متصفح CommentPull. تقرأ التعليقات التي يعرضها فيسبوك لحسابك <em>أنت</em> المسجَّل دخوله، داخل متصفحك <em>أنت</em>، وتسلّمها إلى هذه الصفحة. لا تتم مشاركة كلمة مرور فيسبوك أو أي رمز وصول معنا.</li><li><strong>إنستغرام</strong> — تربط حساب Meta الذي يدير حساب إنستغرام تجارياً أو للمبدعين. ثم يطلب خادمنا التعليقات من واجهة Meta الرسمية نيابةً عنك باستخدام رمز الوصول الذي تأذن به.</li><li><strong>يوتيوب</strong> — تلصق مفتاح YouTube Data API الخاص بك ويتصل متصفحك بـ Google مباشرة.</li></ul>
+        <p data-i18n="guide.how.note">تحتاج عملية فيسبوك فقط إلى الإضافة. توضح الخطوات أدناه كيفية تشغيلها.</p>
+
+        <!-- Step 1 -->
+        <div class="flex items-start gap-4 mt-12">
+          <div class="step-num">1</div>
+          <div class="flex-1">
+            <h2 class="!mt-0" data-i18n="guide.s1.title">نزّل الإضافة</h2>
+            <p data-i18n-html="guide.s1.text">توجد الإضافة في مجلد <code>browser-extension</code> ضمن مستودع GitHub العام. نزّل المستودع كملف ZIP وفك ضغطه في مكان ستحتفظ به.</p>
+            <div class="flex flex-wrap gap-3 mt-4">
+              <a class="btn-primary" href="https://github.com/Arthurdotself/CommentPull/archive/refs/heads/main.zip" rel="noopener"><i class="fa-solid fa-download"></i> <span data-i18n="guide.s1.download">تنزيل ZIP</span></a>
+              <a class="btn-ghost" href="https://github.com/Arthurdotself/CommentPull" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> <span data-i18n="guide.s1.github">عرض على GitHub</span></a>
+            </div>
+            <p class="mt-4" data-i18n-html="guide.s1.git">تفضّل سطر الأوامر؟ نفّذ <code>git clone https://github.com/Arthurdotself/CommentPull.git</code>.</p>
+            <p data-i18n-html="guide.s1.after">بعد فك الضغط، الإضافة هي المجلد المسمى <code>browser-extension</code> — الذي يحتوي على الملف <code>manifest.json</code>.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex items-start gap-4 mt-12">
+          <div class="step-num">2</div>
+          <div class="flex-1">
+            <h2 class="!mt-0" data-i18n="guide.s2.title">ثبّتها في متصفحك</h2>
+            <p data-i18n="guide.s2.intro">تعمل في Chrome ومتصفحات Chromium الأخرى مثل Edge وBrave وOpera.</p>
+            <ol data-i18n-html="guide.s2.steps"><li>افتح صفحة الإضافات: اكتب <code>chrome://extensions</code> في شريط العنوان (<code>edge://extensions</code> في Edge، و<code>brave://extensions</code> في Brave).</li><li>فعّل <strong>وضع المطوّر (Developer mode)</strong> (المفتاح في الزاوية العلوية).</li><li>اضغط <strong>Load unpacked</strong> (تحميل إضافة غير مضغوطة) واختر مجلد <code>browser-extension</code>.</li><li>اضغط أيقونة القطعة (puzzle) في شريط الأدوات و<strong>ثبّت</strong> «CommentPull Lab» ليسهل فتحها.</li></ol>
+            <p class="mt-4" data-i18n="guide.s2.note">مهم أن تعرف: الإضافة ليست موجودة في متجر Chrome الإلكتروني بعد، لذلك قد يعرض متصفحك تنبيه «وضع المطوّر» عند التشغيل — وهذا طبيعي. أبقِ المجلد في المكان الذي فككت فيه الضغط (يحمّل المتصفح الإضافة منه)، واضغط أيقونة إعادة التحميل على الإضافة بعد تحديث الملفات. لا يتم دعم Safari وFirefox حالياً.</p>
+            <div class="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 mt-4">
+              <div class="flex items-center gap-2"><span id="extension-dot" class="inline-block w-2 h-2 rounded-full bg-amber-400"></span><span id="extension-status" class="text-sm font-medium text-gray-200">Extension not detected yet</span></div>
+              <p class="text-xs text-gray-500 mt-1" data-i18n="guide.status.hint">بعد تثبيت الإضافة أو إعادة تحميلها، حدّث هذه الصفحة. يتحول هذا المؤشر إلى الأخضر عندما تعمل.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex items-start gap-4 mt-12">
+          <div class="step-num">3</div>
+          <div class="flex-1">
+            <h2 class="!mt-0" data-i18n="guide.s3.title">استخرج التعليقات</h2>
+            <ol data-i18n-html="guide.s3.steps"><li>تأكد من تسجيل دخولك إلى فيسبوك في هذا المتصفح نفسه.</li><li>اذهب إلى <a href="/index.html">الصفحة الرئيسية لـ commentpull</a>، واختر <strong>فيسبوك</strong> والصق رابط المنشور.</li><li>اضغط <strong>استخراج التعليقات</strong>. تفتح الإضافة المنشور في تبويب جديد، وتوسّع التعليقات والردود، وتمرّر الصفحة نيابةً عنك. تظهر شارة تقدّم على صفحة فيسبوك.</li><li>أبقِ ذلك التبويب مفتوحاً حتى ينتهي. ثم يُغلق من تلقاء نفسه ويعيدك إلى commentpull مع نتائجك.</li><li>صفِّ التعليقات، أو اختر فائزاً، أو صدّر إلى CSV أو Excel أو JSON.</li></ol>
+            <p class="mt-4" data-i18n="guide.s3.note">بالنسبة لإنستغرام، اربط حساب Meta من الصفحة الرئيسية. وبالنسبة ليوتيوب، الصق مفتاح YouTube Data API. لا يحتاج أي منهما إلى الإضافة.</p>
+          </div>
+        </div>
+
+        <h2 data-i18n="guide.manual.title">الوضع اليدوي (اختياري)</h2>
+        <p data-i18n="guide.manual.text">يمكنك أيضاً تشغيل الإضافة بنفسك: افتح منشوراً على فيسبوك، واضغط أيقونة الإضافة، وحدّد حداً أقصى، ثم اضغط «Start collecting» (أو «Snapshot visible» لالتقاط سريع). ثم استورد النتائج المحفوظة أدناه.</p>
+
+        <details class="mt-4 rounded-xl border border-white/10 bg-white/[0.03]">
+          <summary class="px-5 py-4 text-sm font-semibold text-gray-200 flex items-center justify-between"><span data-i18n="guide.import.title">استيراد النتائج من الإضافة</span><i class="fa-solid fa-chevron-down text-xs text-gray-500"></i></summary>
+          <div class="px-5 pb-5">
+            <p class="text-sm mb-4" data-i18n="guide.import.hint">تبقى النتائج في متصفحك — لا يتم رفع أي شيء.</p>
+            <button id="import-btn" class="btn-action" data-i18n="guide.import.btn">استيراد من الإضافة</button>
+            <div id="status" class="text-sm text-gray-400 my-4" role="status" aria-live="polite">No results imported yet.</div>
+            <div id="results-summary" class="hidden grid grid-cols-2 gap-3 mb-4">
+              <div class="rounded-xl border border-white/10 bg-black/20 p-4"><div class="text-2xl font-bold" id="count">0</div><div class="text-xs text-gray-500" data-i18n="guide.import.count">التعليقات الملتقطة</div></div>
+              <div class="rounded-xl border border-white/10 bg-black/20 p-4"><div class="text-sm font-semibold truncate" id="source">Facebook post</div><div class="text-xs text-gray-500" data-i18n="guide.import.source">تبويب المصدر</div></div>
+            </div>
+            <div class="flex gap-3 flex-wrap mb-4">
+              <button id="download-btn" class="btn-action" data-i18n="guide.import.download" disabled>تنزيل JSON</button>
+              <button id="clear-btn" class="btn-outline" data-i18n="guide.import.clear" disabled>مسح النتائج</button>
+            </div>
+            <pre id="preview" class="hidden max-h-80 overflow-auto whitespace-pre-wrap break-words text-xs mono bg-black/30 border border-white/10 rounded-xl p-4 text-gray-300" dir="ltr"></pre>
+          </div>
+        </details>
+
+        <h2 data-i18n="guide.trouble.title">استكشاف الأخطاء وإصلاحها</h2>
+        <ul data-i18n-html="guide.trouble.items"><li><strong>«لم يتم اكتشاف الإضافة»</strong> — تأكد من تفعيلها في صفحة الإضافات، ثم حدّث commentpull. وإذا حدّثت الملفات للتو، فاضغط أيقونة إعادة تحميل الإضافة أولاً.</li><li><strong>صفر تعليقات أو عدد قليل جداً</strong> — يغيّر فيسبوك بنية صفحاته كثيراً، لذلك قد يتأخر المجمِّع عن التغييرات. افتح نافذة الإضافة، واضغط <strong>Debug info</strong> (ينسخ تقريراً لا يحتوي على نص أي تعليق) وأرفقه ببلاغ على <a href="https://github.com/Arthurdotself/CommentPull/issues" target="_blank" rel="noopener">GitHub</a>.</li><li><strong>تتوقف العملية مبكراً</strong> — يجب أن يبقى تبويب فيسبوك مفتوحاً وأن تبقى مسجلاً دخولك. تستغرق المنشورات الكبيرة جداً وقتاً؛ ويمكنك تحديد حد أقصى في نافذة الإضافة.</li><li><strong>لا يمكنك رؤية المنشور</strong> — تقرأ الإضافة فقط ما يعرضه فيسبوك لحسابك أنت. ولا تتجاوز تسجيل الدخول أو إعدادات الخصوصية.</li></ul>
+
+        <h2 data-i18n="guide.safe.title">ما تستطيع الإضافة فعله وما لا تستطيعه</h2>
+        <ul data-i18n-html="guide.safe.items"><li>تعمل فقط على <code>facebook.com</code> وعلى صفحات commentpull.com. صلاحياتها الوحيدة هي <code>activeTab</code> و<code>storage</code>.</li><li>لا ترسل أي طلبات شبكة من تلقاء نفسها: تُحفظ التعليقات المجموعة في التخزين المحلي للإضافة وتُمرَّر إلى صفحة commentpull المفتوحة في متصفحك. يمكنك مسحها في أي وقت من لوحة الاستيراد أعلاه.</li><li>تمرّر الصفحة وتضغط فقط عناصر التحكم الموجودة فيها مثل «عرض المزيد من التعليقات» و«الردود» وقائمة ترتيب التعليقات حتى تُحمَّل تعليقات أكثر. ولا تحتوي على أي كود يقرأ كلمة مرورك أو ملفات تعريف الارتباط أو رسائلك، أو ينشر أو يعجب أو يعلّق نيابةً عنك — ويمكنك التأكد من ذلك في الكود المصدري.</li><li>قد يخالف الجمع الآلي شروط فيسبوك. استخدمها فقط على المحتوى المسموح لك بعرضه ومعالجته، واقرأ <a href="/terms.html">الشروط</a> و<a href="/privacy.html">سياسة الخصوصية</a>.</li></ul>
+        <p data-i18n="guide.safe.verify">يمكن التحقق من كل عبارة من هذه العبارات في الكود المصدري — وهذا هو سبب إبقائه عاماً.</p>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer" data-variant="simple"></div>
+
+  <script src="/components.js"></script>
+  <script src="/lang.js"></script>
+  <script>
+  (() => {
+    const $ = id => document.getElementById(id);
+    const tr = (k, fb) => (window.I18n && window.I18n.t(k) !== k) ? window.I18n.t(k) : fb;
+    let imported = null;
+    function setStatus(message, error=false) { $('status').textContent = message; $('status').className = 'text-sm my-4 ' + (error ? 'text-rose-300' : 'text-gray-400'); }
+    function requestExtension(type) {
+      return new Promise(resolve => {
+        const timeout = setTimeout(() => { window.removeEventListener('message', handler); resolve(null); }, 1200);
+        function handler(event) {
+          if (event.source !== window || event.origin !== location.origin || event.data?.source !== 'commentpull-extension') return;
+          clearTimeout(timeout); window.removeEventListener('message', handler); resolve(event.data);
+        }
+        window.addEventListener('message', handler);
+        window.postMessage({source:'commentpull-test-page', type}, location.origin);
+      });
+    }
+    async function detect() {
+      const response = await requestExtension('PING');
+      $('extension-dot').className = 'inline-block w-2 h-2 rounded-full ' + (response?.ok ? 'bg-emerald-400' : 'bg-amber-400');
+      $('extension-status').textContent = response?.ok ? tr('guide.status.yes', 'Extension detected') : tr('guide.status.no', 'Extension not detected yet');
+    }
+    $('import-btn').addEventListener('click', async () => {
+      setStatus(tr('guide.import.checking', 'Checking for saved extension results…'));
+      const response = await requestExtension('GET_RESULTS');
+      if (!response?.ok) { setStatus(tr('guide.import.nodetect', 'Extension not detected. Install it, open a Facebook post, collect comments, then refresh this page.'), true); return; }
+      if (!response.results?.length) { setStatus(tr('guide.import.empty', 'No saved comments found yet. Collect comments from a Facebook post first.'), true); await detect(); return; }
+      imported = {sourceUrl:response.sourceUrl || '', capturedAt:response.capturedAt || new Date().toISOString(), comments:response.results};
+      const replies = imported.comments.filter(c => c.isReply).length;
+      $('count').textContent = imported.comments.length + (replies ? ' (' + replies + ' ' + tr('guide.import.replies', 'replies') + ')' : '');
+      try { const u = new URL(imported.sourceUrl); $('source').textContent = u.hostname + u.pathname.slice(0,24); } catch (e) { $('source').textContent = 'Facebook'; }
+      $('results-summary').classList.remove('hidden'); $('preview').classList.remove('hidden');
+      $('preview').textContent = JSON.stringify(imported, null, 2);
+      $('download-btn').disabled = false; $('clear-btn').disabled = false;
+      setStatus(tr('guide.import.done', 'Imported {n} comment(s). Check completeness before relying on these results.').replace('{n}', imported.comments.length));
+      await detect();
+    });
+    $('download-btn').addEventListener('click', () => {
+      if (!imported) return;
+      const blob = new Blob([JSON.stringify(imported, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob); const a = document.createElement('a');
+      a.href = url; a.download = 'commentpull-facebook-comments.json'; a.click(); URL.revokeObjectURL(url);
+    });
+    $('clear-btn').addEventListener('click', async () => {
+      const response = await requestExtension('CLEAR_RESULTS');
+      imported = null; $('results-summary').classList.add('hidden'); $('preview').classList.add('hidden');
+      $('download-btn').disabled = true; $('clear-btn').disabled = true;
+      setStatus(response?.ok ? tr('guide.import.cleared', 'Saved results cleared.') : tr('guide.import.clearfail', 'Cleared this page. Extension storage could not be reached.'), !response?.ok);
+    });
+    // These two elements are filled by script (not data-i18n) so a late language switch can't overwrite live state.
+    window.addEventListener('load', () => setTimeout(() => {
+      setStatus(tr('guide.import.none', 'No results imported yet.'));
+      detect();
+    }, 300));
+  })();
+  </script>
+</body>
+</html>

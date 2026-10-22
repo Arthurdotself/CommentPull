@@ -1,1 +1,28 @@
-<!doctype html><html><head><meta charset="utf-8"><title>CommentPull Lab</title></head><body><h1>CommentPull Lab</h1><button id="collect">Collect visible comments</button><button id="open">Open test page</button><p id="status">Open a Facebook post first.</p><script src="popup.js"></script></body></html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CommentPull Lab</title>
+  <style>
+    body{width:300px;margin:0;padding:14px;font:13px/1.45 system-ui,sans-serif;background:#17191f;color:#f5f5f5}
+    h1{font-size:15px;margin:0 0 10px}
+    label{display:block;color:#a1a1aa;margin-bottom:10px}
+    input{width:80px;margin-left:6px;padding:4px 6px;border-radius:6px;border:1px solid #30333c;background:#0f1115;color:#fff}
+    .row{display:flex;gap:8px;margin-bottom:8px}
+    button{flex:1;padding:9px 10px;border:0;border-radius:8px;font-weight:600;cursor:pointer;background:#ff4c60;color:#fff}
+    button.secondary{background:#262a33;color:#f5f5f5}
+    #status{margin:10px 0 0;color:#d4d4d8;min-height:34px}
+    #debug{display:none;width:100%;height:120px;margin-top:8px;font:11px ui-monospace,monospace;background:#0f1115;color:#ffc0c8;border:1px solid #30333c;border-radius:8px}
+  </style>
+</head>
+<body>
+  <h1>CommentPull Lab</h1>
+  <label>Max comments (0 = all)<input id="max" type="number" min="0" value="200"></label>
+  <div class="row"><button id="start">Start collecting</button><button id="stop" class="secondary">Stop</button></div>
+  <div class="row"><button id="collect" class="secondary">Snapshot visible</button><button id="debug-btn" class="secondary">Debug info</button></div>
+  <div class="row"><button id="open" class="secondary">Open guide</button></div>
+  <p id="status">Open a Facebook post first.</p>
+  <textarea id="debug" readonly></textarea>
+  <script src="popup.js"></script>
+</body>
+</html>

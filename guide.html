@@ -1,0 +1,273 @@
+<!-- SOURCE FILE: Edit this file. Run `node build.js` to regenerate /ar/guide.html -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MMW3VEQWT2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MMW3VEQWT2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to use commentpull — Install the browser extension</title>
+  <meta name="description" content="Step-by-step guide to using commentpull: download the open-source browser extension, install it in Chrome, Edge or Brave, and extract Facebook comments. Currently in beta.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://commentpull.com/guide.html">
+  <meta property="og:title" content="How to use commentpull — Install the browser extension">
+  <meta property="og:description" content="Step-by-step guide to using commentpull: download the open-source browser extension, install it in Chrome, Edge or Brave, and extract Facebook comments. Currently in beta.">
+  <meta property="og:image" content="https://commentpull.com/Asset/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="commentpull">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://commentpull.com/guide.html">
+  <meta name="twitter:title" content="How to use commentpull — Install the browser extension">
+  <meta name="twitter:description" content="Step-by-step guide to using commentpull: download the open-source browser extension, install it in Chrome, Edge or Brave, and extract Facebook comments. Currently in beta.">
+  <meta name="twitter:image" content="https://commentpull.com/Asset/og-image.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Favicon/Standard/Icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Favicon/Apple-touch-icons/Icon.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "url": "https://commentpull.com/guide.html",
+    "name": "How to use commentpull — Install the browser extension",
+    "description": "Step-by-step guide to using commentpull and installing its open-source browser extension.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "commentpull",
+      "url": "https://commentpull.com/"
+    }
+  }
+  </script>
+
+  <link rel="canonical" href="https://commentpull.com/guide.html">
+  <link rel="alternate" hreflang="en" href="https://commentpull.com/guide.html">
+  <link rel="alternate" hreflang="ar" href="https://commentpull.com/ar/guide.html">
+  <link rel="alternate" hreflang="x-default" href="https://commentpull.com/guide.html">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin: 0; padding: 0; background-color: #0F1115; color: #FFFFFF; font-family: 'Inter', sans-serif; }
+    body.lang-ar { font-family: 'Cairo', sans-serif !important; }
+    body.lang-ar h1, body.lang-ar h2, body.lang-ar h3 { font-family: 'Cairo', sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+    [dir="rtl"] .text-left { text-align: right; }
+    [dir="rtl"] .prose ul, [dir="rtl"] .prose ol { padding-right: 1.5rem; padding-left: 0; }
+    .prose h2 { font-size: 1.125rem; font-weight: 600; color: #fff; margin-top: 2.5rem; margin-bottom: 0.75rem; }
+    .prose h3 { font-size: 1rem; font-weight: 600; color: #e5e7eb; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    .prose p, .prose li { font-size: 0.9375rem; color: #9ca3af; line-height: 1.75; }
+    .prose ul { list-style: disc; padding-left: 1.5rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .prose ol { list-style: decimal; padding-left: 1.5rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+    .prose a { color: #818cf8; }
+    .prose a:hover { color: #a5b4fc; }
+    .prose code { background: rgba(255,255,255,0.07); padding: 1px 5px; border-radius: 4px; font-size: 12px; overflow-wrap: anywhere; }
+    .prose strong { color: #e5e7eb; }
+    .step-num { width: 2rem; height: 2rem; flex-shrink: 0; border-radius: 9999px; background: rgba(99,102,241,.15); border: 1px solid rgba(99,102,241,.4); color: #a5b4fc; font-weight: 600; font-size: .875rem; display: flex; align-items: center; justify-content: center; }
+    .btn-primary { display: inline-flex; align-items: center; gap: .5rem; background: #fff; color: #000; padding: .625rem 1.25rem; border-radius: 9999px; font-size: .875rem; font-weight: 600; text-decoration: none; transition: background .15s; }
+    .btn-primary:hover { background: #f3f4f6; color: #000; }
+    .btn-ghost { display: inline-flex; align-items: center; gap: .5rem; border: 1px solid rgba(255,255,255,.15); color: #e5e7eb !important; padding: .625rem 1.25rem; border-radius: 9999px; font-size: .875rem; font-weight: 500; text-decoration: none; transition: border-color .15s; }
+    .btn-ghost:hover { border-color: rgba(255,255,255,.35); }
+    .btn-action { background: #6366f1; color: #fff; border-radius: 10px; padding: .625rem 1rem; font-size: .875rem; font-weight: 600; }
+    .btn-action:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-outline { border: 1px solid rgba(255,255,255,.12); color: #e5e7eb; border-radius: 10px; padding: .625rem 1rem; font-size: .875rem; font-weight: 600; }
+    .btn-outline:disabled { opacity: .45; cursor: not-allowed; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    .mono { font-family: ui-monospace, 'DM Mono', monospace; }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <div id="site-nav" data-variant="marketing"></div>
+
+  <main class="flex-grow pt-20">
+    <div class="max-w-3xl mx-auto px-6 py-24">
+
+      <!-- Page heading -->
+      <div class="mb-10">
+        <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4" data-i18n="guide.eyebrow">Guide</span>
+        <h1 class="text-4xl font-semibold text-white mb-4" data-i18n="guide.title">How to use commentpull</h1>
+        <p class="text-gray-400 text-base leading-relaxed" data-i18n="guide.subtitle">Download the browser extension, install it, and extract Facebook comments in a few clicks. Instagram and YouTube work without the extension.</p>
+      </div>
+
+      <!-- Beta notice -->
+      <div class="rounded-xl border border-amber-400/25 bg-amber-400/5 px-6 py-5 mb-6 text-sm text-gray-300 leading-relaxed">
+        <p class="font-semibold text-amber-300 mb-1" data-i18n="guide.beta.title">commentpull is in beta</p>
+        <p data-i18n="guide.beta.text">Features can change or break without notice, the service may be unavailable at times, and results may be incomplete — Facebook changes its page layout often. Please double-check important results and don't rely on commentpull for anything critical yet.</p>
+      </div>
+
+      <!-- Open source notice -->
+      <div class="rounded-xl border border-indigo-500/20 bg-indigo-500/5 px-6 py-5 mb-12 text-sm text-gray-300 leading-relaxed">
+        <p class="font-semibold text-indigo-300 mb-1" data-i18n="guide.oss.title">Open source — check the code yourself</p>
+        <p data-i18n-html="guide.oss.text">The whole project, including the website and this browser extension, is public on GitHub. You don't have to take our word for what it does — read the code, or ask someone you trust to: <a class="text-indigo-300 underline" href="https://github.com/Arthurdotself/CommentPull" target="_blank" rel="noopener">github.com/Arthurdotself/CommentPull</a>.</p>
+      </div>
+
+      <div class="prose">
+
+        <h2 data-i18n="guide.how.title">How it works</h2>
+        <ul data-i18n-html="guide.how.items"><li><strong>Facebook</strong> — uses the CommentPull browser extension. It reads the comments Facebook already shows to <em>your</em> logged-in account, inside <em>your</em> browser, and hands them to this page. No Facebook password or token is shared with us.</li><li><strong>Instagram</strong> — you connect a Meta account that manages a Business or Creator Instagram account. Our server then requests the comments from Meta's official API on your behalf, using the access token you authorise.</li><li><strong>YouTube</strong> — you paste your own YouTube Data API key and your browser talks to Google directly.</li></ul>
+        <p data-i18n="guide.how.note">Only the Facebook flow needs the extension. The steps below show how to get it running.</p>
+
+        <!-- Step 1 -->
+        <div class="flex items-start gap-4 mt-12">
+          <div class="step-num">1</div>
+          <div class="flex-1">
+            <h2 class="!mt-0" data-i18n="guide.s1.title">Download the extension</h2>
+            <p data-i18n-html="guide.s1.text">The extension lives in the <code>browser-extension</code> folder of the public GitHub repository. Download the repository as a ZIP file and unzip it anywhere you'll keep it.</p>
+            <div class="flex flex-wrap gap-3 mt-4">
+              <a class="btn-primary" href="https://github.com/Arthurdotself/CommentPull/archive/refs/heads/main.zip" rel="noopener"><i class="fa-solid fa-download"></i> <span data-i18n="guide.s1.download">Download ZIP</span></a>
+              <a class="btn-ghost" href="https://github.com/Arthurdotself/CommentPull" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> <span data-i18n="guide.s1.github">View on GitHub</span></a>
+            </div>
+            <p class="mt-4" data-i18n-html="guide.s1.git">Prefer the command line? Run <code>git clone https://github.com/Arthurdotself/CommentPull.git</code>.</p>
+            <p data-i18n-html="guide.s1.after">After unzipping, the extension is the folder named <code>browser-extension</code> — the one that contains <code>manifest.json</code>.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex items-start gap-4 mt-12">
+          <div class="step-num">2</div>
+          <div class="flex-1">
+            <h2 class="!mt-0" data-i18n="guide.s2.title">Install it in your browser</h2>
+            <p data-i18n="guide.s2.intro">Works in Chrome and other Chromium browsers such as Edge, Brave and Opera.</p>
+            <ol data-i18n-html="guide.s2.steps"><li>Open the extensions page: type <code>chrome://extensions</code> in the address bar (<code>edge://extensions</code> in Edge, <code>brave://extensions</code> in Brave).</li><li>Turn on <strong>Developer mode</strong> (toggle in the top-right corner).</li><li>Click <strong>Load unpacked</strong> and select the <code>browser-extension</code> folder.</li><li>Click the puzzle-piece icon in the toolbar and <strong>pin</strong> “CommentPull Lab” so it is easy to open.</li></ol>
+            <p class="mt-4" data-i18n="guide.s2.note">Good to know: the extension isn't on the Chrome Web Store yet, so your browser may show a “developer mode” reminder on start-up — that is expected. Keep the folder where you unzipped it (the browser loads it from there), and press the reload icon on the extension after updating the files. Safari and Firefox are not supported yet.</p>
+            <div class="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 mt-4">
+              <div class="flex items-center gap-2"><span id="extension-dot" class="inline-block w-2 h-2 rounded-full bg-amber-400"></span><span id="extension-status" class="text-sm font-medium text-gray-200">Extension not detected yet</span></div>
+              <p class="text-xs text-gray-500 mt-1" data-i18n="guide.status.hint">After installing or reloading the extension, refresh this page. This indicator turns green when it is working.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex items-start gap-4 mt-12">
+          <div class="step-num">3</div>
+          <div class="flex-1">
+            <h2 class="!mt-0" data-i18n="guide.s3.title">Extract comments</h2>
+            <ol data-i18n-html="guide.s3.steps"><li>Make sure you are logged in to Facebook in this same browser.</li><li>Go to the <a href="/index.html">commentpull home page</a>, choose <strong>Facebook</strong> and paste the post URL.</li><li>Press <strong>Extract Comments</strong>. The extension opens the post in a new tab, expands comments and replies, and scrolls for you. A progress badge appears on the Facebook page.</li><li>Keep that tab open until it finishes. It then closes on its own and brings you back to commentpull with your results.</li><li>Filter the comments, pick a winner, or export to CSV, Excel or JSON.</li></ol>
+            <p class="mt-4" data-i18n="guide.s3.note">For Instagram, connect your Meta account on the home page. For YouTube, paste your YouTube Data API key. Neither needs the extension.</p>
+          </div>
+        </div>
+
+        <h2 data-i18n="guide.manual.title">Manual mode (optional)</h2>
+        <p data-i18n="guide.manual.text">You can also drive the extension yourself: open a Facebook post, click the extension icon, set a limit and press “Start collecting” (or “Snapshot visible” for a quick capture). Then import the saved results below.</p>
+
+        <details class="mt-4 rounded-xl border border-white/10 bg-white/[0.03]">
+          <summary class="px-5 py-4 text-sm font-semibold text-gray-200 flex items-center justify-between"><span data-i18n="guide.import.title">Import results from the extension</span><i class="fa-solid fa-chevron-down text-xs text-gray-500"></i></summary>
+          <div class="px-5 pb-5">
+            <p class="text-sm mb-4" data-i18n="guide.import.hint">Results stay in your browser — nothing is uploaded.</p>
+            <button id="import-btn" class="btn-action" data-i18n="guide.import.btn">Import from extension</button>
+            <div id="status" class="text-sm text-gray-400 my-4" role="status" aria-live="polite">No results imported yet.</div>
+            <div id="results-summary" class="hidden grid grid-cols-2 gap-3 mb-4">
+              <div class="rounded-xl border border-white/10 bg-black/20 p-4"><div class="text-2xl font-bold" id="count">0</div><div class="text-xs text-gray-500" data-i18n="guide.import.count">Comments captured</div></div>
+              <div class="rounded-xl border border-white/10 bg-black/20 p-4"><div class="text-sm font-semibold truncate" id="source">Facebook post</div><div class="text-xs text-gray-500" data-i18n="guide.import.source">Source tab</div></div>
+            </div>
+            <div class="flex gap-3 flex-wrap mb-4">
+              <button id="download-btn" class="btn-action" data-i18n="guide.import.download" disabled>Download JSON</button>
+              <button id="clear-btn" class="btn-outline" data-i18n="guide.import.clear" disabled>Clear results</button>
+            </div>
+            <pre id="preview" class="hidden max-h-80 overflow-auto whitespace-pre-wrap break-words text-xs mono bg-black/30 border border-white/10 rounded-xl p-4 text-gray-300" dir="ltr"></pre>
+          </div>
+        </details>
+
+        <h2 data-i18n="guide.trouble.title">Troubleshooting</h2>
+        <ul data-i18n-html="guide.trouble.items"><li><strong>“Extension not detected”</strong> — make sure it is enabled on the extensions page, then refresh commentpull. If you just updated the files, press the extension's reload icon first.</li><li><strong>Zero or too few comments</strong> — Facebook changes its page structure often, so the collector can fall behind. Open the extension popup, press <strong>Debug info</strong> (it copies a report that contains no comment text) and attach it to a <a href="https://github.com/Arthurdotself/CommentPull/issues" target="_blank" rel="noopener">GitHub issue</a>.</li><li><strong>The run stops early</strong> — the Facebook tab must stay open and you must stay logged in. Very large posts take a while; you can set a limit in the popup.</li><li><strong>Can't see the post</strong> — the extension only reads what Facebook shows your own account. It does not get around logins or privacy settings.</li></ul>
+
+        <h2 data-i18n="guide.safe.title">What the extension can and can't do</h2>
+        <ul data-i18n-html="guide.safe.items"><li>It runs only on <code>facebook.com</code> and on commentpull.com pages. Its only permissions are <code>activeTab</code> and <code>storage</code>.</li><li>It makes no network requests of its own: collected comments are kept in the extension's local storage and passed to the commentpull page open in your browser. You can clear them any time from the import panel above.</li><li>It scrolls the page and clicks only on-page controls such as “View more comments”, “replies” and the comment-sort menu so that more comments load. It contains no code that reads your password, cookies or messages, or that posts, likes or comments for you — you can confirm this in the source.</li><li>Automated collection can go against Facebook's terms. Use it only on content you are allowed to view and process, and read our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>.</li></ul>
+        <p data-i18n="guide.safe.verify">Every one of these statements can be checked in the source code — that's the point of keeping it public.</p>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer" data-variant="simple"></div>
+
+  <script src="/components.js"></script>
+  <script src="/lang.js"></script>
+  <script>
+  (() => {
+    const $ = id => document.getElementById(id);
+    const tr = (k, fb) => (window.I18n && window.I18n.t(k) !== k) ? window.I18n.t(k) : fb;
+    let imported = null;
+    function setStatus(message, error=false) { $('status').textContent = message; $('status').className = 'text-sm my-4 ' + (error ? 'text-rose-300' : 'text-gray-400'); }
+    function requestExtension(type) {
+      return new Promise(resolve => {
+        const timeout = setTimeout(() => { window.removeEventListener('message', handler); resolve(null); }, 1200);
+        function handler(event) {
+          if (event.source !== window || event.origin !== location.origin || event.data?.source !== 'commentpull-extension') return;
+          clearTimeout(timeout); window.removeEventListener('message', handler); resolve(event.data);
+        }
+        window.addEventListener('message', handler);
+        window.postMessage({source:'commentpull-test-page', type}, location.origin);
+      });
+    }
+    async function detect() {
+      const response = await requestExtension('PING');
+      $('extension-dot').className = 'inline-block w-2 h-2 rounded-full ' + (response?.ok ? 'bg-emerald-400' : 'bg-amber-400');
+      $('extension-status').textContent = response?.ok ? tr('guide.status.yes', 'Extension detected') : tr('guide.status.no', 'Extension not detected yet');
+    }
+    $('import-btn').addEventListener('click', async () => {
+      setStatus(tr('guide.import.checking', 'Checking for saved extension results…'));
+      const response = await requestExtension('GET_RESULTS');
+      if (!response?.ok) { setStatus(tr('guide.import.nodetect', 'Extension not detected. Install it, open a Facebook post, collect comments, then refresh this page.'), true); return; }
+      if (!response.results?.length) { setStatus(tr('guide.import.empty', 'No saved comments found yet. Collect comments from a Facebook post first.'), true); await detect(); return; }
+      imported = {sourceUrl:response.sourceUrl || '', capturedAt:response.capturedAt || new Date().toISOString(), comments:response.results};
+      const replies = imported.comments.filter(c => c.isReply).length;
+      $('count').textContent = imported.comments.length + (replies ? ' (' + replies + ' ' + tr('guide.import.replies', 'replies') + ')' : '');
+      try { const u = new URL(imported.sourceUrl); $('source').textContent = u.hostname + u.pathname.slice(0,24); } catch (e) { $('source').textContent = 'Facebook'; }
+      $('results-summary').classList.remove('hidden'); $('preview').classList.remove('hidden');
+      $('preview').textContent = JSON.stringify(imported, null, 2);
+      $('download-btn').disabled = false; $('clear-btn').disabled = false;
+      setStatus(tr('guide.import.done', 'Imported {n} comment(s). Check completeness before relying on these results.').replace('{n}', imported.comments.length));
+      await detect();
+    });
+    $('download-btn').addEventListener('click', () => {
+      if (!imported) return;
+      const blob = new Blob([JSON.stringify(imported, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob); const a = document.createElement('a');
+      a.href = url; a.download = 'commentpull-facebook-comments.json'; a.click(); URL.revokeObjectURL(url);
+    });
+    $('clear-btn').addEventListener('click', async () => {
+      const response = await requestExtension('CLEAR_RESULTS');
+      imported = null; $('results-summary').classList.add('hidden'); $('preview').classList.add('hidden');
+      $('download-btn').disabled = true; $('clear-btn').disabled = true;
+      setStatus(response?.ok ? tr('guide.import.cleared', 'Saved results cleared.') : tr('guide.import.clearfail', 'Cleared this page. Extension storage could not be reached.'), !response?.ok);
+    });
+    // These two elements are filled by script (not data-i18n) so a late language switch can't overwrite live state.
+    window.addEventListener('load', () => setTimeout(() => {
+      setStatus(tr('guide.import.none', 'No results imported yet.'));
+      detect();
+    }, 300));
+  })();
+  </script>
+</body>
+</html>

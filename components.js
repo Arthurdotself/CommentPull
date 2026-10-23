@@ -20,7 +20,7 @@
    * ───────────────────────────────────────────── */
 
   /* Used by: index.html
-   * Links: How it Works | Pricing | Support | History | Scheduled
+   * Links: How it Works | Pricing | Support | Guide | Scheduled
    * Auth : lang-toggle + static Sign In / Sign Up (replaced by page JS when signed in) */
   var NAV_FULL = `
 <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
@@ -33,7 +33,6 @@
       <a href="/pricing.html"            class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
       <a href="/support.html"            class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
       <a href="/guide.html"              class="hover:text-white transition-colors" data-i18n="nav.guide">Guide</a>
-      <a href="/history.html"            class="hover:text-white transition-colors" data-i18n="nav.history">History</a>
       <a href="/scheduled-exports.html"  class="hover:text-white transition-colors" data-i18n="nav.scheduled">Scheduled</a>
     </nav>
     <div class="flex items-center gap-3" id="nav-auth-area">
@@ -75,8 +74,8 @@
   </div>
 </header>`;
 
-  /* Used by: history, scheduled-exports, settings
-   * Links: Tool | Pricing | Support | History | Scheduled
+  /* Used by: scheduled-exports, settings
+   * Links: Tool | Pricing | Support | Scheduled
    * Auth : nav-auth div filled entirely by each page's own JS */
   var NAV_APP = `
 <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/5">
@@ -88,7 +87,6 @@
       <a href="/"                        class="hover:text-white transition-colors" data-i18n="nav.tool">Tool</a>
       <a href="/pricing.html"            class="hover:text-white transition-colors" data-i18n="nav.pricing">Pricing</a>
       <a href="/support.html"            class="hover:text-white transition-colors" data-i18n="footer.support">Support</a>
-      <a href="/history.html"            class="hover:text-white transition-colors" data-i18n="nav.history">History</a>
       <a href="/scheduled-exports.html"  class="hover:text-white transition-colors" data-i18n="nav.scheduled">Scheduled</a>
     </nav>
     <div class="flex items-center gap-3" id="nav-auth">

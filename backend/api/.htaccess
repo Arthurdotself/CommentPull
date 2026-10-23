@@ -1,0 +1,15 @@
+# CommentPull — public API endpoints
+# /backend is denied by default (see ../.htaccess). Re-allow ONLY the endpoint
+# scripts in this folder (lowercase letters, digits and dashes, ending in .php).
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "^[a-z0-9-]+\.php$">
+        Require all granted
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch "^[a-z0-9-]+\.php$">
+        Order allow,deny
+        Allow from all
+    </FilesMatch>
+</IfModule>

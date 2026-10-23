@@ -4,3 +4,6 @@ Favicon/.DS_Store
 # Secrets — never commit real credentials
 backend/config.php
 .env
+
+# Files staged for deletion (safe to remove this folder)
+_to-delete/

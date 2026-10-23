@@ -12,6 +12,10 @@ Options -MultiViews
 
 RewriteEngine On
 
+# Never serve repository / editor / build internals (.git, .claude, .vscode, build script, ignore file, local trash)
+RewriteRule ^(\.git|\.claude|\.vscode|_to-delete)(/|$) - [F,L]
+RewriteRule ^(build\.js|\.gitignore)$ - [F,L]
+
 # The old extension test page now lives at /guide
 RewriteRule ^fb-extension-test(\.html)?$ /guide [NC,L,R=301]
 

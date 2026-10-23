@@ -130,24 +130,6 @@
     .filter-badge { color: #9ca3af; transition: color 0.2s; }
     .filter-badge.active { color: #818cf8; }
 
-    /* Token health card */
-    .token-health-card { border-radius: 14px; font-size: 12px; margin-top: 8px; padding: 14px 16px; text-align: left; }
-    .token-health-card.ok   { background: rgba(34,197,94,0.06);  border: 1px solid rgba(34,197,94,0.15); }
-    .token-health-card.warn { background: rgba(234,179,8,0.06);  border: 1px solid rgba(234,179,8,0.15); }
-    .token-health-card.err  { background: rgba(239,68,68,0.06);  border: 1px solid rgba(239,68,68,0.15); }
-    .thc-name   { font-weight: 600; margin-bottom: 8px; font-size: 13px; }
-    .thc-perms  { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
-    .thc-perm   { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .thc-perm-dot      { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-    .thc-perm-dot.ok   { background: #4ade80; }
-    .thc-perm-dot.miss { background: #f87171; }
-    .thc-ok    { color: #4ade80; }
-    .thc-warn  { color: #facc15; }
-    .thc-err   { color: #f87171; }
-    .thc-expiry { margin-bottom: 6px; font-size: 11px; }
-    .thc-action { margin-top: 6px; font-size: 11px; }
-    .thc-action a { color: #818cf8; }
-
     /* Field hints */
     .field-hint { font-size: 11px; margin-top: 2px; }
     .field-hint.ok   { color: #4ade80; }
@@ -301,10 +283,6 @@
       0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.45); }
       50%       { box-shadow: 0 0 0 5px rgba(59,130,246,0); }
     }
-    @keyframes badge-pulse-ig {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(244,114,182,0.45); }
-      50%       { box-shadow: 0 0 0 5px rgba(244,114,182,0); }
-    }
     #platform-badge.badge-connect {
       cursor: pointer;
       background: #2563eb; color: #fff;
@@ -313,12 +291,7 @@
       animation: badge-pulse 1.8s ease-in-out infinite;
       transition: background 0.15s, transform 0.1s;
     }
-    #platform-badge.badge-connect-ig {
-      background: linear-gradient(135deg,#e1306c,#833ab4);
-      animation: badge-pulse-ig 1.8s ease-in-out infinite;
-    }
     #platform-badge.badge-connect:hover     { background: #1d4ed8; transform: scale(1.03); }
-    #platform-badge.badge-connect-ig:hover  { filter: brightness(1.15); transform: scale(1.03); }
     .badge-connect-done {
       background: rgba(34,197,94,0.1); color: rgba(34,197,94,0.9);
       border: 1px solid rgba(34,197,94,0.25); padding: 7px 14px; font-size: 12px; font-weight: 600;
@@ -360,7 +333,7 @@
         <div class="hiw-chips mb-10">
           <div class="hiw-chip"><span class="hiw-chip-num">1</span> Paste a URL</div>
           <span class="hiw-sep-arrow">→</span>
-          <div class="hiw-chip"><span class="hiw-chip-num">2</span> Connect &amp; Extract</div>
+          <div class="hiw-chip"><span class="hiw-chip-num">2</span> Extract</div>
           <span class="hiw-sep-arrow">→</span>
           <div class="hiw-chip"><span class="hiw-chip-num">3</span> Draw a Winner</div>
         </div>
@@ -386,19 +359,6 @@
                 <span id="platform-badge-text">Detected</span>
               </span>
             </div>
-
-            <!-- Row 3a: Facebook Page Selector (FB only, shown when connected with multiple pages) -->
-            <div id="hero-fbpage-row" style="display:none"
-              class="flex items-center gap-2 bg-[#1A1C23] rounded-[18px] p-2 mt-1.5">
-              <div class="pl-4 text-blue-400 flex-shrink-0">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>
-              </div>
-              <select id="fb-page-select"
-                class="flex-grow bg-transparent border-none text-white text-sm px-2 py-3 focus:outline-none focus:ring-0 cursor-pointer">
-                <option value="">Select a page…</option>
-              </select>
-            </div>
-            <div id="fb-page-hint" class="field-hint text-left px-5 pt-1 pb-0.5"></div>
 
             <!-- Row 3: YouTube API Key (shown only for YouTube) -->
             <div id="hero-ytkey-row" style="display:none"
@@ -435,9 +395,6 @@
               </button>
             </div>
           </div>
-
-          <!-- Token health card -->
-          <div id="token-health-card" style="display:none" class="token-health-card"></div>
 
           <!-- Status / progress panel -->
           <div id="status" class="status-panel"></div>
@@ -754,10 +711,6 @@
     <button id="btn-fb"></button>
     <button id="btn-ig"></button>
     <button id="btn-yt"></button>
-    <!-- Labels & tooltips updated by selectPlatform / checkToken -->
-    <span id="api-badge"></span>
-    <span id="token-label-text">Page Access Token</span>
-    <span id="token-tooltip"></span>
     <!-- Platform URL containers — handleExtract reads .fb-url/.ig-url/.yt-url -->
     <div class="ctx-block visible" id="ctx-fb">
       <div class="url-list" id="fb-url-list">
@@ -806,7 +759,6 @@
 // ────────────────────────────────────────────────────────────
 //  CONSTANTS
 // ────────────────────────────────────────────────────────────
-const GRAPH = "https://graph.facebook.com/v19.0";
 let platform = 'fb';
 
 // ────────────────────────────────────────────────────────────
@@ -822,34 +774,9 @@ function selectPlatform(p) {
   document.getElementById(`btn-${p}`).classList.add(`active-${p}`);
   document.getElementById(`ctx-${p}`).classList.add('visible');
 
-  const badgeMap = { fb: 'Facebook Graph API v19.0', ig: 'Instagram Graph API v19.0', yt: 'YouTube Data API v3' };
-  document.getElementById('api-badge').textContent = badgeMap[p] || 'Meta Graph API v19.0';
-
-  const labelEl   = document.getElementById('token-label-text');
-  const tooltipEl = document.getElementById('token-tooltip');
-  if (p === 'yt') {
-    if (labelEl)   labelEl.textContent   = '02 — YouTube Data API Key';
-    if (tooltipEl) tooltipEl.textContent = 'Go to console.developers.google.com → Create a project → Enable YouTube Data API v3 → Credentials → Create API key.';
-  } else {
-    if (labelEl)   labelEl.textContent   = '02 — Facebook Connection';
-    if (tooltipEl) tooltipEl.textContent = 'Connect your Facebook account using the button below — no token entry needed.';
-  }
-
   const repliesCard = document.getElementById('opt-replies');
-  if (p === 'ig') {
-    repliesCard.classList.remove('selected');
-    repliesCard.querySelector('.option-sub').textContent = 'Fetched separately (IG)';
-    repliesCard.classList.remove('disabled');
-  } else if (p === 'yt') {
-    repliesCard.querySelector('.option-sub').textContent = 'Nested replies';
-    repliesCard.classList.remove('disabled');
-  } else {
-    repliesCard.querySelector('.option-sub').textContent = 'Nested comments';
-    repliesCard.classList.remove('disabled');
-  }
-
-  const healthCard = document.getElementById('token-health-card');
-  if (healthCard) healthCard.style.display = 'none';
+  repliesCard.querySelector('.option-sub').textContent = p === 'yt' ? 'Nested replies' : 'Nested comments';
+  repliesCard.classList.remove('disabled');
 }
 
 // ────────────────────────────────────────────────────────────
@@ -887,32 +814,6 @@ function removeUrl(btn) {
   const list = btn.closest('.url-list');
   if (list.querySelectorAll('.url-entry').length > 1) btn.closest('.url-entry').remove();
 }
-
-// ────────────────────────────────────────────────────────────
-//  FACEBOOK — POST ID PARSER
-// ────────────────────────────────────────────────────────────
-function buildFullPostId(link, pageId) {
-  link = link.trim();
-  if (!link.startsWith('http') && link.includes('_')) return link;
-  const pfbid = link.match(/(pfbid[A-Za-z0-9]+)/);
-  if (pfbid) return `${pageId}_${pfbid[1]}`;
-  const patterns = [/\/posts\/(\d+)/, /story_fbid=(\d+)/, /fbid=(\d+)/, /\/videos\/(\d+)/, /\/photos\/[^/]+\/(\d+)/, /\/(\d{10,})/];
-  for (const pat of patterns) {
-    const m = link.match(pat);
-    if (m) { const r = m[1]; return r.startsWith(pageId) ? r : `${pageId}_${r}`; }
-  }
-  if (/^\d+$/.test(link)) return `${pageId}_${link}`;
-  return link;
-}
-
-// ────────────────────────────────────────────────────────────
-//  INSTAGRAM — SHORTCODE + MEDIA ID
-// ────────────────────────────────────────────────────────────
-function extractIgShortcode(url) {
-  const m = url.match(/instagram\.com\/(?:p|reel|tv|reels)\/([A-Za-z0-9_-]+)/);
-  return m ? m[1] : null;
-}
-
 
 // ────────────────────────────────────────────────────────────
 //  YOUTUBE — VIDEO ID + FETCH COMMENTS
@@ -968,80 +869,6 @@ async function fetchYtComments(videoId, apiKey, includeReplies, onUpdate, maxCom
     pageToken = data.nextPageToken ?? '';
   } while (pageToken);
   return results;
-}
-
-// ────────────────────────────────────────────────────────────
-//  GRAPH API HELPERS
-// ────────────────────────────────────────────────────────────
-async function gql(path) { return gqlRaw(`${GRAPH}${path}`); }
-async function gqlRaw(url) {
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.error) throw new Error(friendlyMetaError(data.error));
-  return data;
-}
-function friendlyMetaError(err) {
-  const code = err.code;
-  const msg  = err.message || '';
-  if (code === 190)  return `Token expired or invalid — please generate a new token in Graph API Explorer.`;
-  if (code === 10)   return `Missing permission: your token needs "pages_read_engagement". Regenerate it in Graph API Explorer and make sure that permission is checked before generating.`;
-  if (code === 200)  return `Permission denied — your token does not have access to this page or post.`;
-  if (code === 100)  return `Invalid ID or parameter — check your Page ID and post URL are correct.`;
-  if (code === 4 || code === 17 || code === 32) return `Rate limit reached — wait a few minutes then try again.`;
-  if (code === 803)  return `Post not found — the URL may be wrong or the post was deleted.`;
-  // fallback: clean up the raw Meta message
-  return msg.replace(/^\(#\d+\)\s*/, '');
-}
-function enc(s) { return encodeURIComponent(s); }
-
-// ────────────────────────────────────────────────────────────
-//  FACEBOOK — LOAD MANAGED PAGES + PAGE SELECTOR
-// ────────────────────────────────────────────────────────────
-async function loadFbPages() {
-  window._fbPages = null;
-  window._fbSelectedPage = null;
-  setHint('fb-page-hint', '', '');
-  try {
-    const cpToken = localStorage.getItem('cp_token');
-    const headers = cpToken ? { 'Authorization': 'Bearer ' + cpToken } : {};
-    const res  = await fetch('/backend/api/meta-pages.php', { headers });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to load pages');
-    window._fbPages = data.pages || [];
-    _updateFbPageSelector();
-  } catch(e) {
-    setHint('fb-page-hint', 'err', `Could not load pages: ${e.message}`);
-  }
-}
-
-function _updateFbPageSelector() {
-  const pages = window._fbPages;
-  const row   = document.getElementById('hero-fbpage-row');
-  if (!pages || (platform !== 'fb' && platform !== 'ig') || !window._metaConnection?.connected) {
-    if (row) row.style.display = 'none';
-    return;
-  }
-  if (pages.length === 0) {
-    setHint('fb-page-hint', 'err', 'No Facebook Pages found. Make sure you manage at least one Facebook Page.');
-    if (row) row.style.display = 'none';
-    return;
-  }
-  const label = platform === 'ig' ? 'Facebook Page (linked to Instagram)' : 'Page';
-  if (pages.length === 1) {
-    window._fbSelectedPage = pages[0];
-    setHint('fb-page-hint', 'ok', `✓ ${label}: ${pages[0].name}`);
-    if (row) row.style.display = 'none';
-    return;
-  }
-  // Multiple pages: show dropdown
-  const sel = document.getElementById('fb-page-select');
-  sel.innerHTML = pages.map(p => `<option value="${p.id}">${escHtml(p.name)}</option>`).join('');
-  window._fbSelectedPage = pages[0];
-  sel.value    = pages[0].id;
-  sel.onchange = () => {
-    window._fbSelectedPage = pages.find(p => p.id === sel.value) || null;
-  };
-  if (row) row.style.display = 'flex';
 }
 
 // ────────────────────────────────────────────────────────────
@@ -1602,8 +1429,8 @@ async function handleExtract() {
   let lastErrorMsg = '';
 
   try {
-    if (platform === 'fb' && window.CP_USE_EXTENSION !== false) {
-      // Facebook via the CommentPull browser extension (no Graph API, no page selection)
+    if (platform === 'fb') {
+      // Facebook via the CommentPull browser extension
       const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
       if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
 
@@ -1614,7 +1441,7 @@ async function handleExtract() {
           'Install the CommentPull browser extension, refresh this page, then try again. <a href="/guide.html" style="text-decoration:underline">Install guide</a>');
         btn.classList.remove('loading'); return;
       }
-      window._cpExt = ext; _updateMetaConnectRow();
+      window._cpExt = ext; _applyFbExtBadge();
       setStatus('info', 'Collecting from Facebook…',
         '<div style="margin-top:6px;font-size:11px;opacity:0.75">A Facebook tab will open — keep it open (and stay logged in) until it finishes.</div>');
 
@@ -1627,41 +1454,6 @@ async function handleExtract() {
           const comments = await cpExtCollectPost(link, includeReplies, n => {
             setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — ${n} comment${n!==1?'s':''} collected…`);
           });
-          all.push(...comments);
-          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
-        } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`); anyError = true; lastErrorMsg = e.message; }
-      }
-
-    } else if (platform === 'fb') {
-      // Legacy Graph API path (kept as a fallback: set window.CP_USE_EXTENSION = false)
-      const urls = [...document.querySelectorAll('.fb-url')].map(i=>i.value.trim()).filter(Boolean);
-      if (!urls.length) { setStatus('error','No post URL','Paste at least one Facebook post URL.'); btn.classList.remove('loading'); return; }
-
-      if (!window._fbSelectedPage) {
-        setStatus('error', 'No Facebook Page selected',
-          window._metaConnection?.connected
-            ? 'Select a page from the dropdown above.'
-            : 'Connect your Facebook account first, then select a page.');
-        btn.classList.remove('loading'); return;
-      }
-
-      const pageId = window._fbSelectedPage.id;
-      setStatus('info', `Connecting to Facebook…`, '');
-
-      for (let i = 0; i < urls.length; i++) {
-        const link  = urls[i];
-        const label = link.length > 44 ? '…'+link.slice(-41) : link;
-        const pid   = `p${i}`;
-        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
-        try {
-          const res  = await fetch('/backend/api/fetch-comments.php', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json', ...authHeaders() },
-            body:    JSON.stringify({ platform: 'fb', post_url: link, page_id: pageId, include_replies: includeReplies }),
-          });
-          const json = await res.json();
-          if (!res.ok) throw new Error(json.error || 'Server error');
-          const comments = json.comments || [];
           all.push(...comments);
           setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
         } catch(e) { setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`); anyError = true; lastErrorMsg = e.message; }
@@ -1701,42 +1493,8 @@ async function handleExtract() {
       }
 
     } else {
-      // Instagram
-      const urls = [...document.querySelectorAll('.ig-url')].map(i=>i.value.trim()).filter(Boolean);
-      if (!urls.length) { setStatus('error','No post URL','Paste at least one Instagram post URL.'); btn.classList.remove('loading'); return; }
-
-      if (!window._fbSelectedPage) {
-        setStatus('error', 'No Facebook Page selected',
-          window._metaConnection?.connected
-            ? 'Select a page from the dropdown above.'
-            : 'Connect your Facebook account first, then select a page.');
-        btn.classList.remove('loading'); return;
-      }
-
-      const pageId = window._fbSelectedPage.id;
-      setStatus('info', 'Connecting to Instagram…', '');
-
-      for (let i = 0; i < urls.length; i++) {
-        const url   = urls[i];
-        const label = url.length > 44 ? '…'+url.slice(-41) : url;
-        const pid   = `p${i}`;
-        setProgItem(pid, 'active', `[${i+1}/${urls.length}] ${label} — fetching comments…`);
-        try {
-          const res  = await fetch('/backend/api/fetch-comments.php', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json', ...authHeaders() },
-            body:    JSON.stringify({ platform: 'ig', post_url: url, page_id: pageId, include_replies: includeReplies }),
-          });
-          const json = await res.json();
-          if (!res.ok) throw new Error(json.error || 'Server error');
-          const comments = json.comments || [];
-          all.push(...comments);
-          setProgItem(pid, 'done', `[${i+1}/${urls.length}] ${label} — ${comments.length} comment${comments.length!==1?'s':''}`);
-        } catch(e) {
-          setProgItem(pid, 'err', `[${i+1}/${urls.length}] ${label} — ${e.message}`);
-          anyError = true; lastErrorMsg = e.message;
-        }
-      }
+      setStatus('error', 'Coming soon', 'Instagram extraction is coming soon.');
+      btn.classList.remove('loading'); return;
     }
   } catch(e) {
     setStatus('error', 'Unexpected error', e.message);
@@ -1789,35 +1547,7 @@ async function handleExtract() {
   resetExtractBtn();
   showPreview(all, qualified, filtersActive);
 
-  // ── Save to History for Pro users ──────────────────────────
-  {
-    const _histUrls = [...document.querySelectorAll('.' + platform + '-url')]
-      .map(i => i.value.trim()).filter(Boolean);
-    const _histFilters = {};
-    if (document.getElementById('rule-keyword').checked) {
-      const kw = document.getElementById('filter-keyword').value.trim();
-      if (kw) _histFilters.keyword = kw;
-    }
-    if (document.getElementById('rule-mentions').checked)
-      _histFilters.mentions = document.getElementById('filter-mentions').value;
-    if (document.getElementById('rule-length').checked)
-      _histFilters.length = document.getElementById('filter-length').value;
-    if (document.getElementById('rule-dedup').checked)
-      _histFilters.dedup = true;
-    if (document.getElementById('rule-daterange').checked) {
-      _histFilters.dateFrom = document.getElementById('filter-date-from').value;
-      _histFilters.dateTo   = document.getElementById('filter-date-to').value;
-    }
-    if (document.getElementById('rule-exclude').checked) {
-      const ex = document.getElementById('filter-exclude').value.trim();
-      if (ex) _histFilters.exclude = ex;
-    }
-    _cpSaveRunToHistory(
-      platform, _histUrls, totalCount, qualifiedCount,
-      Object.keys(_histFilters).length ? _histFilters : null,
-      all
-    );
-  }
+  // (history saving removed) ──────────────────────────
 }
 
 // ────────────────────────────────────────────────────────────
@@ -2192,8 +1922,6 @@ function stopConfetti() {
 
       if (!url) {
         [ytKeyRow, actionRow].forEach(el => el.style.display = 'none');
-        const fbRow = document.getElementById('hero-fbpage-row');
-        if (fbRow) fbRow.style.display = 'none';
         document.getElementById('filter-section').style.display = 'none';
         badge.style.display = 'none';
         return;
@@ -2208,46 +1936,21 @@ function stopConfetti() {
       const urlInput = document.querySelector('.' + p + '-url');
       if (urlInput) urlInput.value = url;
 
-      // Show + style the platform badge
-      const dots     = { fb: '#60a5fa', ig: '#f472b6', yt: '#f87171' };
-      const badgeCls = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
-      document.getElementById('platform-badge-dot').style.background = dots[p];
-
-      if (p === 'yt') {
-        document.getElementById('platform-badge-dot').style.background = '#f59e0b';
+      if (p === 'yt' || p === 'ig') {
+        const dot = document.getElementById('platform-badge-dot');
+        dot.innerHTML = ''; dot.className = 'w-2 h-2 rounded-full flex-shrink-0'; dot.style.background = '#f59e0b';
         document.getElementById('platform-badge-text').textContent = '⏳ Coming Soon';
         badge.className = 'px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
         badge.onclick = null;
         ytKeyRow.style.display = 'none';
         actionRow.style.display = 'none';
         badge.style.display = 'flex';
-        const fbRow = document.getElementById('hero-fbpage-row');
-        if (fbRow) fbRow.style.display = 'none';
         return;
-      } else {
-        const connected = !!(window._metaConnection && window._metaConnection.connected);
-        const fbIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>';
-        const igIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>';
-        const dot = document.getElementById('platform-badge-dot');
-        if (connected) {
-          dot.innerHTML = ''; dot.className = 'w-2 h-2 rounded-full flex-shrink-0'; dot.style.background = '#4ade80';
-          document.getElementById('platform-badge-text').textContent = '✓ Connected';
-          badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 badge-connect-done';
-          badge.onclick = null;
-        } else {
-          dot.className = 'flex-shrink-0'; dot.style.background = '';
-          dot.innerHTML = p === 'ig' ? igIcon : fbIcon;
-          document.getElementById('platform-badge-text').textContent = p === 'ig' ? 'Connect Instagram' : 'Connect Facebook';
-          const connectCls = p === 'ig' ? 'badge-connect badge-connect-ig' : 'badge-connect';
-          badge.className = 'rounded-lg font-medium flex items-center gap-2 whitespace-nowrap mr-1 flex-shrink-0 ' + connectCls;
-          badge.onclick = function() { window.location.href = '/backend/api/oauth-meta.php'; };
-        }
-        ytKeyRow.style.display = 'none';
-        _updateMetaConnectRow();
-        _updateFbPageSelector();
       }
 
+      // Facebook: badge shows whether the browser extension is installed
       badge.style.display = 'flex';
+      _applyFbExtBadge();
 
       // Show action row (Filters button + Extract button)
       actionRow.style.display = 'flex';
@@ -2293,50 +1996,11 @@ function stopConfetti() {
         history.replaceState({}, '', window.location.pathname);
       }
 
-      // Handle Meta OAuth redirect
-      if (params.get('meta_connected') === '1') {
-        history.replaceState({}, '', window.location.pathname);
-        // Show success toast after the page settles
-        window.addEventListener('load', function() {
-          _showMetaToast();
-        });
-      }
-      if (params.get('meta_error')) {
-        history.replaceState({}, '', window.location.pathname);
-        window.addEventListener('load', function() {
-          _showMetaToast(params.get('meta_error'));
-        });
-      }
     })();
-
-    function _showMetaToast(errorMsg) {
-      const toast = document.createElement('div');
-      const isError = !!errorMsg;
-      toast.style.cssText = [
-        'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%)',
-        'z-index:9999', 'padding:12px 20px', 'border-radius:12px',
-        'font-size:13px', 'font-weight:500', 'color:#fff',
-        'box-shadow:0 4px 20px rgba(0,0,0,.4)',
-        'transition:opacity .3s',
-        isError ? 'background:#ef4444' : 'background:#22c55e',
-      ].join(';');
-
-      const loggedIn = !!localStorage.getItem('cp_token');
-      if (isError) {
-        toast.textContent = 'Facebook connection failed: ' + errorMsg;
-      } else if (loggedIn) {
-        toast.textContent = '✓ Facebook account connected and saved!';
-      } else {
-        toast.innerHTML = '✓ Facebook connected (session only) &nbsp;·&nbsp; <a href="/signin.html" style="color:#bfdbfe;text-decoration:underline">Sign in to save</a>';
-      }
-
-      document.body.appendChild(toast);
-      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 5000);
-    }
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- Auth state + History save (Pro users)                      -->
+  <!-- Auth state                                            -->
   <!-- ═══════════════════════════════════════════════════════════ -->
   <script>
     // Cached user profile (null = not fetched yet, false = not signed in)
@@ -2365,117 +2029,17 @@ function stopConfetti() {
         '<a href="/settings.html" class="hidden md:inline text-sm text-indigo-400 font-medium hover:text-indigo-300 transition-colors">' + name + '</a>';
     }
 
-    async function _cpSaveRunToHistory(platform, postUrls, totalCount, qualifiedCount, filters, comments) {
-      const token = localStorage.getItem('cp_token');
-      if (!token) return;
-
-      // Ensure user is loaded
-      if (window._cpUser === null) await _cpLoadUser();
-      if (!window._cpUser || window._cpUser.plan !== 'pro') return;
-
-      try {
-        await fetch('/backend/api/history.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-          body: JSON.stringify({
-            platform,
-            post_urls:       postUrls,
-            total_count:     totalCount,
-            qualified_count: qualifiedCount,
-            filters:         filters,
-            comments:        comments
-          })
-        });
-        // Subtle "Saved" indicator in the status panel
-        const savedBadge = document.createElement('div');
-        savedBadge.style.cssText = 'margin-top:8px;font-size:11px;color:#818cf8;display:flex;align-items:center;gap:5px;';
-        savedBadge.innerHTML = '<svg style="width:12px;height:12px;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Saved to <a href="/ar/history.html" style="color:#818cf8;text-decoration:underline;">History</a>';
-        const panel = document.getElementById('status');
-        if (panel) panel.appendChild(savedBadge);
-      } catch(e) {
-        // Silently ignore save errors — don't interrupt the user's workflow
-      }
-    }
-
-    // ── Meta token connection ──────────────────────────────────────
-
-    // Cached connection state: null = not fetched, { connected, saved, expires_at, token }
-    window._metaConnection = null;
-    // Cached list of managed FB pages and the currently selected one
-    window._fbPages        = null;
-    window._fbSelectedPage = null;
-
-    async function loadMetaToken() {
-      try {
-        const cpToken = localStorage.getItem('cp_token');
-        const headers = cpToken ? { 'Authorization': 'Bearer ' + cpToken } : {};
-        const res  = await fetch('/backend/api/meta-token.php', { headers });
-        const data = await res.json();
-        window._metaConnection = data;
-        if (data.connected) {
-          // Load managed pages for the FB page selector
-          loadFbPages();
-        }
-      } catch(_) {
-        window._metaConnection = { connected: false };
-      }
-      _updateMetaConnectRow();
-    }
-
-    function _updateMetaConnectRow() {
-      const conn  = window._metaConnection;
-      const badge = document.getElementById('platform-badge');
-      if (!badge || badge.style.display === 'none' || platform === 'yt') return;
-
-      const connected = !!(conn && conn.connected);
-      const fbIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>';
-      const igIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>';
-      const dot = document.getElementById('platform-badge-dot');
-      if (connected) {
-        dot.innerHTML = ''; dot.className = 'w-2 h-2 rounded-full flex-shrink-0'; dot.style.background = '#4ade80';
-        document.getElementById('platform-badge-text').textContent = '✓ Connected';
-        badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 badge-connect-done';
-        badge.onclick = null;
-      } else {
-        dot.className = 'flex-shrink-0'; dot.style.background = '';
-        dot.innerHTML = platform === 'ig' ? igIcon : fbIcon;
-        document.getElementById('platform-badge-text').textContent = platform === 'ig' ? 'Connect Instagram' : 'Connect Facebook';
-        const connectCls = platform === 'ig' ? 'badge-connect badge-connect-ig' : 'badge-connect';
-        badge.className = 'rounded-lg font-medium flex items-center gap-2 whitespace-nowrap mr-1 flex-shrink-0 ' + connectCls;
-        badge.onclick = function() { window.location.href = '/backend/api/oauth-meta.php'; };
-      }
-    }
-
-    async function metaDisconnect() {
-      try {
-        const cpToken = localStorage.getItem('cp_token');
-        const headers = { 'Content-Type': 'application/json' };
-        if (cpToken) headers['Authorization'] = 'Bearer ' + cpToken;
-        await fetch('/backend/api/meta-disconnect.php', { method: 'POST', headers });
-      } catch(_) {}
-      window._metaConnection = { connected: false };
-      window._fbPages        = null;
-      window._fbSelectedPage = null;
-      document.getElementById('hero-fbpage-row').style.display = 'none';
-      setHint('fb-page-hint', '', '');
-      _updateMetaConnectRow();
-    }
+    // (Meta connection removed) ──────────────────────────────────────
 
     // ── Boot: load user on page load ──
     (async function() {
       const user = await _cpLoadUser();
       _cpUpdateNav(user);
-      // Load stored Meta token (works for both logged-in and anonymous users)
-      await loadMetaToken();
     })();
   </script>
 
   <!-- Facebook via CommentPull browser extension: bridge, row mapping, badge state -->
   <script>
-    window.CP_USE_EXTENSION = true;   // set to false to fall back to the Graph API flow
     window._cpExt = null;
 
     // ── messaging with the extension's page bridge ──
@@ -2580,7 +2144,7 @@ function stopConfetti() {
 
     // ── hero badge: for Facebook it now shows extension state instead of Meta OAuth (same look) ──
     function _applyFbExtBadge() {
-      if (platform !== 'fb' || window.CP_USE_EXTENSION === false) return;
+      if (platform !== 'fb') return;
       const badge = document.getElementById('platform-badge');
       if (!badge || badge.style.display === 'none') return;
       const dot  = document.getElementById('platform-badge-dot');
@@ -2591,27 +2155,17 @@ function stopConfetti() {
         badge.className = 'rounded-lg font-medium flex items-center gap-1.5 whitespace-nowrap mr-1 flex-shrink-0 badge-connect-done';
         badge.onclick = null;
       } else {
+        dot.className = 'flex-shrink-0'; dot.style.background = '';
+        dot.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>';
         text.textContent = 'Get extension';
+        badge.className = 'rounded-lg font-medium flex items-center gap-2 whitespace-nowrap mr-1 flex-shrink-0 badge-connect';
         badge.onclick = function () { window.location.href = '/guide.html'; };
       }
     }
-    const _cpOrigUpdateMeta = _updateMetaConnectRow;
-    _updateMetaConnectRow = function () { _cpOrigUpdateMeta.apply(this, arguments); _applyFbExtBadge(); };
-    const _cpOrigHeroInput = onHeroUrlInput;
-    onHeroUrlInput = function () { _cpOrigHeroInput.apply(this, arguments); _applyFbExtBadge(); };
-    const _cpOrigPageSel = _updateFbPageSelector;
-    _updateFbPageSelector = function () {
-      if (platform === 'fb' && window.CP_USE_EXTENSION !== false) {
-        const row = document.getElementById('hero-fbpage-row'); if (row) row.style.display = 'none';
-        setHint('fb-page-hint', '', '');
-        return;
-      }
-      _cpOrigPageSel.apply(this, arguments);
-    };
 
     async function _cpDetectExt() {
       window._cpExt = await cpExtPing(3000);
-      _updateMetaConnectRow();
+      _applyFbExtBadge();
     }
     window.addEventListener('load', _cpDetectExt);
     window.addEventListener('focus', function () { if (!window._cpExt) _cpDetectExt(); });

@@ -10,6 +10,20 @@
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const jitter = (a, b) => a + Math.random() * (b - a);
   const isVisible = el => !!el && el.getClientRects().length > 0;
+  // Poll until cond() is truthy (or timeout) - replaces fixed sleeps so we move on the moment Facebook has rendered.
+  const waitFor = async (cond, timeout, step = 80) => {
+    const t0 = Date.now();
+    while (Date.now() - t0 < timeout) { const v = cond(); if (v) return v; await sleep(step); }
+    return cond();
+  };
+  // Speed knobs. Lower = faster, but too aggressive can make Facebook rate-limit your account.
+  const CLICK_DELAY = [40, 120];   // ms between clicks on "View more comments / replies" buttons
+  const MAX_CLICKS_PER_PASS = 25;  // expand buttons clicked per loop pass
+  const SETTLE_MAX_MS = 1200;      // max wait for new comments to render after scrolling
+  const IDLE_STOP_MS = 6000;       // finish after this long with no new comments AND no "view more" button left to try
+  const EXPAND_RETRY_MS = 3000;    // wait before pressing the same "view more" button again
+  const EXPAND_MAX_TRIES = 6;      // give up on a button that never loads anything after this many presses
+  const PERSIST_EVERY_MS = 2000;   // throttle chrome.storage writes
 
   // aria-label prefixes Facebook puts on comment articles (EN, NL, FR, DE, ES, PT, IT, AR).
   const COMMENT_LABEL = /^(comment (by|from)|reply (by|from|to)|opmerking van|antwoord van|commentaire de|réponse de|kommentar von|antwort von|comentario de|respuesta de|comentário de|resposta de|commento di|risposta di|تعليق|رد\s)/i;
@@ -28,9 +42,35 @@
   // ---------- scope ----------
   function getRoot() {
     const dialog = [...document.querySelectorAll('[role="dialog"]')].find(d => d.querySelector('[role="article"]'));
-    return dialog || document.querySelector('[role="main"]') || document.body;
+    if (dialog) return dialog;
+    const main = document.querySelector('[role="main"]');
+    // Photo/video viewer pages: the media sits in [role="main"] but the comment panel is rendered OUTSIDE it
+    // (side column), so only use main when it really contains comments; otherwise search the whole page.
+    if (main && [...main.querySelectorAll('[role="article"]')].some(a => COMMENT_LABEL.test(label(a)))) return main;
+    return document.body;
   }
   const label = el => el.getAttribute('aria-label') || '';
+
+  // Single-photo / video / reel layouts often hide the comments until you press the Comment button or the "N comments" link.
+  const COMMENT_COUNT_RE = /^[\d.,٠-٩]+\s*[KkMm]?\s*(comments?|تعليق(ات|ا)?|تعليقات|commentaires?|comentarios?|kommentare?|reacties|commenti)$/i;
+  const COMMENT_BTN_RE = /^(leave a comment|write a comment|add a comment|view comments?|comments?|تعليق|تعليقات|اكتب تعليق(ًا|ا)|أضف تعليق(ًا|ا)|commenter|comentar|kommentieren|reageren|commenta)$/i;
+  function findCommentOpener() {
+    const ok = el => isVisible(el) && !el.closest('[role="article"][aria-label]') && !el.closest('form') && Date.now() - Number(el.dataset.cpClicked || 0) > 8000;
+    const els = [...document.querySelectorAll('[role="button"], a')];
+    const texts = el => [clean(el.getAttribute('aria-label')), clean(el.textContent)].filter(t => t && t.length < 40);
+    return els.find(el => ok(el) && texts(el).some(t => COMMENT_COUNT_RE.test(t)))       // "12 comments" link first
+        || els.find(el => ok(el) && texts(el).some(t => COMMENT_BTN_RE.test(t)))         // then the Comment button
+        || null;
+  }
+  async function ensureCommentsVisible() {
+    if (findComments(getRoot()).list.length) return;
+    for (let i = 0; i < 3; i++) {
+      const btn = findCommentOpener();
+      if (!btn) return;
+      btn.dataset.cpClicked = String(Date.now()); btn.click();
+      if (await waitFor(() => findComments(getRoot()).list.length, 2500, 150)) return;
+    }
+  }
 
   function findComments(root) {
     const all = [...root.querySelectorAll('[role="article"]')];
@@ -94,25 +134,37 @@
     return {key, isReply, rec: {username: clean(author && author.innerText), comment: text, profileUrl, timestampText: clean(timeLink && timeLink.innerText) || lblTime, isReply}};
   }
 
+  // Articles already fully read are skipped on later passes, so each pass only touches NEW comments
+  // (before, every pass re-read every comment on the page, which got slower as the list grew).
+  let done = new WeakSet(), keyOf = new WeakMap();
+  const hasSeeMore = a => [...a.querySelectorAll('[role="button"]')].some(b => b.closest('[role="article"]') === a && SEE_MORE_RE.test(clean(b.textContent)));
   function mergeComments(root) {
     let added = 0;
     const {list, post} = findComments(root);
     for (const a of list) {
+      if (done.has(a)) continue;
       const e = extract(a, post);
-      if (!e || (!state.replies && e.isReply)) continue;
-      if (!state.store.has(e.key)) { state.store.set(e.key, e.rec); added++; }
+      if (!e) continue;                                  // text not rendered yet - retry next pass
+      if (!state.replies && e.isReply) { done.add(a); continue; }
+      const old = keyOf.get(a);
+      if (old && old !== e.key) state.store.delete(old); // "See more" expanded the text - replace the truncated copy
+      keyOf.set(a, e.key);
+      if (!state.store.has(e.key)) added++;
+      state.store.set(e.key, e.rec);
+      if (!hasSeeMore(a)) done.add(a);
     }
     return added;
   }
 
   // ---------- expanding + scrolling ----------
-  function findExpandButtons(root) {
+  function findExpandButtons(root, ignoreCooldown = false) {
     const out = [];
     for (const el of root.querySelectorAll('[role="button"]')) {
-      const t = clean(el.innerText || label(el));
+      const t = clean(el.textContent || label(el));   // textContent: no forced layout, much cheaper than innerText
       if (!t || t.length > 80 || !(EXPAND_RE.test(t) || SEE_MORE_RE.test(t))) continue;
       if (!state.replies && /repl(y|ies)|ردود|ردًا|(^|\s)رد(\s|$)/i.test(t)) continue;
-      if (!isVisible(el) || Date.now() - Number(el.dataset.cpClicked || 0) < 8000) continue;
+      if (!isVisible(el) || Number(el.dataset.cpTries || 0) >= EXPAND_MAX_TRIES) continue;
+      if (!ignoreCooldown && Date.now() - Number(el.dataset.cpClicked || 0) < EXPAND_RETRY_MS) continue;
       out.push(el);
     }
     return out;
@@ -120,9 +172,9 @@
   async function ensureAllComments(root) {
     const sortBtn = [...root.querySelectorAll('[role="button"]')].find(b => isVisible(b) && SORT_RE.test(clean(b.innerText)));
     if (!sortBtn) return;
-    sortBtn.click(); await sleep(700);
-    const item = [...document.querySelectorAll('[role="menuitem"], [role="menuitemradio"], [role="option"]')].find(i => ALL_COMMENTS_RE.test(clean(i.innerText)));
-    if (item) { item.click(); await sleep(1200); } else { document.body.click(); }
+    sortBtn.click();
+    const item = await waitFor(() => [...document.querySelectorAll('[role="menuitem"], [role="menuitemradio"], [role="option"]')].find(i => ALL_COMMENTS_RE.test(clean(i.innerText))), 1500, 60);
+    if (item) { item.click(); await sleep(500); } else { document.body.click(); }
   }
   function getScroller(root) {
     let p = [...root.querySelectorAll('[role="article"]')].pop() || root;
@@ -179,27 +231,38 @@
     if (state.running) return;
     Object.assign(state, {running: true, stop: false, status: 'running', store: new Map(), startedAt: Date.now(), replies: includeReplies !== false});
     postLink = '';
+    done = new WeakSet(); keyOf = new WeakMap();
     overlay('CommentPull Lab: starting…', true);
+    await waitFor(() => getRoot().querySelector('[role="article"]'), 4000, 100);
+    await waitFor(() => findComments(getRoot()).list.length, 2500, 150);   // give the comment panel a moment to render
+    try { await ensureCommentsVisible(); } catch (e) {}
     try { await ensureAllComments(getRoot()); } catch (e) {}
-    let idle = 0, last = -1;
+    const articleCount = () => getRoot().querySelectorAll('[role="article"]').length;
+    let last = -1, lastChange = Date.now(), lastPersist = 0;
     while (!state.stop && Date.now() - state.startedAt < MAX_RUN_MS) {
-      let root = getRoot();
+      if (!state.store.size) { try { await ensureCommentsVisible(); } catch (e) {} }   // still nothing: try opening the comments again
+      const root = getRoot();
       mergeComments(root);
       if (max && state.store.size >= max) break;
+      const before = articleCount();
       let clicked = 0;
-      for (const b of findExpandButtons(root).slice(0, 8)) {
+      for (const b of findExpandButtons(root).slice(0, MAX_CLICKS_PER_PASS)) {
         if (state.stop) break;
-        b.dataset.cpClicked = String(Date.now()); b.click(); clicked++;
-        await sleep(jitter(250, 500));
+        try { b.scrollIntoView({block: 'center'}); } catch (e) {}   // Facebook only loads more when the button is on screen
+        b.dataset.cpClicked = String(Date.now()); b.dataset.cpTries = String(Number(b.dataset.cpTries || 0) + 1); b.click(); clicked++;
+        await sleep(jitter(CLICK_DELAY[0], CLICK_DELAY[1]));
       }
       scrollDown(root);
-      await sleep(jitter(800, 1300));
+      // Wait only until Facebook actually renders something new, instead of a fixed ~1s sleep every pass.
+      await sleep(200);
+      await waitFor(() => articleCount() !== before, SETTLE_MAX_MS, 100);
       mergeComments(getRoot());
       overlay(`CommentPull Lab: ${state.store.size} comments…`, true);
-      await persist(max);
-      idle = (state.store.size === last && clicked === 0) ? idle + 1 : 0;
+      if (Date.now() - lastPersist > PERSIST_EVERY_MS) { lastPersist = Date.now(); persist(max); }
+      if (state.store.size !== last || clicked > 0) lastChange = Date.now();
       last = state.store.size;
-      if (idle >= 4) break;
+      // Never finish while a "view more" button is still on screen and has retries left (it may just be loading slowly).
+      if (Date.now() - lastChange > IDLE_STOP_MS && !findExpandButtons(getRoot(), true).length) break;
     }
     state.status = state.stop ? 'stopped' : 'done';
     state.running = false;
@@ -243,7 +306,7 @@
   try {
     chrome.runtime.sendMessage({type: 'CP_READY'}, resp => {
       if (chrome.runtime.lastError || !resp || !resp.start) return;
-      setTimeout(() => run(resp.max || 0, resp.includeReplies !== false), 2500);
+      setTimeout(() => run(resp.max || 0, resp.includeReplies !== false), 300);
     });
   } catch (e) {}
 })();

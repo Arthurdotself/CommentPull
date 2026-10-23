@@ -27,7 +27,7 @@ if (!$row || !password_verify($password, $row['password_hash'])) {
     json_error(403, 'Incorrect password');
 }
 
-// Delete user — cascades to sessions, runs, scheduled_exports via FK ON DELETE CASCADE
+// Delete user — cascades to sessions and scheduled_exports via FK ON DELETE CASCADE
 db()->prepare('DELETE FROM users WHERE id = :id')->execute([':id' => (int) $user['id']]);
 
 json_out(['ok' => true]);

@@ -13,7 +13,7 @@ function require_auth(): array {
     }
 
     $stmt = db()->prepare(
-        'SELECT u.id, u.email, u.name, u.plan, u.created_at
+        'SELECT u.id, u.email, u.name, u.plan, u.stripe_customer_id, u.created_at
          FROM users u
          JOIN sessions s ON s.user_id = u.id
          WHERE s.token = :token

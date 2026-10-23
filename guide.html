@@ -114,7 +114,7 @@
       <div class="mb-10">
         <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4" data-i18n="guide.eyebrow">Guide</span>
         <h1 class="text-4xl font-semibold text-white mb-4" data-i18n="guide.title">How to use commentpull</h1>
-        <p class="text-gray-400 text-base leading-relaxed" data-i18n="guide.subtitle">Download the browser extension, install it, and extract Facebook comments in a few clicks. Instagram and YouTube work without the extension.</p>
+        <p class="text-gray-400 text-base leading-relaxed">Download the browser extension, install it, and extract Facebook comments in a few clicks. YouTube works without the extension; Instagram support through the extension is coming soon.</p>
       </div>
 
       <!-- Beta notice -->
@@ -132,7 +132,7 @@
       <div class="prose">
 
         <h2 data-i18n="guide.how.title">How it works</h2>
-        <ul data-i18n-html="guide.how.items"><li><strong>Facebook</strong> — uses the CommentPull browser extension. It reads the comments Facebook already shows to <em>your</em> logged-in account, inside <em>your</em> browser, and hands them to this page. No Facebook password or token is shared with us.</li><li><strong>Instagram</strong> — you connect a Meta account that manages a Business or Creator Instagram account. Our server then requests the comments from Meta's official API on your behalf, using the access token you authorise.</li><li><strong>YouTube</strong> — you paste your own YouTube Data API key and your browser talks to Google directly.</li></ul>
+        <ul><li><strong>Facebook</strong> — uses the CommentPull browser extension. It reads the comments Facebook already shows to <em>your</em> logged-in account, inside <em>your</em> browser, and hands them to this page. No Facebook password or token is shared with us.</li><li><strong>Instagram</strong> — coming soon. It is planned to work the same way as Facebook, through the browser extension.</li><li><strong>YouTube</strong> — you paste your own YouTube Data API key and your browser talks to Google directly.</li></ul>
         <p data-i18n="guide.how.note">Only the Facebook flow needs the extension. The steps below show how to get it running.</p>
 
         <!-- Step 1 -->
@@ -171,7 +171,7 @@
           <div class="flex-1">
             <h2 class="!mt-0" data-i18n="guide.s3.title">Extract comments</h2>
             <ol data-i18n-html="guide.s3.steps"><li>Make sure you are logged in to Facebook in this same browser.</li><li>Go to the <a href="/index.html">commentpull home page</a>, choose <strong>Facebook</strong> and paste the post URL.</li><li>Press <strong>Extract Comments</strong>. The extension opens the post in a new tab, expands comments and replies, and scrolls for you. A progress badge appears on the Facebook page.</li><li>Keep that tab open until it finishes. It then closes on its own and brings you back to commentpull with your results.</li><li>Filter the comments, pick a winner, or export to CSV, Excel or JSON.</li></ol>
-            <p class="mt-4" data-i18n="guide.s3.note">For Instagram, connect your Meta account on the home page. For YouTube, paste your YouTube Data API key. Neither needs the extension.</p>
+            <p class="mt-4">For YouTube, paste your YouTube Data API key — it doesn't need the extension. Instagram support is coming soon.</p>
           </div>
         </div>
 

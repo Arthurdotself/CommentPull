@@ -1,5 +1,6 @@
 -- CommentPull Database Schema
 -- Run this once on a fresh database to create all required tables.
+-- (Existing databases: run migrations/2026-10-remove-meta-and-history.sql instead.)
 
 CREATE TABLE IF NOT EXISTS users (
     id                  INT UNSIGNED  AUTO_INCREMENT PRIMARY KEY,
@@ -7,17 +8,14 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash       VARCHAR(255)  NOT NULL,
     name                VARCHAR(100)  NOT NULL DEFAULT '',
     plan                ENUM('free','pro')  NOT NULL DEFAULT 'free',
-    meta_access_token   TEXT          DEFAULT NULL,   -- AES-256-GCM encrypted
-    meta_token_expires  DATETIME      DEFAULT NULL,   -- when the long-lived token expires
+    stripe_customer_id      VARCHAR(255)  NULL,
+    stripe_subscription_id  VARCHAR(255)  NULL,
+    plan_expires_at         DATETIME      NULL,
     created_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Migration for existing databases (run once):
--- ALTER TABLE users ADD COLUMN meta_access_token TEXT DEFAULT NULL;
--- ALTER TABLE users ADD COLUMN meta_token_expires DATETIME DEFAULT NULL;
 
 
 CREATE TABLE IF NOT EXISTS sessions (
@@ -35,29 +33,12 @@ CREATE TABLE IF NOT EXISTS sessions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-CREATE TABLE IF NOT EXISTS runs (
-    id              INT UNSIGNED  AUTO_INCREMENT PRIMARY KEY,
-    user_id         INT UNSIGNED  NOT NULL,
-    platform        ENUM('fb','ig','yt') NOT NULL,
-    post_urls       JSON          NOT NULL,
-    total_count     INT UNSIGNED  NOT NULL DEFAULT 0,
-    qualified_count INT UNSIGNED  NOT NULL DEFAULT 0,
-    filters         JSON,
-    comments        MEDIUMTEXT,
-    created_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    INDEX idx_runs_created (created_at),
-
-    CONSTRAINT fk_runs_user
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- access_token is stored AES-256-GCM encrypted (see helpers.php encrypt_token/decrypt_token)
+-- Scheduled exports (YouTube only, Pro plan).
+-- access_token holds the user's YouTube API key, AES-256-GCM encrypted (see helpers.php).
 CREATE TABLE IF NOT EXISTS scheduled_exports (
     id              INT UNSIGNED  AUTO_INCREMENT PRIMARY KEY,
     user_id         INT UNSIGNED  NOT NULL,
-    platform        ENUM('fb','ig','yt') NOT NULL,
+    platform        ENUM('yt') NOT NULL DEFAULT 'yt',
     post_url        VARCHAR(2048) NOT NULL,
     access_token    TEXT          NOT NULL,
     params          JSON,

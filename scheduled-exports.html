@@ -53,7 +53,6 @@
 
     /* Platform badges */
     .badge-fb { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
-    .badge-ig { background: rgba(244,114,182,0.12); color: #f472b6; border: 1px solid rgba(244,114,182,0.2); }
     .badge-yt { background: rgba(239,68,68,0.12);   color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
 
     /* Status badges */
@@ -96,7 +95,7 @@
           <h1 class="text-3xl font-bold" data-i18n="sched.title">Scheduled Exports</h1>
           <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">Pro</span>
         </div>
-        <p class="text-gray-400 text-sm" data-i18n="sched.subtitle">Schedule a comment export for any future date — we'll run it automatically and save it to your History.</p>
+        <p class="text-gray-400 text-sm" data-i18n="sched.subtitle">Schedule a YouTube comment export for any future date — we'll run it automatically and keep the results here for you to download.</p>
       </div>
 
       <!-- ── Pro gate ── -->
@@ -139,15 +138,15 @@
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1" data-i18n="sched.f2.title">Token validated</div>
-                <div class="text-xs text-gray-500" data-i18n="sched.f2.desc">We check your token will still be active at export time.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f2.title">Key stored encrypted</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f2.desc">Your YouTube API key is encrypted and only used to run your export.</div>
               </div>
               <div class="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
                 <div class="text-indigo-400 mb-2">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 </div>
-                <div class="text-sm font-semibold mb-1" data-i18n="sched.f3.title">Saved to History</div>
-                <div class="text-xs text-gray-500" data-i18n="sched.f3.desc">Results appear in History marked as Scheduled.</div>
+                <div class="text-sm font-semibold mb-1" data-i18n="sched.f3.title">Download anytime</div>
+                <div class="text-xs text-gray-500" data-i18n="sched.f3.desc">Results stay on this page, ready to download.</div>
               </div>
             </div>
           </div>
@@ -171,10 +170,7 @@
             <!-- Platform -->
             <div>
               <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.platform">Platform</label>
-              <select id="s-platform" onchange="onPlatformChange()"
-                class="field-input cursor-pointer">
-                <option value="fb">Facebook</option>
-                <option value="ig">Instagram</option>
+              <select id="s-platform" class="field-input cursor-pointer">
                 <option value="yt">YouTube</option>
               </select>
             </div>
@@ -192,36 +188,12 @@
             <!-- Post URL — full width -->
             <div class="sm:col-span-2">
               <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.url">Post / Video URL</label>
-              <input type="url" id="s-post-url" placeholder="Paste the Facebook, Instagram, or YouTube URL…" data-i18n-placeholder="sched.form.url.placeholder"
+              <input type="url" id="s-post-url" placeholder="Paste the YouTube video URL…" data-i18n-placeholder="sched.form.url.placeholder"
                 class="field-input">
             </div>
 
-            <!-- FB/IG: Connect status (hidden for YouTube) -->
-            <div id="f-meta-connect" class="sm:col-span-2" style="display:none">
-              <div id="s-meta-not-connected" class="flex items-center gap-3 bg-[#1A1C23] rounded-xl p-3">
-                <div class="text-blue-400 flex-shrink-0">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12.073h2.54V9.73c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12.07h2.773l-.443 2.89h-2.33v6.988C20.343 21.2 24 17.062 24 12.073z"/></svg>
-                </div>
-                <span class="text-xs text-gray-400 flex-grow">Connect your Facebook account to schedule FB/IG exports.</span>
-                <a href="/backend/api/oauth-meta.php" class="text-xs text-blue-400 hover:text-blue-300 font-medium whitespace-nowrap transition-colors">Connect Facebook →</a>
-              </div>
-              <div id="s-meta-is-connected" style="display:none" class="flex items-center gap-3 bg-[#1A1C23] rounded-xl p-3">
-                <svg class="text-green-400 flex-shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                <span class="text-xs text-gray-300 flex-grow">Connected to Facebook</span>
-                <button onclick="schedMetaDisconnect()" class="text-xs text-gray-500 hover:text-red-400 transition-colors">Disconnect</button>
-              </div>
-            </div>
-
-            <!-- FB/IG: Page selector (hidden for YouTube, hidden until connected) -->
-            <div id="f-page-select" style="display:none">
-              <label class="block text-xs font-medium text-gray-400 mb-2">Facebook Page</label>
-              <select id="s-page-select" class="field-input cursor-pointer">
-                <option value="">Loading pages…</option>
-              </select>
-            </div>
-
             <!-- YT: API Key -->
-            <div id="f-yt" style="display:none">
+            <div id="f-yt">
               <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.ytkey">YouTube Data API v3 Key</label>
               <input type="text" id="s-yt-api-key" placeholder="Paste your API key…" data-i18n-placeholder="sched.form.ytkey.placeholder" class="field-input">
             </div>
@@ -230,12 +202,6 @@
             <div>
               <label class="block text-xs font-medium text-gray-400 mb-2" data-i18n="sched.form.datetime">Schedule Date &amp; Time</label>
               <input type="datetime-local" id="s-datetime" class="field-input">
-            </div>
-
-            <!-- Include replies (FB / IG only) -->
-            <div id="f-replies" class="flex items-center gap-3 pt-5">
-              <input type="checkbox" id="s-replies" class="w-4 h-4 accent-indigo-500 cursor-pointer">
-              <label for="s-replies" class="text-sm text-gray-300 cursor-pointer select-none" data-i18n="sched.form.replies">Include replies</label>
             </div>
 
           </div><!-- /grid -->
@@ -307,70 +273,11 @@
       return data;
     }
 
-    // ── Meta connection state ──────────────────────────────────────
-    window._schedConnection   = null;
-    window._schedPages        = [];
-    window._schedSelectedPage = null;
-
-    async function loadSchedMeta() {
-      try {
-        const res = await apiFetch('/meta-token.php');
-        window._schedConnection = res;
-        _updateSchedMetaRow();
-        if (res.connected) await loadSchedPages();
-      } catch(_) {
-        window._schedConnection = { connected: false };
-        _updateSchedMetaRow();
-      }
-    }
-
-    async function loadSchedPages() {
-      try {
-        const data = await apiFetch('/meta-pages.php');
-        window._schedPages = data.pages || [];
-        const sel = document.getElementById('s-page-select');
-        sel.innerHTML = window._schedPages.map(pg =>
-          `<option value="${escHtml(pg.id)}">${escHtml(pg.name)}</option>`
-        ).join('');
-        window._schedSelectedPage = window._schedPages[0] || null;
-        sel.onchange = () => {
-          window._schedSelectedPage = window._schedPages.find(pg => pg.id === sel.value) || null;
-        };
-      } catch(_) {}
-    }
-
-    function _updateSchedMetaRow() {
-      const p    = document.getElementById('s-platform').value;
-      const isMeta = p === 'fb' || p === 'ig';
-      const conn = window._schedConnection;
-      document.getElementById('f-meta-connect').style.display = isMeta ? '' : 'none';
-      document.getElementById('f-page-select').style.display  = (isMeta && conn && conn.connected) ? '' : 'none';
-      if (isMeta && conn) {
-        document.getElementById('s-meta-not-connected').style.display = conn.connected ? 'none' : '';
-        document.getElementById('s-meta-is-connected').style.display  = conn.connected ? '' : 'none';
-      }
-    }
-
-    async function schedMetaDisconnect() {
-      try { await apiFetch('/meta-disconnect.php', { method: 'POST' }); } catch(_) {}
-      window._schedConnection   = { connected: false };
-      window._schedPages        = [];
-      window._schedSelectedPage = null;
-      _updateSchedMetaRow();
-    }
-
-    // ── Platform toggle ────────────────────────────────────────────
-    function onPlatformChange() {
-      const p = document.getElementById('s-platform').value;
-      document.getElementById('f-yt').style.display      = p === 'yt' ? '' : 'none';
-      document.getElementById('f-replies').style.display = p !== 'yt' ? '' : 'none';
-      _updateSchedMetaRow();
-    }
-
+    // (Meta connection removed) ──────────────────────────────────────
+    // (platform toggle removed) ────────────────────────────────────────────
     // ── Submit ─────────────────────────────────────────────────────
     async function submitSchedule() {
       const btn     = document.getElementById('btn-submit');
-      const p       = document.getElementById('s-platform').value;
       const postUrl = document.getElementById('s-post-url').value.trim();
       const dtVal   = document.getElementById('s-datetime').value;
       const format  = document.getElementById('s-format').value;
@@ -389,25 +296,15 @@
       if (!getToken()) { showMsg('err', 'You must be signed in to schedule an export.'); return; }
 
       const payload = {
-        platform:      p,
+        platform:      'yt',
         post_url:      postUrl,
         export_format: format,
         scheduled_at:  new Date(dtVal).toISOString(),
       };
 
-      if (p === 'fb') {
-        if (!window._schedSelectedPage) { showMsg('err', 'Please connect Facebook and select a Page.'); return; }
-        payload.page_id         = window._schedSelectedPage.id;
-        payload.include_replies = document.getElementById('s-replies').checked;
-      } else if (p === 'ig') {
-        if (!window._schedSelectedPage) { showMsg('err', 'Please connect Facebook and select a Page linked to Instagram.'); return; }
-        payload.page_id         = window._schedSelectedPage.id;
-        payload.include_replies = document.getElementById('s-replies').checked;
-      } else if (p === 'yt') {
-        const apiKey = document.getElementById('s-yt-api-key').value.trim();
-        if (!apiKey) { showMsg('err', 'YouTube API key is required.'); return; }
-        payload.access_token = apiKey;
-      }
+      const apiKey = document.getElementById('s-yt-api-key').value.trim();
+      if (!apiKey) { showMsg('err', 'YouTube API key is required.'); return; }
+      payload.access_token = apiKey;
 
       btn.disabled    = true;
       btn.textContent = 'Scheduling…';
@@ -419,13 +316,12 @@
           body:    JSON.stringify(payload),
         });
 
-        showMsg('ok', '✓ Scheduled! The export will run automatically at the chosen time and appear in History.');
+        showMsg('ok', '✓ Scheduled! The export will run automatically at the chosen time and appear in the list below.');
 
         // Reset form
         document.getElementById('s-post-url').value   = '';
         document.getElementById('s-datetime').value   = '';
         document.getElementById('s-yt-api-key').value = '';
-        document.getElementById('s-replies').checked  = false;
 
         loadList();
 
@@ -469,9 +365,9 @@
 
       if (!exports.length) { emptyEl.style.display = ''; return; }
 
-      const PLABELS = { fb: 'Facebook', ig: 'Instagram', yt: 'YouTube' };
-      const PBADGE  = { fb: 'badge-fb', ig: 'badge-ig', yt: 'badge-yt' };
-      const PICON   = { fb: 'fa-facebook', ig: 'fa-instagram', yt: 'fa-youtube' };
+      const PLABELS = { yt: 'YouTube' };
+      const PBADGE  = { yt: 'badge-yt' };
+      const PICON   = { yt: 'fa-youtube' };
       const SBADGE  = { pending: 'badge-pending', processing: 'badge-processing', completed: 'badge-completed', failed: 'badge-failed' };
       const SLABEL  = { pending: '⏳ Pending', processing: '⟳ Processing', completed: '✓ Completed', failed: '✕ Failed' };
 
@@ -665,7 +561,6 @@
       const pad = n => String(n).padStart(2, '0');
       dt.min = `${minDate.getFullYear()}-${pad(minDate.getMonth()+1)}-${pad(minDate.getDate())}T${pad(minDate.getHours())}:${pad(minDate.getMinutes())}`;
 
-      loadSchedMeta();
       loadList();
     }
 

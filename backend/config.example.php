@@ -27,17 +27,16 @@ define('GOOGLE_CLIENT_SECRET', 'your-google-client-secret');
 define('GITHUB_CLIENT_ID',     'your-github-client-id');
 define('GITHUB_CLIENT_SECRET', 'your-github-client-secret');
 
-// ── OAuth — Meta (developers.facebook.com → App → Settings → Basic)
-define('META_APP_ID',     'your-meta-app-id');
-define('META_APP_SECRET', 'your-meta-app-secret');
+// ── Stripe (dashboard.stripe.com → Developers) ─────────────────
+define('STRIPE_SECRET_KEY',     'sk_live_your-stripe-secret-key');
+define('STRIPE_WEBHOOK_SECRET', 'whsec_your-webhook-signing-secret');
+define('PRICE_PRO_MONTHLY',     'price_your-monthly-price-id');
+define('PRICE_PRO_YEARLY',      'price_your-yearly-price-id');
 
-// ── OAuth state signing secret (any long random string) ─────────
+// ── OAuth state signing secret, used by Google/GitHub sign-in (any long random string)
 define('OAUTH_STATE_SECRET', 'change-me-long-random-string');
 
-// ── Cron secret — protects the HTTP cron endpoint ───────────────
-define('CRON_SECRET', 'change-me-long-random-string');
-
-// ── Token encryption key — AES-256-GCM ──────────────────────────
+// ── Encryption key for stored YouTube API keys (Scheduled Exports) — AES-256-GCM ──
 // Must be exactly 64 hex characters (= 32 bytes). Generate with:
 //   php -r "echo bin2hex(random_bytes(32)) . PHP_EOL;"
 define('TOKEN_ENCRYPT_KEY', '0000000000000000000000000000000000000000000000000000000000000000');

@@ -16,11 +16,13 @@ Note: publishing the code lets you verify what the software is *designed* to do;
 
 | Platform | How comments are collected | What touches our server |
 |----------|---------------------------|-------------------------|
-| **Facebook** | The **browser extension** reads the comments Facebook already shows to *your* logged-in account, inside *your* browser, and hands them to the CommentPull page. | Nothing, unless you are signed in on Pro with Run History (then the run is saved to your account). |
-| **Instagram** | You connect a Meta account that manages a Business/Creator Instagram account. Our server calls Meta's Graph API with your access token and returns the comments. | Comments pass through in transit. Your token is stored encrypted (AES-256-GCM) if you are signed in, or kept in a temporary server session if not. |
+| **Facebook** | The **browser extension** reads the comments Facebook already shows to *your* logged-in account, inside *your* browser, and hands them to the CommentPull page. | Nothing. Comments are not sent to our server. |
+| **Instagram** | *Coming soon* — planned to work the same way as Facebook, through the browser extension. (The old Meta Graph API integration has been removed.) | — |
 | **YouTube** | You paste your own YouTube Data API key; your browser requests comments from Google directly. | Nothing, unless you use Pro Scheduled Exports (the key is stored encrypted to run the export later). |
 
-Features: filters (keyword, mentions, length, dates, one entry per person), winner picker, export to CSV / Excel / JSON, plus Pro features (Run History, Scheduled Exports).
+CommentPull does **not** use the Facebook or Instagram APIs, and does not store Meta access tokens.
+
+Features: filters (keyword, mentions, length, dates, one entry per person), winner picker, export to CSV / Excel / JSON, plus the Pro Scheduled Exports feature (YouTube).
 
 ## Install the browser extension (Facebook)
 
@@ -42,9 +44,11 @@ More detail and troubleshooting: [commentpull.com/guide](https://commentpull.com
 ```
 ├── *.html, lang.js, components.js   # Frontend (Tailwind via CDN, vanilla JS, EN/AR)
 ├── build.js                         # Generates /ar/*.html from the English sources
-├── backend/                         # PHP API (auth, Meta OAuth, history, scheduled exports)
+├── backend/                         # PHP API (auth, Stripe billing, scheduled exports)
+│   ├── .htaccess                    # Denies direct web access to everything in /backend
 │   ├── config.example.php           # Copy to config.php and fill in your own values
-│   ├── schema.sql                   # MySQL schema
+│   ├── schema.sql                   # MySQL schema (fresh installs)
+│   ├── migrations/                  # SQL for upgrading an existing database
 │   ├── api/  middleware/  cron/
 ├── browser-extension/               # Chromium (Manifest V3) extension
 └── Asset/, Favicon/
@@ -55,9 +59,9 @@ More detail and troubleshooting: [commentpull.com/guide](https://commentpull.com
 Requirements: PHP 8.1+, MySQL/MariaDB, Apache with `mod_rewrite` (see `.htaccess`), Node.js (only for `build.js`).
 
 1. Create a database and run `backend/schema.sql`.
-2. Copy `backend/config.example.php` to `backend/config.php` and fill in your own database, OAuth (Google, GitHub, Meta), cron and encryption values. **Never commit `config.php`** — it is in `.gitignore`.
-3. Edit the English pages and `lang.js`, then run `node build.js` to regenerate the Arabic pages in `/ar/`.
-4. Set up a cron job for `backend/cron/process-scheduled-exports.php` (every minute) if you use Scheduled Exports.
+2. Copy `backend/config.example.php` to `backend/config.php` and fill in your own database, OAuth (Google, GitHub), Stripe and encryption values. **Never commit `config.php`** — it is in `.gitignore`. Upgrading an old database? Run `backend/migrations/2026-10-remove-meta-and-history.sql` once (back up first).
+3. Edit the English pages and `lang.js`, then run `node build.js` to regenerate the Arabic pages in `/ar/` and the extension zip.
+4. Set up a cron job (CLI only) for `backend/cron/process-scheduled-exports.php` (every minute) if you use Scheduled Exports.
 
 ## Contributing
 

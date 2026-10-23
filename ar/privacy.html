@@ -99,16 +99,16 @@
       <div class="mb-12">
         <span class="inline-block text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4" data-i18n="privacy.eyebrow">القانونية</span>
         <h1 class="text-4xl font-semibold text-white mb-4" data-i18n="privacy.title">سياسة الخصوصية</h1>
-        <p class="text-gray-500 text-sm" data-i18n="privacy.date">آخر تحديث: 6 أبريل 2025</p>
+        <p class="text-gray-500 text-sm">Last updated: October 23, 2026</p>
       </div>
 
       <!-- Callout -->
-      <div class="rounded-xl border border-indigo-500/20 bg-indigo-500/5 px-6 py-5 mb-12 text-sm text-gray-300 leading-relaxed" data-i18n-html="privacy.callout">CommentPull مبنية على مبدأ بسيط: <strong>بياناتك تبقى على جهازك</strong>. يتم تشغيل جميع عمليات استخراج التعليقات كلياً في متصفحك — رموز الوصول والمحتوى المستخرج لا يلمسان خوادمنا أبداً.</div>
+      <div class="rounded-xl border border-indigo-500/20 bg-indigo-500/5 px-6 py-5 mb-12 text-sm text-gray-300 leading-relaxed">CommentPull is currently in <strong>beta</strong>. This policy describes how the service works today, platform by platform: <strong>Facebook comments are collected by a browser extension inside your own browser</strong>, and YouTube comments are requested from your browser. CommentPull no longer uses the Facebook or Instagram APIs. The full source code is public on GitHub so you can verify these statements yourself.</div>
 
       <div class="prose">
 
         <h2 data-i18n="privacy.s1.title">١. من نحن</h2>
-        <p data-i18n="privacy.s1.text">CommentPull أداة ويب تتيح لك استخراج التعليقات وتصفيتها وتصديرها من منشورات فيسبوك وإنستغرام ويوتيوب. نحن مشغل هذه الخدمة، ويمكن الوصول إلينا على تفاصيل الاتصال في أسفل هذه الصفحة.</p>
+        <p>CommentPull is a web-based tool, currently in beta, that lets you extract, filter, and export comments from Facebook, Instagram, and YouTube posts. We are the operator of this service, reachable at the contact details at the bottom of this page.</p>
 
         <h2 data-i18n="privacy.beta.title">2. Beta status</h2>
         <p data-i18n="privacy.beta.text">CommentPull is in beta. Features, data flows and this policy may change as the product evolves, and the service may contain bugs, be interrupted, or return incomplete results. Whenever this policy changes we will update the "Last updated" date. Please do not use the beta for anything critical, and keep your own copy of any results you need to keep.</p>
@@ -118,31 +118,31 @@
 
         <h2 data-i18n="privacy.s2.title">٢. ما نجمعه</h2>
         <p data-i18n="privacy.s2.intro">نجمع فقط الحد الأدنى من المعلومات اللازمة لتشغيل حسابك:</p>
-        <ul data-i18n-html="privacy.s2.items"><li><strong>عنوان البريد الإلكتروني</strong> — يُستخدم لتعريف حسابك والرسائل التعاملية (مثل إعادة تعيين كلمة المرور).</li><li><strong>الاسم</strong> — يُعرض في واجهة التطبيق.</li><li><strong>كلمة المرور</strong> — مخزنة كهاش bcrypt (تكلفة 12). لا نخزن كلمة مرورك بالنص العادي.</li><li><strong>طوابع وقت الحساب</strong> — متى تم إنشاء حسابك وآخر تحديث.</li></ul>
+        <ul><li><strong>Account details</strong> — your email address and name (entered at sign-up, or provided by Google or GitHub if you sign in with them), used to identify your account and send transactional messages such as password resets.</li><li><strong>Password</strong> — stored only as a bcrypt hash. We never store your plain-text password.</li><li><strong>Session data and timestamps</strong> — your sign-in session, and when your account was created and last updated.</li><li><strong>Scheduled Exports (optional, Pro)</strong> — if you schedule a YouTube export, we store the post URL, the schedule, the YouTube API key needed to run it (encrypted), and the resulting comments (author names, IDs, text, timestamps) until you delete them.</li><li><strong>Billing (optional)</strong> — if you subscribe to a paid plan, we store your plan and your Stripe customer ID. Payments are handled by Stripe.</li></ul>
         <p data-i18n-html="privacy.s2.nopayment">لا <strong>نجمع</strong> معلومات الدفع. لا يلزم وجود بطاقة ائتمانية لاستخدام CommentPull.</p>
 
         <h2 data-i18n="privacy.s3.title">٣. ما لا نجمعه</h2>
-        <ul data-i18n-html="privacy.s3.items"><li>رموز الوصول <strong>لفيسبوك أو إنستغرام</strong> — تُدخَل في متصفحك وترسل مباشرة إلى خوادم Meta. لا تمر عبر خوادمنا.</li><li><strong>التعليقات وأسماء المستخدمين أو محتوى المنشورات</strong> التي تستخرجها — تتم معالجتها كلها في متصفحك وتذهب البيانات مباشرة إلى ملفك المحمَّل.</li><li><strong>مفتاح YouTube API</strong> — نفس الأمر، المتصفح فقط.</li><li><strong>سلوك التصفح</strong> أو تفاعلات الصفحة أو تسجيلات الجلسة بما يتجاوز التحليلات الأساسية.</li></ul>
+        <ul><li><strong>Facebook (via the browser extension)</strong> — the extension runs in your own browser, reads the comments that Facebook shows to your logged-in account, and passes them to the CommentPull page you have open. We do not receive your Facebook password or session, and the comments are not sent to our server.</li><li><strong>YouTube</strong> — you enter your own YouTube Data API key and your browser requests comments from Google directly. The key is not sent to us, except if you create a Pro scheduled export, which needs it to run later.</li><li><strong>What we do not collect</strong> — your Facebook or Google passwords, private messages, or any data outside the posts you ask us to process. We do not run advertising trackers.</li></ul>
 
         <h2 data-i18n="privacy.ext.title">6. Browser extension</h2>
         <p data-i18n-html="privacy.ext.text">The CommentPull browser extension is optional and is used for Facebook. It runs only on facebook.com and commentpull.com pages and requests just two browser permissions: <code>activeTab</code> and <code>storage</code>. It collects comment text, author names, profile links and timestamps from the post you open, keeps them in the extension's local storage in your browser until you clear them or start a new run, and hands them to the CommentPull page you have open. It makes no network requests of its own and contains no code that reads your password, cookies or messages. To load more comments it scrolls the page and clicks Facebook's own controls for showing more comments and replies. Because it works on Facebook's pages, using it must also comply with Facebook's terms (see our Terms of Service).</p>
 
         <h2 data-i18n="privacy.s4.title">٤. كيف نستخدم بياناتك</h2>
-        <ul data-i18n-html="privacy.s4.items"><li>للمصادقة عليك والحفاظ على جلستك.</li></ul>
+        <ul><li>To authenticate you, keep you signed in and protect your account.</li><li>To provide the features you use: running scheduled exports and processing subscriptions.</li><li>To send transactional messages (for example password resets) and answer support requests.</li><li>To understand aggregate usage and fix problems while the service is in beta.</li></ul>
         <p data-i18n="privacy.s4.nosell">لا نبيع أو نؤجر أو نشارك بياناتك الشخصية مع أطراف ثالثة لأغراض تسويقية.</p>
 
         <h2 data-i18n="privacy.s5.title">٥. ملفات تعريف الارتباط والجلسات</h2>
-        <p data-i18n-html="privacy.s5.text">نضع ملف تعريف ارتباط HTTP-only آمن واحد (<code>cp_token</code>) عند تسجيل دخولك. يحتوي على رمز جلسة عشوائي — وليس كلمة مرورك أو أي بيانات شخصية. تنتهي صلاحيته بعد 30 يوماً أو عند تسجيل خروجك. لا نستخدم ملفات تعريف ارتباط إعلانية أو تتبع طرف ثالث.</p>
+        <p>When you sign in we set one HTTP-only, secure cookie (<code>cp_token</code>) that contains a random session token — not your password. The web app also keeps that session token, your display name and your language and filter preferences in your browser's local storage so it can call our API. Sessions expire after 30 days or when you sign out. We do not use advertising cookies or third-party tracking cookies.</p>
 
         <h2 data-i18n="privacy.s6.title">٦. التحليلات</h2>
         <p data-i18n-html="privacy.s6.text">نستخدم <strong>Google Analytics 4</strong> لفهم كيفية استخدام التطبيق بشكل إجمالي (مثل أي علامة تبويب الأكثر شيوعاً، وعدد عمليات الاستخراج الناجحة). هذه البيانات مجهولة الهوية وغير مرتبطة بحسابك. يمكنك إلغاء الاشتراك عبر الإضافات التي تحجب Google Analytics.</p>
 
         <h2 data-i18n="privacy.s7.title">٧. تخزين البيانات وأمانها</h2>
-        <p data-i18n="privacy.s7.text">تُخزَّن بيانات الحساب في قاعدة بيانات MySQL مستضافة على Hostinger. نستخدم تجزئة bcrypt لكلمات المرور ورموز جلسة عشوائية مشفرة (256 بت) والتسليم عبر HTTPS فقط. تنتهي صلاحية رموز الجلسة تلقائياً بعد 30 يوماً.</p>
-        <p data-i18n="privacy.s7.noextract">لا تُكتب أي بيانات استخراج (التعليقات أو محتوى المنشور أو مفاتيح API) في قاعدة بياناتنا.</p>
+        <p>Account data is stored in a MySQL database hosted on Hostinger. Passwords are hashed with bcrypt; YouTube API keys that we must keep for scheduled exports are encrypted with AES-256-GCM before they are stored; session tokens are random 256-bit values; and the site is served over HTTPS. No system is perfectly secure, and because the service is in beta we cannot promise uninterrupted or breach-free operation.</p>
+        <p>Comments are stored on our servers only if you create a Scheduled Export (Pro). Otherwise they stay in your browser and in the files you download.</p>
 
         <h2 data-i18n="privacy.s8.title">٨. الاحتفاظ بالبيانات</h2>
-        <p data-i18n="privacy.s8.text">تُحتفظ ببيانات حسابك طالما كان حسابك نشطاً. يمكنك طلب الحذف في أي وقت بالتواصل معنا — سنحذف بريدك الإلكتروني واسمك وهاش كلمة المرور بشكل دائم خلال 7 أيام.</p>
+        <p>Account data is kept while your account is active. Scheduled exports remain until you delete them or delete your account. You can delete your account yourself from Settings — this removes your profile, sessions, scheduled exports and stored API keys — or email us and we will delete your data within 7 days.</p>
 
         <h2 data-i18n="privacy.s9.title">٩. حقوقك</h2>
         <p data-i18n="privacy.s9.intro">اعتماداً على موقعك، قد يكون لديك حقوق بموجب GDPR أو CCPA أو قوانين مماثلة، بما في ذلك:</p>
@@ -150,7 +150,7 @@
         <p data-i18n="privacy.s9.contact">لممارسة أي من هذه الحقوق، تواصل معنا على البريد الإلكتروني أدناه.</p>
 
         <h2 data-i18n="privacy.s10.title">١٠. خدمات الطرف الثالث</h2>
-        <ul data-i18n-html="privacy.s10.items"><li><strong>Meta Graph API</strong> — يُستخدم مباشرة من متصفحك لجلب تعليقات فيسبوك وإنستغرام. خاضع لـ <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">سياسة خصوصية Meta</a>.</li><li><strong>YouTube Data API v3</strong> — يُستخدم مباشرة من متصفحك. خاضع لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li><li><strong>Google Analytics</strong> — تحليلات استخدام إجمالية. خاضعة لـ <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">سياسة خصوصية Google</a>.</li><li><strong>Hostinger</strong> — يخزن مزود الاستضافة بيانات الحساب في مراكز بياناتهم. خاضع لـ <a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener">سياسة خصوصية Hostinger</a>.</li></ul>
+        <ul><li><strong>Meta (Facebook &amp; Instagram)</strong> — Facebook pages you open when using the browser extension are served by Meta. Subject to <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta's Privacy Policy</a>.</li><li><strong>Google</strong> — YouTube Data API v3 (called from your browser), Google sign-in and Google Analytics. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li><li><strong>GitHub</strong> — sign-in with GitHub, and hosting of our public source code. Subject to <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub's Privacy Statement</a>.</li><li><strong>Stripe</strong> — payment processing for paid plans. Subject to <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe's Privacy Policy</a>.</li><li><strong>Hostinger</strong> — our hosting provider stores account data in their data centres. Subject to <a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener">Hostinger's Privacy Policy</a>.</li></ul>
 
         <h2 data-i18n="privacy.s11.title">١١. التغييرات على هذه السياسة</h2>
         <p data-i18n="privacy.s11.text">قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر. عند القيام بذلك، سنراجع تاريخ "آخر تحديث" في الأعلى. يُعدّ استمرار استخدام CommentPull بعد نشر التغييرات قبولاً للسياسة المحدَّثة.</p>

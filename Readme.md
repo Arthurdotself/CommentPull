@@ -6,9 +6,11 @@
 
 > ⚠️ **Beta.** CommentPull is under active development. Features can change or break, the service may be unavailable at times, and results can be incomplete (Facebook changes its page layout often). Don't rely on it for anything critical yet.
 
-## Open source — check the code yourself
+## Source-available — check the code yourself
 
 This repository contains everything: the website, the PHP backend and the browser extension. You don't have to take our word for what the service does — read the code, or ask someone you trust to.
+
+CommentPull is **source-available, not open source**: you are free to read, study and run it for learning or personal use, but not to use it commercially, host it for others or redistribute it. See [License](#license).
 
 Note: publishing the code lets you verify what the software is *designed* to do; it can't prove what is running on the live server at any moment. The [Privacy Policy](https://commentpull.com/privacy.html) and [Terms](https://commentpull.com/terms.html) describe how the live service operates. Found a security issue? Please email **privacy@commentpull.com** (or open an issue for non-sensitive bugs).
 
@@ -69,7 +71,23 @@ Issues and pull requests are welcome. For larger changes, please open an issue f
 
 ## License
 
-The README previously referenced the MIT license. Make sure a `LICENSE` file is present in the repository root; the license in that file governs use of the source code. The CommentPull name and logo are not licensed for reuse.
+CommentPull is released under the **CommentPull Personal and Educational Use License** — see [`LICENSE`](LICENSE) for the full terms.
+
+In short, you may:
+
+- read and study the code, and learn from it
+- run it on your own devices for personal, non-commercial use
+- modify it privately for your own learning or personal use
+
+You may not, without written permission:
+
+- use it commercially or in the course of a business
+- host it or run it as a service for other people
+- copy, redistribute or publish it or modified versions of it (including in the Chrome Web Store or other stores)
+- build a competing product from it
+- use the CommentPull name or logo
+
+This is a summary only; the `LICENSE` file governs. For anything it doesn't allow, contact **privacy@commentpull.com**.
 
 ---
 

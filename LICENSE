@@ -1,0 +1,99 @@
+CommentPull Personal and Educational Use License
+Version 1.0
+
+Copyright (c) 2026 Arthurdotself. All rights reserved except as expressly
+granted below.
+
+"Software" means all source code, scripts, markup, stylesheets, database
+schemas, documentation and other files in this repository (the website, the
+PHP backend and the browser extension). "You" means the individual or entity
+exercising permissions under this license.
+
+1. PERMITTED USE
+
+Subject to the terms of this license, you may:
+
+  a. View, read and study the Software, including for learning and teaching
+     yourself or others how it works.
+
+  b. Download and run a copy of the Software on your own devices for your own
+     personal, non-commercial use.
+
+  c. Modify the Software for your own learning or personal use, and keep those
+     modifications private.
+
+  d. Fork the repository on GitHub, solely as permitted by GitHub's Terms of
+     Service, for the purpose of viewing and studying the Software. A fork may
+     not be used for any purpose prohibited by section 2.
+
+2. RESTRICTIONS
+
+You may not, without prior written permission from the copyright holder:
+
+  a. Use the Software, or anything derived from it, for any commercial purpose.
+     This includes selling it, bundling it into a product or service, using it
+     to provide paid or ad-supported services, or using it in the course of
+     your business or employment.
+
+  b. Host, deploy or operate the Software, or a modified version of it, as a
+     service for other people, whether free or paid.
+
+  c. Copy, publish, distribute, sublicense, rent, lease or otherwise make the
+     Software, or any modified version of it, available to anyone else, except
+     as allowed by section 1(d).
+
+  d. Submit, publish or enter the Software or a derivative of it in any app
+     store, extension store (including the Chrome Web Store), marketplace or
+     package registry.
+
+  e. Use the Software, or material derived from it, to build a product or
+     service that competes with CommentPull.
+
+  f. Remove or alter any copyright, license or attribution notice.
+
+  g. Use the CommentPull name, logo or branding. They are not licensed under
+     this license.
+
+3. THIRD-PARTY COMPONENTS
+
+Third-party libraries, fonts and services used by or referenced from the
+Software remain subject to their own licenses and terms. This license does not
+change them.
+
+4. CONTRIBUTIONS
+
+If you submit a contribution to this repository (for example, a pull request),
+you grant the copyright holder a perpetual, worldwide, irrevocable,
+royalty-free license to use, modify, distribute and sublicense that
+contribution as part of the Software, under this license or any other terms
+the copyright holder chooses. You confirm you have the right to grant this.
+
+5. OWNERSHIP
+
+The Software is licensed, not sold. Except for the limited permissions
+expressly granted in this license, all rights remain with the copyright
+holder, and no other rights are granted by implication or estoppel.
+
+6. TERMINATION
+
+This license ends automatically, without notice, if you breach any of its
+terms. When it ends, you must stop using the Software and delete all copies
+in your possession.
+
+7. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+8. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+
+9. COMMERCIAL AND OTHER PERMISSIONS
+
+For permission to use the Software in ways this license does not allow,
+contact: privacy@commentpull.com
